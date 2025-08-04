@@ -1,0 +1,427 @@
+package be.cytomine.appstore.services;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
+
+import be.cytomine.appstore.dto.handlers.filestorage.Storage;
+import be.cytomine.appstore.dto.handlers.registry.DockerImage;
+import be.cytomine.appstore.dto.inputs.task.TaskAuthor;
+import be.cytomine.appstore.dto.inputs.task.TaskDescription;
+import be.cytomine.appstore.dto.inputs.task.UploadTaskArchive;
+import be.cytomine.appstore.dto.misc.TaskIdentifiers;
+import be.cytomine.appstore.dto.responses.errors.AppStoreError;
+import be.cytomine.appstore.dto.responses.errors.ErrorBuilder;
+import be.cytomine.appstore.dto.responses.errors.ErrorCode;
+import be.cytomine.appstore.exceptions.BundleArchiveException;
+import be.cytomine.appstore.exceptions.FileStorageException;
+import be.cytomine.appstore.exceptions.RegistryException;
+import be.cytomine.appstore.exceptions.TaskServiceException;
+import be.cytomine.appstore.exceptions.ValidationException;
+import be.cytomine.appstore.handlers.RegistryHandler;
+import be.cytomine.appstore.handlers.StorageData;
+import be.cytomine.appstore.handlers.StorageHandler;
+import be.cytomine.appstore.models.CheckTime;
+import be.cytomine.appstore.models.Match;
+import be.cytomine.appstore.models.task.Author;
+import be.cytomine.appstore.models.task.Parameter;
+import be.cytomine.appstore.models.task.ParameterType;
+import be.cytomine.appstore.models.task.Task;
+import be.cytomine.appstore.models.task.TypeFactory;
+import be.cytomine.appstore.repositories.TaskRepository;
+import be.cytomine.appstore.utils.ArchiveUtils;
+import com.fasterxml.jackson.databind.JsonNode;
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+@Slf4j
+@RequiredArgsConstructor
+@Service
+public class TaskService
+{
+
+    private final TaskRepository taskRepository;
+
+    private final StorageHandler fileStorageHandler;
+
+    private final RegistryHandler registryHandler;
+
+    private final TaskValidationService taskValidationService;
+
+    private final ArchiveUtils archiveUtils;
+
+    @Value("${storage.input.charset}")
+    private String charset;
+
+    @Value("${scheduler.task-resources.ram}")
+    private String defaultRam;
+
+    @Value("${scheduler.task-resources.cpus}")
+    private int defaultCpus;
+
+    @Transactional
+    public Optional<TaskDescription> uploadTask(MultipartFile taskArchive)
+        throws BundleArchiveException, TaskServiceException, ValidationException {
+
+        log.info("UploadTask: building archive...");
+        UploadTaskArchive uploadTaskArchive = archiveUtils.readArchive(taskArchive);
+        log.info("UploadTask: Archive is built");
+        validateTaskBundle(uploadTaskArchive);
+        log.info("UploadTask: Archive validated");
+
+        TaskIdentifiers taskIdentifiers = generateTaskIdentifiers(uploadTaskArchive);
+        log.info("UploadTask: Task identifiers generated {}", taskIdentifiers);
+
+        Storage storage = new Storage(taskIdentifiers.getStorageIdentifier());
+        try {
+            fileStorageHandler.createStorage(storage);
+            log.info("UploadTask: Storage is created for task");
+        } catch (FileStorageException e) {
+            log.error("UploadTask: failed to create storage [{}]", e.getMessage());
+            AppStoreError error = ErrorBuilder.build(ErrorCode.STORAGE_CREATING_STORAGE_FAILED);
+            throw new TaskServiceException(error);
+        }
+
+        try {
+            fileStorageHandler.saveStorageData(
+                storage,
+                new StorageData(uploadTaskArchive.getDescriptorFile(), "descriptor.yml")
+            );
+            log.info("UploadTask: descriptor.yml is stored in object storage");
+        } catch (FileStorageException e) {
+            try {
+                log.info("UploadTask: failed to store descriptor.yml");
+                log.info("UploadTask: attempting deleting storage...");
+                fileStorageHandler.deleteStorage(storage);
+                log.info("UploadTask: storage deleted");
+            } catch (FileStorageException ex) {
+                log.error("UploadTask: file storage service is failing [{}]", ex.getMessage());
+                AppStoreError error = ErrorBuilder
+                    .build(ErrorCode.STORAGE_STORING_TASK_DEFINITION_FAILED);
+                throw new TaskServiceException(error);
+            }
+            return Optional.empty();
+        }
+
+        log.info("UploadTask: pushing task image...");
+        DockerImage image =
+            new DockerImage(
+            uploadTaskArchive.getDockerImage(),
+            taskIdentifiers.getImageRegistryCompliantName());
+        try {
+            registryHandler.pushImage(image);
+        } catch (RegistryException e) {
+            try {
+                log.debug("UploadTask: failed to push image to registry");
+                log.debug("UploadTask: attempting to delete storage...");
+                fileStorageHandler.deleteStorage(storage);
+                log.info("UploadTask: storage deleted");
+            } catch (FileStorageException ex) {
+                log.error("UploadTask: file storage service is failing [{}]", ex.getMessage());
+                AppStoreError error = ErrorBuilder
+                    .build(ErrorCode.REGISTRY_PUSHING_TASK_IMAGE_FAILED);
+                throw new TaskServiceException(error);
+            }
+        } finally {
+            uploadTaskArchive.getDockerImage().delete();
+        }
+        log.info("UploadTask: image pushed to registry");
+
+        // save task info
+        Task task = new Task();
+        task.setIdentifier(taskIdentifiers.getLocalTaskIdentifier());
+        task.setStorageReference(taskIdentifiers.getStorageIdentifier());
+        task.setImageName(taskIdentifiers.getImageRegistryCompliantName());
+        task.setName(uploadTaskArchive.getDescriptorFileAsJson().get("name").textValue());
+        task.setNameShort(uploadTaskArchive
+            .getDescriptorFileAsJson()
+            .get("name_short")
+            .textValue());
+        task.setDescriptorFile(
+            uploadTaskArchive.getDescriptorFileAsJson().get("namespace").textValue());
+        task.setNamespace(uploadTaskArchive.getDescriptorFileAsJson().get("namespace").textValue());
+        task.setVersion(uploadTaskArchive.getDescriptorFileAsJson().get("version").textValue());
+        task.setInputFolder(
+            uploadTaskArchive
+            .getDescriptorFileAsJson()
+            .get("configuration")
+            .get("input_folder")
+            .textValue());
+        task.setOutputFolder(
+            uploadTaskArchive
+            .getDescriptorFileAsJson()
+            .get("configuration")
+            .get("output_folder")
+            .textValue());
+
+        // resources
+        JsonNode resources =
+            uploadTaskArchive.getDescriptorFileAsJson().get("configuration").get("resources");
+
+        if (!Objects.nonNull(resources)) {
+            task.setRam(defaultRam);
+            task.setCpus(defaultCpus);
+        } else {
+            task.setRam(resources.path("ram").asText(defaultRam));
+            task.setCpus(resources.path("cpus").asInt(defaultCpus));
+            task.setGpus(resources.path("gpus").asInt(0));
+        }
+
+        task.setAuthors(getAuthors(uploadTaskArchive));
+        task.setParameters(getParameters(uploadTaskArchive));
+        task.setMatches(getMatches(uploadTaskArchive, task.getParameters()));
+
+        log.info("UploadTask: saving task...");
+        taskRepository.save(task);
+        log.info("UploadTask: task saved");
+
+        return Optional.of(makeTaskDescription(task));
+    }
+
+    private List<Match> getMatches(UploadTaskArchive uploadTaskArchive, Set<Parameter> parameters) {
+        log.info("UploadTask: looking for matches...");
+        JsonNode descriptor = uploadTaskArchive.getDescriptorFileAsJson();
+        JsonNode inputsNode = descriptor.get("inputs");
+        JsonNode outputsNode = descriptor.get("outputs");
+        List<Match> matches = new ArrayList<>();
+
+        // Process dependencies for inputs
+        processDependencies(inputsNode, parameters, matches);
+
+        // Process dependencies for outputs
+        processDependencies(outputsNode, parameters, matches);
+
+        log.info("UploadTask: matches processed successfully");
+        return matches;
+    }
+
+    private void processDependencies(
+        JsonNode node,
+        Set<Parameter> parameters,
+        List<Match> matches) {
+        if (node != null && node.isObject()) {
+            Iterator<String> fieldNames = node.fieldNames();
+            while (fieldNames.hasNext()) {
+                String key = fieldNames.next();
+                JsonNode value = node.get(key);
+                parameters.stream()
+                    .filter(parameter -> parameter.getName().equals(key))
+                    .findFirst()
+                    .ifPresent(parameter -> processParameterDependencies(
+                    parameter,
+                    value,
+                    parameters,
+                    matches));
+            }
+        }
+    }
+
+
+    private void processParameterDependencies(
+        Parameter param,
+        JsonNode value,
+        Set<Parameter> parameters,
+        List<Match> matches) {
+        JsonNode dependencies = value.get("dependencies");
+        if (dependencies != null && dependencies.isObject()) {
+            JsonNode matching = dependencies.get("matching");
+            if (matching != null && matching.isArray()) {
+                for (JsonNode element : matching) {
+                    String text = element.textValue();
+                    int slashIndex = text.indexOf("/");
+                    if (slashIndex == -1) {
+                        continue; // skip unexpected format
+                    }
+
+                    String matchingType = text.substring(0, slashIndex);
+                    String matchingName = text.substring(slashIndex + 1);
+
+                    parameters.stream()
+                        .filter(p -> p.getName()
+                        .equals(matchingName) && p.getParameterType()
+                        .equals(ParameterType.from(matchingType)))
+                        .findFirst()
+                        .ifPresent(other -> {
+                            // set check time relative to execution
+                            CheckTime when = CheckTime.UNDEFINED;
+                            boolean bothInputs = param
+                                .getParameterType()
+                                .equals(ParameterType.INPUT)
+                                && matchingType.equalsIgnoreCase("inputs");
+                            if (bothInputs) {
+                                when = CheckTime.BEFORE_EXECUTION;
+                            }
+                            boolean bothOutputs = param
+                                .getParameterType()
+                                .equals(ParameterType.OUTPUT)
+                                && matchingType.equalsIgnoreCase("outputs");
+                            boolean crossMatch = (param
+                                .getParameterType()
+                                .equals(ParameterType.INPUT)
+                                && matchingType.equalsIgnoreCase("outputs"))
+                                || param.getParameterType().equals(ParameterType.OUTPUT)
+                                && matchingType.equalsIgnoreCase("inputs");
+                            if (bothOutputs || crossMatch) {
+                                when = CheckTime.AFTER_EXECUTION;
+                            }
+
+                            matches.add(new Match(param, other, when));
+                        });
+
+                }
+            }
+        }
+    }
+
+    private Set<Parameter> getParameters(UploadTaskArchive uploadTaskArchive) {
+        log.info("UploadTask: getting inputs...");
+        Set<Parameter> parameters = new HashSet<>();
+        JsonNode inputsNode = uploadTaskArchive.getDescriptorFileAsJson().get("inputs");
+
+        log.info("UploadTask: getting outputs...");
+        JsonNode outputsNode = uploadTaskArchive.getDescriptorFileAsJson().get("outputs");
+
+        if (!inputsNode.isObject() && !outputsNode.isObject()) {
+            return new HashSet<>();
+        }
+
+        if (inputsNode.isObject()) {
+            Iterator<String> fieldNames = inputsNode.fieldNames();
+            while (fieldNames.hasNext()) {
+                String inputKey = fieldNames.next();
+                JsonNode inputValue = inputsNode.get(inputKey);
+
+                Parameter input = new Parameter();
+                input.setName(inputKey);
+                input.setDisplayName(inputValue.get("display_name").textValue());
+                input.setDescription(inputValue.get("description").textValue());
+                // use type factory to generate the correct type
+                input.setType(TypeFactory.createType(inputValue, charset));
+                input.setParameterType(ParameterType.INPUT);
+                // Set default value
+                JsonNode defaultNode = inputValue.get("default");
+                if (defaultNode != null) {
+                    switch (defaultNode.getNodeType()) {
+                        case STRING:
+                            input.setDefaultValue(defaultNode.textValue());
+                            break;
+                        case BOOLEAN:
+                            input.setDefaultValue(Boolean.toString(defaultNode.booleanValue()));
+                            break;
+                        case NUMBER:
+                            input.setDefaultValue(defaultNode.numberValue().toString());
+                            break;
+                        default:
+                            input.setDefaultValue(defaultNode.toString());
+                            break;
+                    }
+                }
+
+                parameters.add(input);
+            }
+        }
+
+        log.info("UploadTask: successful input parameters");
+
+        Iterator<String> outputFieldNames = outputsNode.fieldNames();
+        while (outputFieldNames.hasNext()) {
+            String outputKey = outputFieldNames.next();
+            JsonNode outputValue = outputsNode.get(outputKey);
+
+            Parameter output = new Parameter();
+            output.setName(outputKey);
+            output.setDisplayName(outputValue.get("display_name").textValue());
+            output.setDescription(outputValue.get("description").textValue());
+            output.setParameterType(ParameterType.OUTPUT);
+            // use type factory to generate the correct type
+            output.setType(TypeFactory.createType(outputValue, charset));
+
+            JsonNode dependencies = outputValue.get("dependencies");
+            if (dependencies != null && dependencies.isObject()) {
+                JsonNode derivedFrom = dependencies.get("derived_from");
+                String inputName = derivedFrom.textValue().substring("inputs/".length());
+                parameters.stream()
+                    .filter(parameter -> parameter.getName().equals(inputName)
+                        && parameter.getParameterType().equals(ParameterType.INPUT))
+                    .findFirst().ifPresent(output::setDerivedFrom);
+            }
+
+            parameters.add(output);
+        }
+
+        log.info("UploadTask: successful output parameters ");
+        return parameters;
+    }
+
+    private Set<Author> getAuthors(UploadTaskArchive uploadTaskArchive) {
+        log.info("UploadTask: getting authors...");
+        Set<Author> authors = new HashSet<>();
+        JsonNode authorNode = uploadTaskArchive.getDescriptorFileAsJson().get("authors");
+        if (authorNode.isArray()) {
+            for (JsonNode author : authorNode) {
+                Author a = new Author();
+                a.setFirstName(author.get("first_name").textValue());
+                a.setLastName(author.get("last_name").textValue());
+                a.setOrganization(author.get("organization").textValue());
+                a.setEmail(author.get("email").textValue());
+                a.setContact(author.get("is_contact").asBoolean());
+                authors.add(a);
+            }
+        }
+        log.info("UploadTask: successful authors ");
+        return authors;
+    }
+
+    private void validateTaskBundle(UploadTaskArchive uploadTaskArchive)
+        throws ValidationException {
+        taskValidationService.validateDescriptorFile(uploadTaskArchive);
+        taskValidationService.checkIsNotDuplicate(uploadTaskArchive);
+        taskValidationService.validateImage(uploadTaskArchive);
+    }
+
+    private TaskIdentifiers generateTaskIdentifiers(UploadTaskArchive uploadTaskArchive) {
+        UUID taskLocalIdentifier = UUID.randomUUID();
+        String storageIdentifier = "task-" + taskLocalIdentifier + "-def";
+        String imageIdentifierFromDescriptor =
+            uploadTaskArchive.getDescriptorFileAsJson().get("namespace").textValue();
+        String version = uploadTaskArchive.getDescriptorFileAsJson().get("version").textValue();
+        String imageRegistryCompliantName = imageIdentifierFromDescriptor.replace(".", "/");
+        imageRegistryCompliantName += ":" + version;
+
+        return new TaskIdentifiers(taskLocalIdentifier,
+            storageIdentifier,
+            imageRegistryCompliantName);
+    }
+
+    public TaskDescription makeTaskDescription(Task task) {
+        TaskDescription taskDescription =
+            new TaskDescription(
+            task.getIdentifier(),
+            task.getName(),
+            task.getNamespace(),
+            task.getVersion(),
+            task.getDescription());
+        Set<TaskAuthor> descriptionAuthors = new HashSet<>();
+        for (Author author : task.getAuthors()) {
+            TaskAuthor taskAuthor =
+                new TaskAuthor(
+                author.getFirstName(),
+                author.getLastName(),
+                author.getOrganization(),
+                author.getEmail(),
+                author.isContact());
+            descriptionAuthors.add(taskAuthor);
+        }
+        taskDescription.setAuthors(descriptionAuthors);
+        return taskDescription;
+    }
+}
