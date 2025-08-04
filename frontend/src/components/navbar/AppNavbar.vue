@@ -1,5 +1,5 @@
 <template>
-  <b-navbar>
+  <b-navbar class="is-light">
     <template #brand>
       <b-navbar-item tag="router-link" :to="{ path: '/' }">
         <img src="https://raw.githubusercontent.com/buefy/buefy/dev/packages/docs/public/static/img/buefy-logo.png"
