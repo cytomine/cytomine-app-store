@@ -17,6 +17,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@fortawesome/fontawesome-free": "^7.0.0",
     "buefy": "^1.0.1",
     "bulma": "^1.0.4",
     "pinia": "^3.0.3",

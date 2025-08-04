@@ -4,6 +4,7 @@ import { createPinia } from 'pinia';
 import Buefy from 'buefy';
 import 'buefy/dist/buefy.css';
 import 'bulma/css/bulma.css';
+import '@fortawesome/fontawesome-free/css/all.css';
 
 import App from './App.vue';
 import router from './router';

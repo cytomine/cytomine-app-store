@@ -7,7 +7,9 @@
     documentation
   </p>
   <p class="mb-6">Margin bottom</p>
-  <b-button class="mb-2 is-primary has-text-grey is-size-2 is-align-content-end">Click Me</b-button>
+  <b-button class="mb-2 is-primary has-text-grey is-size-2 is-align-content-end">
+    <b-icon icon="plus" /> Click Me
+  </b-button>
 </template>
 
 <style scoped></style>
