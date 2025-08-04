@@ -1,0 +1,10 @@
+# JetBrains IDEs files
+.idea/
+*.iml
+
+# VS Code files
+.vscode/
+
+# Env files
+.direnv
+.env
