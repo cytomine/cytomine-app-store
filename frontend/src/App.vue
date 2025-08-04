@@ -1,7 +1,7 @@
 <script setup lang="ts"></script>
 
 <template>
-  <h1 class="has-text-warning">You did it!</h1>
+  <h1 class="has-text-warning">{{ $t('hello-world') }}</h1>
   <p>
     Visit <a href="https://vuejs.org/" target="_blank" rel="noopener">vuejs.org</a> to read the
     documentation
@@ -11,5 +11,3 @@
     <b-icon icon="plus" /> Click Me
   </b-button>
 </template>
-
-<style scoped></style>
