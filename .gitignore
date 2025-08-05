@@ -1,10 +1,48 @@
-# JetBrains IDEs files
-.idea/
-*.iml
+# Spring Boot / Maven
+backend/target/
+mvnw
+mvnw.cmd
+.mvn/wrapper/
+!.mvn/wrapper/maven-wrapper.jar
 
-# VS Code files
+# VSCode
 .vscode/
 
-# Env files
-.direnv
-.env
+# IntelliJ IDEA
+backend/.idea/
+*.iml
+*.iws
+*.ipr
+
+# Eclipse
+.classpath
+.project
+.settings/
+
+# Gradle
+backend/.gradle/
+backend/build/
+backend/bin/
+
+# Logs
+backend/logs/
+
+# IDE-specific files
+*.log
+*.log.*
+*.tmproj
+*.tmp
+*.swp
+
+# Compiled binary files
+*.class
+*.jar
+
+# Dependency directories
+.lib/
+ivy/
+jars/
+.jpb/
+
+# Other
+_misc/
