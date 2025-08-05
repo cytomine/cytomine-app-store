@@ -21,6 +21,7 @@ import be.cytomine.appstore.dto.responses.errors.ErrorCode;
 import be.cytomine.appstore.exceptions.BundleArchiveException;
 import be.cytomine.appstore.exceptions.FileStorageException;
 import be.cytomine.appstore.exceptions.RegistryException;
+import be.cytomine.appstore.exceptions.TaskNotFoundException;
 import be.cytomine.appstore.exceptions.TaskServiceException;
 import be.cytomine.appstore.exceptions.ValidationException;
 import be.cytomine.appstore.handlers.RegistryHandler;
@@ -424,4 +425,66 @@ public class TaskService
         taskDescription.setAuthors(descriptionAuthors);
         return taskDescription;
     }
+
+    public StorageData retrieveYmlDescriptor(String namespace, String version)
+        throws TaskServiceException, TaskNotFoundException {
+        log.info("Storage : retrieving descriptor.yml...");
+        Task task = taskRepository.findByNamespaceAndVersion(namespace, version);
+        if (task == null) {
+            throw new TaskNotFoundException("task not found");
+        }
+
+        StorageData file = new StorageData("descriptor.yml", task.getStorageReference());
+        try {
+            file = fileStorageHandler.readStorageData(file);
+        } catch (FileStorageException ex) {
+            log.debug("Storage: failed to get file from storage [{}]", ex.getMessage());
+            throw new TaskServiceException(ex);
+        }
+        return file;
+    }
+
+    public StorageData retrieveYmlDescriptor(String id)
+        throws TaskServiceException, TaskNotFoundException
+    {
+        log.info("Storage : retrieving descriptor.yml...");
+        Optional<Task> task = taskRepository.findById(UUID.fromString(id));
+        if (task.isEmpty()) {
+            throw new TaskNotFoundException("task not found");
+        }
+        StorageData file = new StorageData("descriptor.yml", task.get().getStorageReference());
+        try {
+            file = fileStorageHandler.readStorageData(file);
+        } catch (FileStorageException ex) {
+            log.debug("Storage: failed to get file from storage [{}]", ex.getMessage());
+            throw new TaskServiceException(ex);
+        }
+        return file;
+    }
+
+    public Optional<TaskDescription> retrieveTaskDescription(String id) {
+        Optional<Task> task = findById(id);
+        return task.map(this::makeTaskDescription);
+    }
+
+    public Optional<TaskDescription> retrieveTaskDescription(String namespace, String version) {
+        Optional<Task> task = findByNamespaceAndVersion(namespace, version);
+        return task.map(this::makeTaskDescription);
+    }
+
+    public Optional<Task> findByNamespaceAndVersion(String namespace, String version) {
+        log.info("schemas/tasks/{namespace}/{version}: retrieving task...");
+        Task task = taskRepository.findByNamespaceAndVersion(namespace, version);
+        log.info("schemas/tasks/{namespace}/{version}: retrieved task...");
+        return Optional.ofNullable(task);
+    }
+
+    public Optional<Task> findById(String id) {
+        log.info("Data: retrieving task...");
+        Optional<Task> task = taskRepository.findById(UUID.fromString(id));
+        log.info("Data: retrieved task");
+        return task;
+    }
+
+
 }
