@@ -31,7 +31,7 @@ FROM nginx:${NGINX_VERSION}-alpine AS prod-server
 LABEL org.opencontainers.image.authors="uliege@cytomine.org" \
       org.opencontainers.image.url="https://uliege.cytomine.org/" \
       org.opencontainers.image.documentation="https://doc.uliege.cytomine.org/" \
-      org.opencontainers.image.source="https://github.com/cytomine/app-store" \
+      org.opencontainers.image.source="https://github.com/cytomine/Cytomine-app-store" \
       org.opencontainers.image.vendor="Cytomine ULiège" \
       org.opencontainers.image.version=${APP_STORE_VERSION} \
       org.opencontainers.image.revision=${APP_STORE_REVISION} \
