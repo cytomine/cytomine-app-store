@@ -19,3 +19,5 @@ comment on materialized view search is 'for search';
 
 alter materialized view search owner to appstore;
 
+CREATE INDEX idx_search_vector ON search USING GIN(search_vector);
+
