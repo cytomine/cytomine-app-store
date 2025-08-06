@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 import be.cytomine.appstore.dto.handlers.registry.DockerImage;
 import be.cytomine.appstore.exceptions.RegistryException;
@@ -57,5 +58,19 @@ public class DockerRegistryHandler implements RegistryHandler {
             String message = "Docker Registry Handler: failed to push the image to registry";
             throw new RegistryException(message);
         }
+    }
+
+    @Override
+    public void pullImage(String imageName, OutputStream outputStream) throws RegistryException
+    {
+        try
+        {
+            RegistryClient.pull(imageName, outputStream);
+        } catch (IOException e)
+        {
+            log.error("Error pulling image from registry: {}", imageName, e);
+            throw new RegistryException("Docker Registry Handler: failed to pull image from registry");
+        }
+
     }
 }
