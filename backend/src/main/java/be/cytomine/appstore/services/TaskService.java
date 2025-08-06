@@ -1,5 +1,10 @@
 package be.cytomine.appstore.services;
 
+import java.io.FilterOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -8,6 +13,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import be.cytomine.appstore.dto.handlers.filestorage.Storage;
 import be.cytomine.appstore.dto.handlers.registry.DockerImage;
@@ -26,6 +33,8 @@ import be.cytomine.appstore.exceptions.TaskServiceException;
 import be.cytomine.appstore.exceptions.ValidationException;
 import be.cytomine.appstore.handlers.RegistryHandler;
 import be.cytomine.appstore.handlers.StorageData;
+import be.cytomine.appstore.handlers.StorageDataEntry;
+import be.cytomine.appstore.handlers.StorageDataType;
 import be.cytomine.appstore.handlers.StorageHandler;
 import be.cytomine.appstore.models.CheckTime;
 import be.cytomine.appstore.models.Match;
@@ -240,7 +249,7 @@ public class TaskService
                     String text = element.textValue();
                     int slashIndex = text.indexOf("/");
                     if (slashIndex == -1) {
-                        continue; // skip unexpected format
+                        continue; // skip an unexpected format
                     }
 
                     String matchingType = text.substring(0, slashIndex);
@@ -487,4 +496,52 @@ public class TaskService
     }
 
 
+    public StorageData retrieveIOZipArchive(
+        String namespace,
+        String version
+    ) throws FileStorageException, IOException, RegistryException, TaskNotFoundException
+    {
+        log.info("Retrieving IO Archive: retrieving...");
+        Task task = taskRepository.findByNamespaceAndVersion(namespace, version);
+        if (task == null) {
+            throw new TaskNotFoundException("task not found");
+        }
+        log.info("Retrieving IO Archive: fetching descriptor.yml from storage...");
+        StorageData descriptor = new StorageData("descriptor.yml","task-"+task.getIdentifier()+"-def");
+        log.info("Retrieving IO Archive: zipping...");
+        Path tempFile = Files.createTempFile("bundle-", task.getIdentifier() + ".zip");
+        ZipOutputStream zipOut = new ZipOutputStream(Files.newOutputStream(tempFile));
+        StorageData desSD = fileStorageHandler.readStorageData(descriptor);
+        for (StorageDataEntry current : desSD.getEntryList()) {
+            ZipEntry zipEntry = new ZipEntry(current.getName());
+            zipOut.putNextEntry(zipEntry);
+
+            if (current.getStorageDataType().equals(StorageDataType.FILE)) {
+                Files.copy(current.getData().toPath(), zipOut);
+            }
+
+            zipOut.closeEntry();
+        }
+        // get the registry
+        log.info("Retrieving IO Archive: pulling image from registry...");
+        ZipEntry zipEntry = new ZipEntry("image.tar");
+        zipOut.putNextEntry(zipEntry);
+
+        // Wrap zipOut so that close() only flushes rather than closing the underlying stream.
+        OutputStream nonClosingStream = new FilterOutputStream(zipOut) {
+            @Override
+            public void close() throws IOException {
+                flush();
+            }
+        };
+
+        registryHandler.pullImage(task.getImageName(), nonClosingStream);
+        log.info("Retrieving IO Archive: pulled");
+        zipOut.closeEntry();
+        zipOut.close();
+
+        log.info("Retrieving IO Archive: zipped...");
+
+        return new StorageData(tempFile.toFile());
+    }
 }
