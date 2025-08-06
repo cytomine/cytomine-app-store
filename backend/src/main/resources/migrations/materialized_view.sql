@@ -1,3 +1,4 @@
+CREATE EXTENSION pg_trgm;
 
 create materialized view search as
 SELECT t.name,
@@ -21,6 +22,14 @@ SELECT t.name,
                    COALESCE(a.last_name, '') || ' ' ||
                    COALESCE(a.organization, '') || ' ' ||
                    COALESCE(a.email, '')) AS search_vector
+       COALESCE(t.name, '') || ' ' ||
+       COALESCE(t.namespace, '') || ' ' ||
+       COALESCE(t.name_short, '') || ' ' ||
+       COALESCE(t.description, '') || ' ' ||
+       COALESCE(t.image_name, '') || ' ' ||
+       COALESCE(a.first_name, '') || ' ' ||
+       COALESCE(a.last_name, '') || ' ' ||
+       COALESCE(a.organization, '') AS fuzzy_search_text
 FROM task t
          JOIN task_authors ta ON t.identifier = ta.task_identifier
          JOIN author a ON ta.authors_id = a.id;
@@ -30,4 +39,6 @@ comment on materialized view search is 'for search';
 alter materialized view search owner to appstore;
 
 CREATE INDEX idx_search_vector ON search USING GIN(search_vector);
+
+CREATE INDEX idx_fuzzy_search ON search USING GIN(fuzzy_search_text gin_trgm_ops);
 
