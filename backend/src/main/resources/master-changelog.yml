@@ -1,2 +1,5 @@
 databaseChangeLog:
+  - include:
+      file: migrations/materialized_view.sql.sql
+      relativeToChangelogFile: false
 
