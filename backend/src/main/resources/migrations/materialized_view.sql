@@ -13,7 +13,7 @@ SELECT t.identifier,
        a.last_name,
        a.organization,
        a.email,
- -- 3. full-text search column
+-- 3. full-text search column
        to_tsvector('english',
                    COALESCE(t.name, '') || ' ' ||
                    COALESCE(t.namespace, '') || ' ' ||
@@ -25,7 +25,7 @@ SELECT t.identifier,
                    COALESCE(a.last_name, '') || ' ' ||
                    COALESCE(a.organization, '') || ' ' ||
                    COALESCE(a.email, '')) AS search_vector ,
- -- 4. fuzzy search column for misspelled words
+-- 4. fuzzy search column for misspelled words
        COALESCE(t.name, '') || ' ' ||
        COALESCE(t.namespace, '') || ' ' ||
        COALESCE(t.name_short, '') || ' ' ||
