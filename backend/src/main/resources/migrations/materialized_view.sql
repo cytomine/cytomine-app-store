@@ -2,7 +2,8 @@
 CREATE EXTENSION pg_trgm;
 -- 2. create a materialized view for search
 create materialized view search as
-SELECT t.name,
+SELECT t.identifier,
+       t.name,
        t.namespace,
        t.name_short,
        t.description,
