@@ -1,5 +1,5 @@
 -- 1. create a full-text search extension
-CREATE EXTENSION pg_trgm;
+CREATE EXTENSION IF NOT EXISTS pg_trgm;
 -- 2. create a materialized view for search
 create materialized view search as
 SELECT t.identifier,
