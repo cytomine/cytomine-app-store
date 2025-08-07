@@ -13,8 +13,4 @@ import org.springframework.stereotype.Repository;
 public interface TaskRepository extends JpaRepository<Task, UUID> {
     Task findByNamespaceAndVersion(String namespace, String version);
 
-    @Modifying
-    @Transactional
-    @Query("DELETE FROM Task")
-    void deleteAllTasks();
 }
