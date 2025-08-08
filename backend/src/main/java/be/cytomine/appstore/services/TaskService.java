@@ -6,6 +6,7 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -38,17 +39,20 @@ import be.cytomine.appstore.handlers.StorageDataType;
 import be.cytomine.appstore.handlers.StorageHandler;
 import be.cytomine.appstore.models.CheckTime;
 import be.cytomine.appstore.models.Match;
+import be.cytomine.appstore.models.Search;
 import be.cytomine.appstore.models.task.Author;
 import be.cytomine.appstore.models.task.Parameter;
 import be.cytomine.appstore.models.task.ParameterType;
 import be.cytomine.appstore.models.task.Task;
 import be.cytomine.appstore.models.task.TypeFactory;
+import be.cytomine.appstore.repositories.SearchRepository;
 import be.cytomine.appstore.repositories.TaskRepository;
 import be.cytomine.appstore.utils.ArchiveUtils;
 import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -68,6 +72,8 @@ public class TaskService
     private final TaskValidationService taskValidationService;
 
     private final ArchiveUtils archiveUtils;
+
+    private final SearchRepository searchRepository;
 
     @Value("${storage.input.charset}")
     private String charset;
@@ -543,5 +549,17 @@ public class TaskService
         log.info("Retrieving IO Archive: zipped...");
 
         return new StorageData(tempFile.toFile());
+    }
+
+    public List<Search> search (String queryText) throws TaskServiceException
+    {
+        log.info("Search: searching for tasks...");
+        if (queryText == null || queryText.isEmpty()) {
+            log.error("Search: search text is empty or null");
+            AppStoreError error = ErrorBuilder.build(ErrorCode.INTERNAL_EMPTY_SEARCH_QUERY);
+            throw new TaskServiceException(error);
+        }
+        log.info("Search: search done");
+        return searchRepository.findByAdvancedSearch(queryText.replace(" ", "&"), queryText);
     }
 }
