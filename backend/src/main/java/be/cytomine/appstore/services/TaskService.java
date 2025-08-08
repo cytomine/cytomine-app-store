@@ -559,7 +559,9 @@ public class TaskService
             AppStoreError error = ErrorBuilder.build(ErrorCode.INTERNAL_EMPTY_SEARCH_QUERY);
             throw new TaskServiceException(error);
         }
+        List<Search> hits = searchRepository.findByAdvancedSearch(queryText.trim().replace(" ", "&"), queryText);
         log.info("Search: search done");
-        return searchRepository.findByAdvancedSearch(queryText.replace(" ", "&"), queryText);
+        return hits;
+
     }
 }
