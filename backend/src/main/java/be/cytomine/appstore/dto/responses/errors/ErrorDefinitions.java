@@ -78,6 +78,7 @@ public class ErrorDefinitions {
         codes.put(ErrorCode.INTERNAL_NULL_PROVISION, new MessageCode("APPE-internal-null-provision", "provision object is null"));
         codes.put(ErrorCode.INTERNAL_UNKNOWN_SUBTYPE, new MessageCode("APPE-internal-unknown-subtype", "collection subtype unknown"));
         codes.put(ErrorCode.INTERNAL_INVALID_METADATA, new MessageCode("APPE-internal-invalid-metadata", "collection array.yml is malformed"));
+        codes.put(ErrorCode.INTERNAL_EMPTY_SEARCH_QUERY, new MessageCode("APPE-internal-empty-search-query", "empty search query"));
     }
 
     public static MessageCode fromCode(ErrorCode code) {
