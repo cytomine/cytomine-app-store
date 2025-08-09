@@ -199,6 +199,9 @@ public class TaskService
         log.info("UploadTask: saving task...");
         taskRepository.save(task);
         log.info("UploadTask: task saved");
+        log.info("UploadTask: update search index");
+        searchRepository.refreshSearchViewConcurrently();
+        log.info("UploadTask: search index updated");
 
         return Optional.of(makeTaskDescription(task));
     }
