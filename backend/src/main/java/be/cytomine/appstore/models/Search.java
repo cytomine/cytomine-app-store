@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.UUID;
 
 @Data
 @AllArgsConstructor
@@ -20,7 +21,7 @@ public class Search implements Serializable {
 
     @JsonIgnore
     @Id
-    private String identifier;
+    private UUID identifier;
 
     private String name;
     private String namespace;
