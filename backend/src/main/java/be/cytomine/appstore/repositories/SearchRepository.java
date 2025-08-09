@@ -18,7 +18,7 @@ public interface SearchRepository extends JpaRepository<Search, UUID> {
         "WHERE search_vector @@ to_tsquery('english', :fullTextQuery) " +
         "OR word_similarity(:fuzzyQuery, fuzzy_search_text) > 0.2 " +
         "OR fuzzy_search_text ILIKE '%' || :fuzzyQuery || '%'" +
-        "ORDER BY ts_rank(search_vector, to_tsquery('english', :fullTextQuery)) DESC" +
+        "ORDER BY ts_rank(search_vector, to_tsquery('english', :fullTextQuery)) DESC " +
         "LIMIT 10",
         nativeQuery = true)
     List<Search> findByAdvancedSearch(@Param("fullTextQuery") String fullTextQuery, @Param("fuzzyQuery") String fuzzyQuery);
