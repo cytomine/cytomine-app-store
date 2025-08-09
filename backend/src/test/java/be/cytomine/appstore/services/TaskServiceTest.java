@@ -341,7 +341,8 @@ public class TaskServiceTest
         descriptor.peek().setData(resource.getFile());
         when(taskRepository.findByNamespaceAndVersion(namespace, version)).thenReturn(task);
         when(storageHandler.readStorageData(any(StorageData.class))).thenReturn(descriptor);
-        doThrow(new RegistryException("Docker Registry Handler: failed to pull image from registry"))
+        doThrow(
+            new RegistryException("Docker Registry Handler: failed to pull image from registry"))
             .when(registryHandler).pullImage(eq(task.getImageName()), any(OutputStream.class));
 
         RegistryException exception = assertThrows(
@@ -349,7 +350,8 @@ public class TaskServiceTest
             () -> taskService.retrieveIOZipArchive(namespace, version)
         );
 
-        assertEquals("Docker Registry Handler: failed to pull image from registry", exception.getMessage());
+        assertEquals("Docker Registry Handler: failed to pull image from registry",
+            exception.getMessage());
         verify(taskRepository, times(1)).findByNamespaceAndVersion(namespace, version);
         verify(storageHandler, times(1)).readStorageData(any(StorageData.class));
         verify(registryHandler, times(1)).pullImage(eq(task.getImageName()),
