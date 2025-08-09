@@ -33,7 +33,8 @@ SELECT t.identifier,
        COALESCE(t.image_name, '') || ' ' ||
        COALESCE(a.first_name, '') || ' ' ||
        COALESCE(a.last_name, '') || ' ' ||
-       COALESCE(a.organization, '') AS fuzzy_search_text
+       COALESCE(a.organization, '') || ' ' ||
+       COALESCE(a.email, '') AS fuzzy_search_text
 FROM task t
          JOIN task_authors ta ON t.identifier = ta.task_identifier
          JOIN author a ON ta.authors_id = a.id;
