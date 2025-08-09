@@ -1,5 +1,6 @@
 package be.cytomine.appstore.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -17,6 +18,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class Search implements Serializable {
 
+    @JsonIgnore
     @Id
     private String identifier;
 
@@ -32,14 +34,15 @@ public class Search implements Serializable {
     private String imageName;
 
     private String version;
-
-    @Column(name = "first_name")
-    private String firstName;
-
-    @Column(name = "last_name")
-    private String lastName;
-
-    private String organization;
-    private String email;
+    @JsonIgnore
+    @Column(name = "first_names")
+    private String firstNames;
+    @JsonIgnore
+    @Column(name = "last_names")
+    private String lastNames;
+    @JsonIgnore
+    private String organizations;
+    @JsonIgnore
+    private String emails;
 
 }
