@@ -9,11 +9,12 @@ SELECT t.identifier,
        t.description,
        t.image_name,
        t.version,
-       a.first_name,
-       a.last_name,
-       a.organization,
-       a.email,
--- 3. full-text search column
+-- 3. aggregate author info
+       string_agg(a.first_name, ', ') AS first_names,
+       string_agg(a.last_name, ', ') AS last_names,
+       string_agg(a.organization, ', ') AS organizations,
+       string_agg(a.email, ', ') AS emails,
+-- 4. inculde aggregated data in the search index and fuzzy search
        to_tsvector('english',
                    COALESCE(t.name, '') || ' ' ||
                    COALESCE(t.namespace, '') || ' ' ||
@@ -21,23 +22,22 @@ SELECT t.identifier,
                    COALESCE(t.description, '') || ' ' ||
                    COALESCE(t.image_name, '') || ' ' ||
                    COALESCE(t.version, '') || ' ' ||
-                   COALESCE(a.first_name, '') || ' ' ||
-                   COALESCE(a.last_name, '') || ' ' ||
-                   COALESCE(a.organization, '') || ' ' ||
-                   COALESCE(a.email, '')) AS search_vector ,
--- 4. fuzzy search column for misspelled words
+                   COALESCE(string_agg(a.first_name, ' '), '') || ' ' ||
+                   COALESCE(string_agg(a.last_name, ' '), '') || ' ' ||
+                   COALESCE(string_agg(a.organization, ' '), '') || ' ' ||
+                   COALESCE(string_agg(a.email, ' '), '')) AS search_vector ,
        COALESCE(t.name, '') || ' ' ||
        COALESCE(t.namespace, '') || ' ' ||
        COALESCE(t.name_short, '') || ' ' ||
        COALESCE(t.description, '') || ' ' ||
        COALESCE(t.image_name, '') || ' ' ||
-       COALESCE(a.first_name, '') || ' ' ||
-       COALESCE(a.last_name, '') || ' ' ||
-       COALESCE(a.organization, '') || ' ' ||
-       COALESCE(a.email, '') AS fuzzy_search_text
+       COALESCE(string_agg(a.first_name, ' '), '') || ' ' ||
+       COALESCE(string_agg(a.last_name, ' '), '') || ' ' ||
+       COALESCE(string_agg(a.organization, ' '), '') AS fuzzy_search_text
 FROM task t
          JOIN task_authors ta ON t.identifier = ta.task_identifier
-         JOIN author a ON ta.authors_id = a.id;
+         JOIN author a ON ta.authors_id = a.id
+GROUP BY t.identifier, t.name, t.namespace, t.name_short, t.description, t.image_name, t.version;
 -- 5. a description
 comment on materialized view search is 'for search';
 -- 6. change owner
