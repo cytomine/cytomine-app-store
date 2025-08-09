@@ -46,4 +46,6 @@ alter materialized view search owner to appstore;
 CREATE INDEX idx_search_vector ON search USING GIN(search_vector);
 -- 8. another one for the fuzzy search
 CREATE INDEX idx_fuzzy_search ON search USING GIN(fuzzy_search_text gin_trgm_ops);
+--9. create a unique index on the identifier to allow for refresh
+CREATE UNIQUE INDEX search_identifier_idx ON search (identifier);
 
