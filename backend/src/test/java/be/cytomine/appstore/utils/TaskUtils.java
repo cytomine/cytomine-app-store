@@ -128,4 +128,31 @@ public class TaskUtils {
             return baos.toByteArray();
         }
     }
+
+    public static Task createTask(UUID uuid, String iamgeNameSpace, String name, String shortName,
+                                  String version, String storagereference, String desc,
+                                  String authorFirstName, String authorLastName, String org, String mail)
+    {
+        Task task = new Task();
+        task.setIdentifier(uuid);
+        task.setNamespace(iamgeNameSpace);
+        task.setName(name);
+        task.setNameShort(shortName);
+        task.setVersion(version);
+        task.setStorageReference(storagereference);
+        task.setDescription(desc);
+
+        Author author = new Author();
+        author.setFirstName(authorFirstName);
+        author.setLastName(authorLastName);
+        author.setOrganization(org);
+        author.setEmail(mail);
+        author.setContact(true);
+
+        task.setAuthors(Set.of(author));
+        task.setParameters(
+            Set.of(createTestInput("input", false), createTestOutput("output", false)));
+
+        return task;
+    }
 }
