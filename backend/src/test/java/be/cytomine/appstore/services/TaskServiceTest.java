@@ -33,6 +33,7 @@ import be.cytomine.appstore.handlers.StorageData;
 import be.cytomine.appstore.handlers.StorageDataType;
 import be.cytomine.appstore.handlers.StorageHandler;
 import be.cytomine.appstore.models.task.Task;
+import be.cytomine.appstore.repositories.SearchRepository;
 import be.cytomine.appstore.repositories.TaskRepository;
 import be.cytomine.appstore.utils.ArchiveUtils;
 import be.cytomine.appstore.utils.TaskUtils;
@@ -59,6 +60,9 @@ public class TaskServiceTest
 
     @Mock
     private StorageHandler storageHandler;
+
+    @Mock
+    private SearchRepository searchRepository;
 
     @Mock
     private TaskRepository taskRepository;
