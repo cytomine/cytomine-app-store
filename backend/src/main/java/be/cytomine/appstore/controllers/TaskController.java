@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Optional;
 
 import be.cytomine.appstore.dto.inputs.task.TaskDescription;
+import be.cytomine.appstore.dto.responses.errors.ErrorBuilder;
+import be.cytomine.appstore.dto.responses.errors.ErrorCode;
 import be.cytomine.appstore.exceptions.BundleArchiveException;
 import be.cytomine.appstore.exceptions.FileStorageException;
 import be.cytomine.appstore.exceptions.RegistryException;
@@ -85,6 +87,29 @@ public class TaskController
 
         log.info("tasks/search GET Ended");
         return ResponseEntity.ok(data);
+    }
+
+    @GetMapping(value = "tasks/{namespace}/{version}/descriptor.yml")
+    @ResponseStatus(code = HttpStatus.OK)
+    public ResponseEntity<?> findDescriptorOfTaskByNamespaceAndVersion(
+        @PathVariable String namespace,
+        @PathVariable String version
+    ) throws TaskServiceException, TaskNotFoundException {
+        log.info("tasks/{namespace}/{version}/descriptor.yml GET");
+        StorageData data = taskService.retrieveYmlDescriptor(namespace, version);
+        File file = data.peek().getData();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(
+            HttpHeaders.CONTENT_DISPOSITION,
+            "attachment; filename=\"" + file.getName() + "\""
+        );
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+
+        log.info("tasks/{namespace}/{version}/descriptor.yml GET Ended");
+        return ResponseEntity.ok()
+            .headers(headers)
+            .body(new FileSystemResource(file));
     }
 
 
