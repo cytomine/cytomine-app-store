@@ -63,10 +63,10 @@ public class TaskService
     @Value("${storage.input.charset}")
     private String charset;
 
-    @Value("${scheduler.task-resources.ram}")
+    @Value("${defaults.task-resources.ram}")
     private String defaultRam;
 
-    @Value("${scheduler.task-resources.cpus}")
+    @Value("${defaults.task-resources.cpus}")
     private int defaultCpus;
 
     @Transactional
