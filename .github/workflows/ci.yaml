@@ -65,8 +65,8 @@ jobs:
       postgres:
         image: cytomine/postgis:${{ vars.POSTGIS_VERSION }}
         env:
-          POSTGRES_NAME: docker
-          POSTGRES_USER: docker
+          POSTGRES_NAME: appstore
+          POSTGRES_USER: appstore
           POSTGRES_PASSWORD: password
         ports:
           - 5432:5432
@@ -93,6 +93,10 @@ jobs:
 
       - name: Test backend
         run: gradle :test --no-daemon
+        env:
+          DB_NAME: appstore
+          DB_USERNAME: appstore
+          DB_PASSWORD: password
 
       - name: Upload test reports
         if: ${{ always() }}
