@@ -54,10 +54,6 @@ registry-client:
   host: ${REGISTRY_HOST:localhost}
   port: ${REGISTRY_PORT:5000}
   scheme: ${REGISTRY_SCHEME:http}
-defaults:
-  task-resources:
-    cpus: 1
-    ram: 4Gi
 logging:
   level:
     root: ERROR

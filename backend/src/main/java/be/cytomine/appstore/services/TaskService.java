@@ -63,12 +63,6 @@ public class TaskService
     @Value("${storage.input.charset}")
     private String charset;
 
-    @Value("${defaults.task-resources.ram}")
-    private String defaultRam;
-
-    @Value("${defaults.task-resources.cpus}")
-    private int defaultCpus;
-
     @Transactional
     public Optional<TaskDescription> uploadTask(MultipartFile taskArchive)
         throws BundleArchiveException, TaskServiceException, ValidationException {
@@ -168,12 +162,9 @@ public class TaskService
         JsonNode resources =
             uploadTaskArchive.getDescriptorFileAsJson().get("configuration").get("resources");
 
-        if (!Objects.nonNull(resources)) {
-            task.setRam(defaultRam);
-            task.setCpus(defaultCpus);
-        } else {
-            task.setRam(resources.path("ram").asText(defaultRam));
-            task.setCpus(resources.path("cpus").asInt(defaultCpus));
+        if (Objects.nonNull(resources)) {
+            task.setRam(resources.path("ram").asText());
+            task.setCpus(resources.path("cpus").asInt());
             task.setGpus(resources.path("gpus").asInt(0));
         }
 

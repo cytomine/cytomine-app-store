@@ -45,10 +45,6 @@ registry:
   scheme: ${REGISTRY_HTTP_SCHEME:http}
   host: ${REGISTRY_URL:registry}:${REGISTRY_PORT:5000}
   url: ${registry.scheme:http}://${registry.host}
-defaults:
-  task-resources:
-    cpus: 1
-    ram: 4Gi
 registry-client:
   authenticated: false
   user: user #ignored
