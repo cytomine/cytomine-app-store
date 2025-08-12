@@ -20,7 +20,6 @@ import be.cytomine.appstore.dto.handlers.registry.DockerImage;
 import be.cytomine.appstore.dto.inputs.task.TaskDescription;
 import be.cytomine.appstore.dto.inputs.task.UploadTaskArchive;
 import be.cytomine.appstore.exceptions.FileStorageException;
-import be.cytomine.appstore.exceptions.RunTaskServiceException;
 import be.cytomine.appstore.exceptions.TaskNotFoundException;
 import be.cytomine.appstore.exceptions.TaskServiceException;
 import be.cytomine.appstore.handlers.RegistryHandler;
