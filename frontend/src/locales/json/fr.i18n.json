@@ -1,3 +1,6 @@
 {
-  "hello-world": "Bonjour le monde"
+  "hello-world": "Bonjour le monde",
+  "search": "Chercher",
+  "storage": "Stockage",
+  "upload": "Télécharger"
 }
