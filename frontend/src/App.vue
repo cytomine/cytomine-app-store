@@ -1,8 +1,8 @@
 <template>
-  <div>
+  <main>
     <AppNavbar />
-    <h1 class="has-text-warning">{{ $t('hello-world') }}</h1>
-  </div>
+    <RouterView />
+  </main>
 </template>
 
 <script setup lang="ts">
