@@ -53,10 +53,10 @@ public class TestTaskBuilder {
         // add authors
         Set<Author> authors = new HashSet<>();
         Author author = new Author();
-        author.setFirstName("Romain");
-        author.setLastName("Mormont");
-        author.setOrganization("Cytomine Corporation");
-        author.setEmail("romain.mormont@cytomine.com");
+        author.setFirstName("some");
+        author.setLastName("developer");
+        author.setOrganization("some company");
+        author.setEmail("some.developer@some.company.com");
         author.setContact(true);
         authors.add(author);
         task.setAuthors(authors);
@@ -138,10 +138,10 @@ public class TestTaskBuilder {
         // add authors
         Set<Author> authors = new HashSet<>();
         Author author = new Author();
-        author.setFirstName("Romain");
-        author.setLastName("Mormont");
-        author.setOrganization("Cytomine Corporation");
-        author.setEmail("romain.mormont@cytomine.com");
+        author.setFirstName("some");
+        author.setLastName("developer");
+        author.setOrganization("some uni");
+        author.setEmail("some.developer@some.uni.com");
         author.setContact(true);
         authors.add(author);
         task.setAuthors(authors);
