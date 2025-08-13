@@ -1,6 +1,6 @@
 package be.cytomine.appstore.services;
 
-import java.util.List;
+import java.io.OutputStream;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -11,6 +11,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -20,10 +23,12 @@ import be.cytomine.appstore.dto.handlers.registry.DockerImage;
 import be.cytomine.appstore.dto.inputs.task.TaskDescription;
 import be.cytomine.appstore.dto.inputs.task.UploadTaskArchive;
 import be.cytomine.appstore.exceptions.FileStorageException;
+import be.cytomine.appstore.exceptions.RegistryException;
 import be.cytomine.appstore.exceptions.TaskNotFoundException;
 import be.cytomine.appstore.exceptions.TaskServiceException;
 import be.cytomine.appstore.handlers.RegistryHandler;
 import be.cytomine.appstore.handlers.StorageData;
+import be.cytomine.appstore.handlers.StorageDataType;
 import be.cytomine.appstore.handlers.StorageHandler;
 import be.cytomine.appstore.models.task.Task;
 import be.cytomine.appstore.repositories.TaskRepository;
@@ -73,9 +78,11 @@ public class TaskServiceTest {
 
     @DisplayName("Successfully upload a task bundle")
     @Test
-    public void uploadTaskShouldUploadTaskBundle() throws Exception {
+    public void uploadTaskShouldUploadTaskBundle() throws Exception
+    {
         ClassPathResource resource = TestTaskBuilder.buildCustomImageLocationTask();
-        MockMultipartFile testAppBundle = new MockMultipartFile("test_custom_image_location_task.zip", resource.getInputStream());
+        MockMultipartFile testAppBundle =
+            new MockMultipartFile("test_custom_image_location_task.zip", resource.getInputStream());
 
         when(archiveUtils.readArchive(testAppBundle)).thenReturn(uploadTaskArchive);
         Optional<TaskDescription> result = taskService.uploadTask(testAppBundle);
@@ -246,4 +253,103 @@ public class TaskServiceTest {
         assertEquals(task.getDescription(), result.getDescription());
     }
 
+    @DisplayName("Successfully retrieve IO zip archive")
+    @Test
+    void retrieveIOZipArchiveShouldReturnArchive() throws Exception
+    {
+        String namespace = "namespace";
+        String version = "version";
+        Task task = TaskUtils.createTestTask(false);
+        ClassPathResource resource = new ClassPathResource("artifacts/descriptor.yml");
+        StorageData descriptor =
+            new StorageData("descriptor.yml",
+                "task-" + task.getIdentifier() + "-def",
+                StorageDataType.FILE);
+        descriptor.peek().setData(resource.getFile());
+
+        when(taskRepository.findByNamespaceAndVersion(namespace, version)).thenReturn(task);
+        when(storageHandler.readStorageData(any(StorageData.class))).thenReturn(descriptor);
+
+        StorageData result = taskService.retrieveIOZipArchive(namespace, version);
+
+        assertNotNull(result);
+        assertNotNull(result.peek());
+        verify(taskRepository, times(1)).findByNamespaceAndVersion(namespace, version);
+        verify(storageHandler, times(1)).readStorageData(any(StorageData.class));
+        verify(registryHandler, times(1)).pullImage(eq(task.getImageName()),
+            any(OutputStream.class));
+    }
+
+    @DisplayName("Fail to retrieve IO zip archive and throw TaskNotFoundException")
+    @Test
+    void retrieveIOZipArchiveShouldThrowTaskNotFoundException() throws Exception
+    {
+        String namespace = "namespace";
+        String version = "version";
+
+        when(taskRepository.findByNamespaceAndVersion(namespace, version)).thenReturn(null);
+
+        TaskNotFoundException exception = assertThrows(
+            TaskNotFoundException.class,
+            () -> taskService.retrieveIOZipArchive(namespace, version)
+        );
+
+        assertEquals("task not found", exception.getMessage());
+        verify(taskRepository, times(1)).findByNamespaceAndVersion(namespace, version);
+        verify(storageHandler, times(0)).readStorageData(any(StorageData.class));
+        verify(registryHandler, times(0)).pullImage(anyString(), any(OutputStream.class));
+    }
+
+    @DisplayName("Fail to retrieve IO zip archive and throw RegistryException")
+    @Test
+    void retrieveIOZipArchiveShouldThrowRegistryException() throws Exception
+    {
+        String namespace = "namespace";
+        String version = "version";
+        Task task = TaskUtils.createTestTask(false);
+        ClassPathResource resource = new ClassPathResource("artifacts/descriptor.yml");
+        StorageData descriptor =
+            new StorageData("descriptor.yml",
+                "task-" + task.getIdentifier() + "-def",
+                StorageDataType.FILE);
+        descriptor.peek().setData(resource.getFile());
+        when(taskRepository.findByNamespaceAndVersion(namespace, version)).thenReturn(task);
+        when(storageHandler.readStorageData(any(StorageData.class))).thenReturn(descriptor);
+        doThrow(new RegistryException("Docker Registry Handler: failed to pull image from registry"))
+            .when(registryHandler).pullImage(eq(task.getImageName()), any(OutputStream.class));
+
+        RegistryException exception = assertThrows(
+            RegistryException.class,
+            () -> taskService.retrieveIOZipArchive(namespace, version)
+        );
+
+        assertEquals("Docker Registry Handler: failed to pull image from registry", exception.getMessage());
+        verify(taskRepository, times(1)).findByNamespaceAndVersion(namespace, version);
+        verify(storageHandler, times(1)).readStorageData(any(StorageData.class));
+        verify(registryHandler, times(1)).pullImage(eq(task.getImageName()),
+            any(OutputStream.class));
+    }
+
+    @DisplayName("Fail to retrieve IO zip archive and throw FileStorageException")
+    @Test
+    void retrieveIOZipArchiveShouldThrowFileStorageException() throws Exception
+    {
+        String namespace = "namespace";
+        String version = "version";
+        Task task = TaskUtils.createTestTask(false);
+
+        when(taskRepository.findByNamespaceAndVersion(namespace, version)).thenReturn(task);
+        when(storageHandler.readStorageData(any(StorageData.class))).thenThrow(
+            new FileStorageException("File storage error"));
+
+        FileStorageException exception = assertThrows(
+            FileStorageException.class,
+            () -> taskService.retrieveIOZipArchive(namespace, version)
+        );
+
+        assertEquals("File storage error", exception.getMessage());
+        verify(taskRepository, times(1)).findByNamespaceAndVersion(namespace, version);
+        verify(storageHandler, times(1)).readStorageData(any(StorageData.class));
+        verify(registryHandler, times(0)).pullImage(anyString(), any(OutputStream.class));
+    }
 }

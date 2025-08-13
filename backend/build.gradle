@@ -27,8 +27,8 @@ configurations {
 }
 
 repositories {
-	mavenCentral()
 	mavenLocal()
+	mavenCentral()
 	maven {
 		url "https://maven.dcm4che.org/"
 	}

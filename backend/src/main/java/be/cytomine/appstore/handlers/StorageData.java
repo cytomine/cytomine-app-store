@@ -51,6 +51,13 @@ public class StorageData {
         entryList.add(root);
     }
 
+    public StorageData(String parameterName, String storageId, StorageDataType storageDataType) {
+        StorageDataEntry root = new StorageDataEntry(parameterName, storageId);
+        root.setStorageDataType(storageDataType);
+        entryList = new LinkedList<>();
+        entryList.add(root);
+    }
+
     public StorageData() {
         entryList = new LinkedList<>();
     }
