@@ -23,4 +23,10 @@ body {
   color: #333;
   background: #d4d4d4;
 }
+
+.content-wrapper {
+  padding: 1.5% 2.5%;
+  position: relative;
+  min-height: 100%;
+}
 </style>

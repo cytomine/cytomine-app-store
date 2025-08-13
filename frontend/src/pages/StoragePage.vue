@@ -1,20 +1,15 @@
 <template>
-  <div>
+  <div class="content-wrapper">
     <div class="panel">
-      <p class="panel-heading">{{ $t('upload') }}</p>
-
-      <div class="panel-block">
-        Upload
-      </div>
-    </div>
-
-    <div class="panel">
-      <p class="panel-heading">{{ $t('storage') }}</p>
+      <p class="panel-heading">
+        {{ $t('storage') }}
+        <b-button>{{ $t('upload') }}</b-button>
+      </p>
 
       <b-input class="search-input" v-model="searchString" icon="search" :placeholder="$t('search')" />
 
       <div class="panel-block">
-        <b-table :data="data" :columns="columns"></b-table>
+        <AppCard :app="{}" />
       </div>
     </div>
   </div>
@@ -23,74 +18,18 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
+import AppCard from '@/components/app/AppCard.vue';
+
 const searchString = ref('');
-
-const data = [
-  {
-    id: 1,
-    first_name: "Jesse",
-    last_name: "Simmons",
-    date: "2016-10-15 13:43:27",
-    gender: "Male",
-  },
-  {
-    id: 2,
-    first_name: "John",
-    last_name: "Jacobs",
-    date: "2016-12-15 06:00:53",
-    gender: "Male",
-  },
-  {
-    id: 3,
-    first_name: "Tina",
-    last_name: "Gilbert",
-    date: "2016-04-26 06:26:28",
-    gender: "Female",
-  },
-  {
-    id: 4,
-    first_name: "Clarence",
-    last_name: "Flores",
-    date: "2016-04-10 10:28:46",
-    gender: "Male",
-  },
-  {
-    id: 5,
-    first_name: "Anne",
-    last_name: "Lee",
-    date: "2016-12-06 14:38:38",
-    gender: "Female",
-  },
-];
-
-const columns = [
-  {
-    field: "id",
-    label: "ID",
-    width: "40",
-    numeric: true,
-  },
-  {
-    field: "first_name",
-    label: "First Name",
-  },
-  {
-    field: "last_name",
-    label: "Last Name",
-  },
-  {
-    field: "date",
-    label: "Date",
-    centered: true,
-  },
-  {
-    field: "gender",
-    label: "Gender",
-  },
-];
 </script>
 
 <style scoped>
+.panel-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .search-input {
   max-width: 25rem;
 }
