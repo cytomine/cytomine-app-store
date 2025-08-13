@@ -45,17 +45,14 @@ public class ImplementationConfig {
     @Bean
     @Primary
     public RegistryHandler loadRegistryImpl() throws Exception {
-        if (registryImplementationSelector.equalsIgnoreCase("docker")) {
-            return new DockerRegistryHandler(
-                registryHost,
-                registryPort,
-                registryScheme,
-                authenticated,
-                registryUsername,
-                registryPassword
-            );
-        }
-        return null;
+        return new DockerRegistryHandler(
+            registryHost,
+            registryPort,
+            registryScheme,
+            authenticated,
+            registryUsername,
+            registryPassword);
+
     }
 
 }
