@@ -16,17 +16,10 @@ import be.cytomine.appstore.models.task.Task;
 import be.cytomine.appstore.models.task.Type;
 import be.cytomine.appstore.models.task.TypeFactory;
 import com.fasterxml.jackson.databind.JsonNode;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.mock.web.MockMultipartFile;
 
 public class TestTaskBuilder {
-
-    @Value("${scheduler.task-resources.ram}")
-    private static String defaultRam;
-
-    @Value("${scheduler.task-resources.cpus}")
-    private static int defaultCpus;
 
     public static Task buildHardcodedAddInteger(UUID taskUUID) {
         String storageIdentifier = "task-" + taskUUID + "-def";
@@ -102,11 +95,6 @@ public class TestTaskBuilder {
         output.setParameterType(ParameterType.OUTPUT);
         outputs.add(output);
         task.getParameters().addAll(outputs);
-
-        // set resources
-        task.setCpus(1);
-        task.setRam("200Mi");
-        task.setGpus(0);
 
         return task;
     }
@@ -246,12 +234,9 @@ public class TestTaskBuilder {
             }
 
             JsonNode resources = taskDescriptorJson.get("configuration").get("resources");
-            if (!Objects.nonNull(resources)) {
-                task.setRam(defaultRam);
-                task.setCpus(defaultCpus);
-            } else {
-                task.setRam(resources.path("ram").asText(defaultRam));
-                task.setCpus(resources.path("cpus").asInt(defaultCpus));
+            if (Objects.nonNull(resources)) {
+                task.setRam(resources.path("ram").asText());
+                task.setCpus(resources.path("cpus").asInt());
                 task.setGpus(resources.path("gpus").asInt(0));
             }
 
