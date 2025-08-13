@@ -502,8 +502,8 @@ public class TaskService
         log.info("Retrieving IO Archive: zipping...");
         Path tempFile = Files.createTempFile("bundle-", task.getIdentifier() + ".zip");
         ZipOutputStream zipOut = new ZipOutputStream(Files.newOutputStream(tempFile));
-        StorageData desSD = fileStorageHandler.readStorageData(descriptor);
-        for (StorageDataEntry current : desSD.getEntryList()) {
+        StorageData destinationStorageData = fileStorageHandler.readStorageData(descriptor);
+        for (StorageDataEntry current : destinationStorageData.getEntryList()) {
             ZipEntry zipEntry = new ZipEntry(current.getName());
             zipOut.putNextEntry(zipEntry);
 
