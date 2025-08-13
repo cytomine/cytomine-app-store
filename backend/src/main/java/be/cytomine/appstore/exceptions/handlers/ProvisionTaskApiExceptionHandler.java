@@ -54,12 +54,4 @@ public class ProvisionTaskApiExceptionHandler {
         return new ResponseEntity<AppStoreError>(e.getError(), HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler({ HttpMessageNotReadableException.class })
-    public final ResponseEntity<AppStoreError> handleProvisioningException(
-        HttpMessageNotReadableException e
-    ) {
-        AppStoreError error = ErrorBuilder.build(ErrorCode.UNKNOWN_STATE);
-        log.info("bad request 400 error [{}]", e.getMessage());
-        return new ResponseEntity<AppStoreError>(error, HttpStatus.BAD_REQUEST);
-    }
 }
