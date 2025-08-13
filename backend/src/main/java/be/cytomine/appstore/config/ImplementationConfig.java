@@ -2,7 +2,6 @@ package be.cytomine.appstore.config;
 
 import be.cytomine.appstore.handlers.RegistryHandler;
 import be.cytomine.appstore.handlers.StorageHandler;
-import be.cytomine.appstore.handlers.registry.impl.DefaultRegistryHandler;
 import be.cytomine.appstore.handlers.registry.impl.DockerRegistryHandler;
 import be.cytomine.appstore.handlers.storage.impl.FileSystemStorageHandler;
 import org.springframework.beans.factory.annotation.Value;
@@ -46,17 +45,14 @@ public class ImplementationConfig {
     @Bean
     @Primary
     public RegistryHandler loadRegistryImpl() throws Exception {
-        if (registryImplementationSelector.equalsIgnoreCase("docker")) {
-            return new DockerRegistryHandler(
-                registryHost,
-                registryPort,
-                registryScheme,
-                authenticated,
-                registryUsername,
-                registryPassword
-            );
-        }
-        return new DefaultRegistryHandler();
+        return new DockerRegistryHandler(
+            registryHost,
+            registryPort,
+            registryScheme,
+            authenticated,
+            registryUsername,
+            registryPassword);
+
     }
 
 }

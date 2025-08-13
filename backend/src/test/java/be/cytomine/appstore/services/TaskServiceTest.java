@@ -1,8 +1,6 @@
 package be.cytomine.appstore.services;
 
-import java.io.File;
 import java.io.OutputStream;
-import java.nio.file.Files;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -48,8 +46,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.mock.web.MockMultipartFile;
 
 @ExtendWith(MockitoExtension.class)
-public class TaskServiceTest
-{
+public class TaskServiceTest {
 
     @Mock
     private ArchiveUtils archiveUtils;
@@ -74,8 +71,7 @@ public class TaskServiceTest
     private static UploadTaskArchive uploadTaskArchive;
 
     @BeforeAll
-    public static void setUp() throws Exception
-    {
+    public static void setUp() throws Exception {
         task = TaskUtils.createTestTask(false);
         uploadTaskArchive = TaskUtils.createTestUploadTaskArchive();
     }
@@ -94,16 +90,14 @@ public class TaskServiceTest
         assertTrue(result.isPresent());
         verify(archiveUtils, times(1)).readArchive(testAppBundle);
         verify(storageHandler, times(1)).createStorage(any(Storage.class));
-        verify(storageHandler, times(1)).saveStorageData(any(Storage.class),
-            any(StorageData.class));
+        verify(storageHandler, times(1)).saveStorageData(any(Storage.class), any(StorageData.class));
         verify(registryHandler, times(1)).pushImage(any(DockerImage.class));
         verify(taskRepository, times(1)).save(any(Task.class));
     }
 
     @DisplayName("Successfully retrieve the descriptor by namespace and version")
     @Test
-    public void retrieveYmlDescriptorByNamespaceAndVersionShouldReturnDescriptor() throws Exception
-    {
+    public void retrieveYmlDescriptorByNamespaceAndVersionShouldReturnDescriptor() throws Exception {
         String namespace = "namespace";
         String version = "version";
         StorageData mockStorageData = new StorageData("descriptor.yml", "storageReference");
@@ -121,9 +115,7 @@ public class TaskServiceTest
 
     @DisplayName("Fail to retrieve the descriptor by namespace and version and throw TaskNotFoundException")
     @Test
-    public void retrieveYmlDescriptorByNamespaceAndVersionShouldThrowTaskNotFoundException()
-        throws Exception
-    {
+    public void retrieveYmlDescriptorByNamespaceAndVersionShouldThrowTaskNotFoundException() throws Exception {
         String namespace = "namespace";
         String version = "version";
         when(taskRepository.findByNamespaceAndVersion(namespace, version)).thenReturn(null);
@@ -139,9 +131,7 @@ public class TaskServiceTest
 
     @DisplayName("Fail to retrieve the descriptor by namespace and version and throw FileStorageException")
     @Test
-    public void retrieveYmlDescriptorByNamespaceAndVersionShouldThrowFileStorageException()
-        throws Exception
-    {
+    public void retrieveYmlDescriptorByNamespaceAndVersionShouldThrowFileStorageException() throws Exception {
         String namespace = "namespace";
         String version = "version";
         when(taskRepository.findByNamespaceAndVersion(namespace, version)).thenReturn(task);
@@ -159,8 +149,7 @@ public class TaskServiceTest
 
     @DisplayName("Successfully retrieve the descriptor by ID")
     @Test
-    public void retrieveYmlDescriptorByIdShouldReturnDescriptor() throws Exception
-    {
+    public void retrieveYmlDescriptorByIdShouldReturnDescriptor() throws Exception {
         String id = "d9aad8ab-210c-48fa-8d94-6b03e8776a55";
         StorageData mockStorageData = new StorageData("descriptor.yml", "storageReference");
         when(taskRepository.findById(UUID.fromString(id))).thenReturn(Optional.of(task));
@@ -177,8 +166,7 @@ public class TaskServiceTest
 
     @DisplayName("Fail to retrieve the descriptor by ID and throw TaskNotFoundException")
     @Test
-    public void retrieveYmlDescriptorByIdShouldThrowTaskNotFoundException() throws Exception
-    {
+    public void retrieveYmlDescriptorByIdShouldThrowTaskNotFoundException() throws Exception {
         when(taskRepository.findById(task.getIdentifier())).thenReturn(Optional.empty());
 
         TaskNotFoundException exception = assertThrows(
@@ -192,8 +180,7 @@ public class TaskServiceTest
 
     @DisplayName("Fail to retrieve the descriptor by ID and throw FileStorageException")
     @Test
-    public void retrieveYmlDescriptorByIdShouldThrowFileStorageException() throws Exception
-    {
+    public void retrieveYmlDescriptorByIdShouldThrowFileStorageException() throws Exception {
         when(taskRepository.findById(task.getIdentifier())).thenReturn(Optional.of(task));
         when(storageHandler.readStorageData(any(StorageData.class)))
             .thenThrow(new FileStorageException("File error"));
@@ -209,12 +196,10 @@ public class TaskServiceTest
 
     @DisplayName("Successfully retrieve the task description by ID")
     @Test
-    void retrieveTaskDescriptionByIdShouldReturnTaskDescription()
-    {
+    void retrieveTaskDescriptionByIdShouldReturnTaskDescription() {
         when(taskRepository.findById(task.getIdentifier())).thenReturn(Optional.of(task));
 
-        Optional<TaskDescription> result =
-            taskService.retrieveTaskDescription(task.getIdentifier().toString());
+        Optional<TaskDescription> result = taskService.retrieveTaskDescription(task.getIdentifier().toString());
 
         assertTrue(result.isPresent());
         assertEquals("Test Task Description", result.get().getDescription());
@@ -223,12 +208,10 @@ public class TaskServiceTest
 
     @DisplayName("Fail to retrieve the task description by ID")
     @Test
-    void retrieveTaskDescriptionByIdShouldReturnEmpty()
-    {
+    void retrieveTaskDescriptionByIdShouldReturnEmpty() {
         when(taskRepository.findById(task.getIdentifier())).thenReturn(Optional.empty());
 
-        Optional<TaskDescription> result =
-            taskService.retrieveTaskDescription(task.getIdentifier().toString());
+        Optional<TaskDescription> result = taskService.retrieveTaskDescription(task.getIdentifier().toString());
 
         assertFalse(result.isPresent());
         verify(taskRepository, times(1)).findById(task.getIdentifier());
@@ -236,40 +219,31 @@ public class TaskServiceTest
 
     @DisplayName("Successfully retrieve the task description by namespace and version")
     @Test
-    void retrieveTaskDescriptionByNamespaceAndVersionShouldReturnTaskDescription()
-    {
-        when(taskRepository.findByNamespaceAndVersion(task.getNamespace(),
-            task.getVersion())).thenReturn(task);
+    void retrieveTaskDescriptionByNamespaceAndVersionShouldReturnTaskDescription() {
+        when(taskRepository.findByNamespaceAndVersion(task.getNamespace(), task.getVersion())).thenReturn(task);
 
-        Optional<TaskDescription> result =
-            taskService.retrieveTaskDescription(task.getNamespace(), task.getVersion());
+        Optional<TaskDescription> result = taskService.retrieveTaskDescription(task.getNamespace(), task.getVersion());
 
         assertTrue(result.isPresent());
         assertEquals("Test Task Description", result.get().getDescription());
-        verify(taskRepository, times(1)).findByNamespaceAndVersion(task.getNamespace(),
-            task.getVersion());
+        verify(taskRepository, times(1)).findByNamespaceAndVersion(task.getNamespace(), task.getVersion());
     }
 
     @DisplayName("Fail to retrieve the task description by namespace and version")
     @Test
-    void retrieveTaskDescriptionByNamespaceAndVersionShouldReturnEmpty()
-    {
-        when(taskRepository.findByNamespaceAndVersion(task.getNamespace(),
-            task.getVersion())).thenReturn(null);
+    void retrieveTaskDescriptionByNamespaceAndVersionShouldReturnEmpty() {
+        when(taskRepository.findByNamespaceAndVersion(task.getNamespace(), task.getVersion())).thenReturn(null);
 
-        Optional<TaskDescription> result =
-            taskService.retrieveTaskDescription(task.getNamespace(), task.getVersion());
+        Optional<TaskDescription> result = taskService.retrieveTaskDescription(task.getNamespace(), task.getVersion());
 
         assertFalse(result.isPresent());
-        verify(taskRepository, times(1)).findByNamespaceAndVersion(task.getNamespace(),
-            task.getVersion());
+        verify(taskRepository, times(1)).findByNamespaceAndVersion(task.getNamespace(), task.getVersion());
     }
 
 
     @DisplayName("Successfully create a task description")
     @Test
-    void makeTaskDescriptionShouldReturnTaskDescription()
-    {
+    void makeTaskDescriptionShouldReturnTaskDescription() {
         TaskDescription result = taskService.makeTaskDescription(task);
 
         assertNotNull(result);
