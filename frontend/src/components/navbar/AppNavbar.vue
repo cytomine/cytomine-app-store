@@ -10,7 +10,7 @@
     <template #start>
       <b-navbar-item tag="router-link" to="/storage">
         <i class="fas fa-download"></i>
-        {{ $t('storage') }}
+        <span class="ml-2 has-text-weight-semibold">{{ $t('storage') }}</span>
       </b-navbar-item>
     </template>
   </b-navbar>
