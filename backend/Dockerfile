@@ -1,14 +1,13 @@
 # List ARGs here for better readability.
-ARG APP_STORR_VERSION
+ARG APP_STORE_VERSION
 ARG APP_STORE_REVISION
 ARG ENTRYPOINT_SCRIPTS_VERSION=1.4.0
-ARG GRADLE_VERSION=7.6.4-jdk17-alpine
-ARG GRADLE_DEV_VERSION=7.6.4-jdk17-jammy
+ARG GRADLE_VERSION=7.6.4-jdk17
 ARG OPENJDK_VERSION=17-slim-bullseye
 
 #######################################################################################
 # Stage: dependencies download via gradle
-FROM gradle:${GRADLE_VERSION} AS deps-downloader
+FROM gradle:${GRADLE_VERSION}-alpine AS deps-downloader
 
 # We first copy the build.gradle file and the binaries stored in the source repository.
 # This way, we retrieve all gradle dependencies at the beginning. All these steps will be
@@ -25,7 +24,7 @@ RUN gradle clean compileJava --no-daemon --console=verbose
 
 #######################################################################################
 ## Stage: building the jar file
-FROM gradle:${GRADLE_VERSION} AS jar-builder
+FROM gradle:${GRADLE_VERSION}-alpine AS jar-builder
 
 ENV GRADLE_USER_HOME=/opt/gradle/.gradle
 COPY --from=deps-downloader /opt/gradle/.gradle /opt/gradle/.gradle
@@ -34,8 +33,8 @@ WORKDIR /app
 COPY src /app/src
 COPY build.gradle /app/build.gradle
 
-ARG APP_ENGINE_VERSION
-ENV APP_ENGINE_VERSION=$APP_ENGINE_VERSION
+ARG APP_STORE_VERSION
+ENV APP_STORE_VERSION=$APP_STORE_VERSION
 
 RUN sed -i -- "s/version: ce-0.0.0/version: ${APP_STORE_VERSION}/g" /app/src/main/resources/application.yml  && \
     sed -i -- "s/version = 'ce-0.0.0-SNAPSHOT'/version = '${APP_STORE_VERSION}'/g" /app/build.gradle  && \
@@ -47,7 +46,7 @@ FROM cytomine/entrypoint-scripts:${ENTRYPOINT_SCRIPTS_VERSION} AS entrypoint-scr
 
 #######################################################################################
 ## Stage: App-Engine development image
-FROM gradle:${GRADLE_DEV_VERSION} AS dev-server
+FROM gradle:${GRADLE_VERSION}-jammy AS dev-server
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
@@ -90,15 +89,8 @@ LABEL org.opencontainers.image.authors="dev@cytomine.com" \
 ENV DEBIAN_FRONTEND=noninteractive
 ENV LANG=C.UTF-8
 
-# base librairies and configuration
 COPY --from=jar-builder /app/build/libs/cytomine-app-store.jar /app/cytomine-app-store.jar
 
-# entrypoint scripts
-RUN mkdir /docker-entrypoint-cytomine.d/
-COPY --from=entrypoint-scripts --chmod=774 /cytomine-entrypoint.sh /usr/local/bin/
-COPY --from=entrypoint-scripts --chmod=774 /envsubst-on-templates-and-move.sh /docker-entrypoint-cytomine.d/500-envsubst-on-templates-and-move.sh
-
 WORKDIR /app
-ENTRYPOINT ["cytomine-entrypoint.sh"]
 
 CMD ["java", "-jar", "/app/cytomine-app-store.jar"]
