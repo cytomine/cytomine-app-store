@@ -13,7 +13,11 @@
       </div>
 
       <div class="panel-block">
-        <AppCard v-for="task in tasks" :key="task.id" :app="task" />
+        <div class="columns is-multiline">
+          <div class="column" v-for="task in tasks" :key="task.id">
+            <AppCard :app="task" />
+          </div>
+        </div>
       </div>
     </div>
   </div>

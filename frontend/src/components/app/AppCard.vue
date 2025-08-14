@@ -1,33 +1,30 @@
 <template>
   <div class="card">
-    <router-link :to="`/app/${app.namespace}/${app.version}`">
-      <div class="card-image img-rounded">
-        <figure class="image is-animated is-5by3">
-          <img :src="app.imageUrl || 'https://bulma.io/assets/images/placeholders/1280x960.png'"
-            alt="Placeholder image">
-        </figure>
+    <div class="card-image">
+      <figure class="image is-animated is-5by3">
+        <img :src="app.imageUrl || 'https://bulma.io/assets/images/placeholders/1280x960.png'" alt="Placeholder image">
+      </figure>
+    </div>
+
+    <div class="card-content">
+      <div class="media">
+        <div class="media-content">
+          <p class="title is-4 less-bottom">{{ app.name }}</p>
+          <time datetime="">{{ app.date }}</time>
+        </div>
+        <div class="media-right">
+          <p class="subtitle is-6">{{ app.version }}</p>
+        </div>
       </div>
 
-      <div class="card-content">
-        <div class="media">
-          <div class="media-content">
-            <p class="title is-4 less-bottom">{{ app.name }}</p>
-            <time datetime="">{{ app.date }}</time>
-          </div>
-          <div class="media-right">
-            <p class="subtitle is-6">{{ app.version }}</p>
-          </div>
-        </div>
-
-        <div class="content">
-          {{ app.description }}
-        </div>
-
-        <footer class="card-footer">
-          <a href="#" class="card-footer-item">More</a>
-        </footer>
+      <div class="content">
+        {{ app.description }}
       </div>
-    </router-link>
+
+      <footer class="card-footer">
+        <a href="#" class="card-footer-item">More</a>
+      </footer>
+    </div>
   </div>
 </template>
 
