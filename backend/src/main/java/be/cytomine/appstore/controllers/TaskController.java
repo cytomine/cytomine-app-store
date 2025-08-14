@@ -2,6 +2,7 @@ package be.cytomine.appstore.controllers;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 import be.cytomine.appstore.dto.inputs.task.TaskDescription;
@@ -33,10 +34,17 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping(path = "${app-store.api_prefix}${app-store.api_version}/")
-public class TaskController
-{
+public class TaskController {
 
     private final TaskService taskService;
+
+    @GetMapping(path = "tasks")
+    public ResponseEntity<List<TaskDescription>> getAllTasks() {
+        log.info("GET tasks");
+        List<TaskDescription> tasks = taskService.getAllTaskDescriptions();
+        log.info("GET tasks Ended");
+        return ResponseEntity.ok(tasks);
+    }
 
     @PostMapping(path = "tasks")
     public ResponseEntity<?> upload(
@@ -53,8 +61,7 @@ public class TaskController
     public ResponseEntity<?> getTaskBundle(
         @PathVariable("namespace") String namespace,
         @PathVariable("version") String version
-    ) throws IOException, FileStorageException, RegistryException, TaskNotFoundException
-    {
+    ) throws IOException, FileStorageException, RegistryException, TaskNotFoundException {
         log.info("tasks/{namespace}/{version}/bundle.zip GET");
         StorageData data = taskService.retrieveIOZipArchive(namespace, version);
         File file = data.peek().getData();
@@ -71,6 +78,4 @@ public class TaskController
             .headers(headers)
             .body(new FileSystemResource(file));
     }
-
-
 }

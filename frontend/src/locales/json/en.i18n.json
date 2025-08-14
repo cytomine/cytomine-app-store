@@ -1,3 +1,6 @@
 {
-  "hello-world": "Hello World"
+  "hello-world": "Hello World",
+  "search": "Search",
+  "storage": "Storage",
+  "upload": "Upload"
 }

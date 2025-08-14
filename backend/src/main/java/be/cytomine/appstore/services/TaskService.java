@@ -56,8 +56,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class TaskService
-{
+public class TaskService {
 
     private final TaskRepository taskRepository;
 
@@ -460,6 +459,13 @@ public class TaskService
             throw new TaskServiceException(ex);
         }
         return file;
+    }
+
+    public List<TaskDescription> getAllTaskDescriptions() {
+        return taskRepository.findAll()
+                .stream()
+                .map(this::makeTaskDescription)
+                .toList();
     }
 
     public Optional<TaskDescription> retrieveTaskDescription(String id) {

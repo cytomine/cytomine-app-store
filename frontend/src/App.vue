@@ -1,8 +1,8 @@
 <template>
-  <div>
+  <main>
     <AppNavbar />
-    <h1 class="has-text-warning">{{ $t('hello-world') }}</h1>
-  </div>
+    <RouterView />
+  </main>
 </template>
 
 <script setup lang="ts">
@@ -22,5 +22,11 @@ body {
   font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif, sans-serif;
   color: #333;
   background: #d4d4d4;
+}
+
+.content-wrapper {
+  padding: 1.5% 2.5%;
+  position: relative;
+  min-height: 100%;
 }
 </style>
