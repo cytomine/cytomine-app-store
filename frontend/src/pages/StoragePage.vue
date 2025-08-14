@@ -9,18 +9,25 @@
       <b-input class="search-input" v-model="searchString" icon="search" :placeholder="$t('search')" />
 
       <div class="panel-block">
-        <AppCard :app="{}" />
+        <AppCard v-for="task in tasks" :key="task.id" :app="task" />
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 
 import AppCard from '@/components/app/AppCard.vue';
+import { getAllTasks } from '@/api/tasks';
+import type { App } from '@/types/types.ts';
 
 const searchString = ref('');
+const tasks = ref<App[]>([]);
+
+onMounted(async () => {
+  tasks.value = await getAllTasks();
+});
 </script>
 
 <style scoped>
