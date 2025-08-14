@@ -2,7 +2,7 @@ import { mount } from '@vue/test-utils';
 import { describe, it, expect } from 'vitest';
 import Buefy from 'buefy';
 
-import App from '@/App.vue';
+import App from '@/pages/GlobalDashboard.vue';
 
 describe('App', () => {
   it('mounts renders properly', () => {
