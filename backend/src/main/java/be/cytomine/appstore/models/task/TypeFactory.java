@@ -2,7 +2,6 @@ package be.cytomine.appstore.models.task;
 
 import java.util.Optional;
 
-
 import com.fasterxml.jackson.databind.JsonNode;
 
 public class TypeFactory {

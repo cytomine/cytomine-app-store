@@ -2,7 +2,6 @@ package be.cytomine.appstore.models.task;
 
 import java.util.UUID;
 
-import be.cytomine.appstore.models.BaseEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Column;
@@ -13,6 +12,8 @@ import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+
+import be.cytomine.appstore.models.BaseEntity;
 
 @Entity
 @Table(name = "author")

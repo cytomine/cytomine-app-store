@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import be.cytomine.appstore.models.BaseEntity;
-import be.cytomine.appstore.models.Match;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -17,6 +15,9 @@ import jakarta.persistence.UniqueConstraint;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+
+import be.cytomine.appstore.models.BaseEntity;
+import be.cytomine.appstore.models.Match;
 
 @Entity
 @Table(name = "task", uniqueConstraints = @UniqueConstraint(columnNames = {"namespace", "version"}))

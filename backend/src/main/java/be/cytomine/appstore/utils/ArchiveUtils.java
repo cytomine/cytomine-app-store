@@ -6,17 +6,18 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.zip.ZipEntry;
 
-import be.cytomine.appstore.dto.inputs.task.UploadTaskArchive;
-import be.cytomine.appstore.dto.responses.errors.AppStoreError;
-import be.cytomine.appstore.dto.responses.errors.ErrorBuilder;
-import be.cytomine.appstore.dto.responses.errors.ErrorCode;
-import be.cytomine.appstore.exceptions.BundleArchiveException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.compress.archivers.zip.ZipArchiveInputStream;
 import org.apache.commons.io.IOUtils;
 import org.apache.tika.Tika;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
+
+import be.cytomine.appstore.dto.inputs.task.UploadTaskArchive;
+import be.cytomine.appstore.dto.responses.errors.AppStoreError;
+import be.cytomine.appstore.dto.responses.errors.ErrorBuilder;
+import be.cytomine.appstore.dto.responses.errors.ErrorCode;
+import be.cytomine.appstore.exceptions.BundleArchiveException;
 
 @Slf4j
 @Component

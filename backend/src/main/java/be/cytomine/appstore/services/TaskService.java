@@ -16,6 +16,14 @@ import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
 import be.cytomine.appstore.dto.handlers.filestorage.Storage;
 import be.cytomine.appstore.dto.handlers.registry.DockerImage;
 import be.cytomine.appstore.dto.inputs.task.TaskAuthor;
@@ -45,19 +53,11 @@ import be.cytomine.appstore.models.task.Task;
 import be.cytomine.appstore.models.task.TypeFactory;
 import be.cytomine.appstore.repositories.TaskRepository;
 import be.cytomine.appstore.utils.ArchiveUtils;
-import com.fasterxml.jackson.databind.JsonNode;
-import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class TaskService
-{
+public class TaskService {
 
     private final TaskRepository taskRepository;
 
@@ -445,8 +445,7 @@ public class TaskService
     }
 
     public StorageData retrieveYmlDescriptor(String id)
-        throws TaskServiceException, TaskNotFoundException
-    {
+        throws TaskServiceException, TaskNotFoundException {
         log.info("Storage : retrieving descriptor.yml...");
         Optional<Task> task = taskRepository.findById(UUID.fromString(id));
         if (task.isEmpty()) {
@@ -490,15 +489,14 @@ public class TaskService
     public StorageData retrieveIOZipArchive(
         String namespace,
         String version
-    ) throws FileStorageException, IOException, RegistryException, TaskNotFoundException
-    {
+    ) throws FileStorageException, IOException, RegistryException, TaskNotFoundException {
         log.info("Retrieving IO Archive: retrieving...");
         Task task = taskRepository.findByNamespaceAndVersion(namespace, version);
         if (task == null) {
             throw new TaskNotFoundException("task not found");
         }
         log.info("Retrieving IO Archive: fetching descriptor.yml from storage...");
-        StorageData descriptor = new StorageData("descriptor.yml","task-"+task.getIdentifier()+"-def");
+        StorageData descriptor = new StorageData("descriptor.yml", "task-" + task.getIdentifier() + "-def");
         log.info("Retrieving IO Archive: zipping...");
         Path tempFile = Files.createTempFile("bundle-", task.getIdentifier() + ".zip");
         ZipOutputStream zipOut = new ZipOutputStream(Files.newOutputStream(tempFile));
