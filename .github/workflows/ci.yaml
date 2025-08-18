@@ -55,6 +55,38 @@ jobs:
       - name: Run tests
         run: npm run test:unit
 
+  lint-backend:
+    runs-on: self-hosted
+    defaults:
+      run:
+        working-directory: backend
+
+    steps:
+      - name: Set up the repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK ${{ vars.JAVA_VERSION }}
+        uses: actions/setup-java@v4
+        with:
+          distribution: ${{ vars.JAVA_DIST }}
+          java-version: ${{ vars.JAVA_VERSION }}
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: ${{ vars.GRADLE_VERSION }}
+
+      - name: Lint
+        run: gradle checkstyleMain
+
+      - name: Upload lint reports
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: lint-report
+          path: backend/build/reports/checkstyle
+          retention-days: 7
+
   test-backend:
     runs-on: self-hosted
     defaults:
