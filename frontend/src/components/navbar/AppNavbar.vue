@@ -8,9 +8,9 @@
     </template>
 
     <template #start>
-      <b-navbar-item tag="router-link" to="/storage">
-        <i class="fas fa-download"></i>
-        <span class="ml-2 has-text-weight-semibold">{{ $t('storage') }}</span>
+      <b-navbar-item tag="router-link" to="/my-apps">
+        <i class="fas fa-code"></i>
+        <span class="has-text-weight-semibold">{{ $t('my-apps') }}</span>
       </b-navbar-item>
     </template>
   </b-navbar>

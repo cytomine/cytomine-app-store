@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 
 import GlobalDashboard from '@/pages/GlobalDashboard.vue';
-import StoragePage from '@/pages/StoragePage.vue';
+import MyAppsPage from '@/pages/MyAppsPage.vue';
 
 const routes = [
   {
@@ -9,8 +9,8 @@ const routes = [
     component: GlobalDashboard,
   },
   {
-    path: '/storage',
-    component: StoragePage,
+    path: '/my-apps',
+    component: MyAppsPage,
   },
 ];
 

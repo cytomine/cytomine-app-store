@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { VueWrapper } from '@vue/test-utils';
 
-import StoragePage from '@/pages/StoragePage.vue';
+import MyAppsPage from '@/pages/MyAppsPage.vue';
 import { getAllTasks, createTask } from '@/api/tasks';
 
 vi.mock('@/api/tasks', () => ({
@@ -15,8 +15,8 @@ const mockI18n = {
   $t: vi.fn((key) => key),
 };
 
-describe('StoragePage', () => {
-  let wrapper: VueWrapper<InstanceType<typeof StoragePage>>;
+describe('MyAppsPage', () => {
+  let wrapper: VueWrapper<InstanceType<typeof MyAppsPage>>;
 
   const mockTasks = [
     { id: '1', name: 'Task 1', namespace: 'Namespace 1', version: '1.0.0', date: '18/08/2025' },
@@ -27,7 +27,7 @@ describe('StoragePage', () => {
   const mockGetAllTasks = vi.mocked(getAllTasks).mockResolvedValue([...mockTasks]);
 
   beforeEach(() => {
-    wrapper = shallowMount(StoragePage, {
+    wrapper = shallowMount(MyAppsPage, {
       global: {
         mocks: mockI18n,
         stubs: {
@@ -56,9 +56,9 @@ describe('StoragePage', () => {
 
   describe('Initialisation', () => {
     it('should display translated strings correctly', () => {
-      expect(mockI18n.$t).toHaveBeenCalledWith('storage');
-      expect(mockI18n.$t).toHaveBeenCalledWith('upload');
+      expect(mockI18n.$t).toHaveBeenCalledWith('my-apps');
       expect(mockI18n.$t).toHaveBeenCalledWith('search');
+      expect(mockI18n.$t).toHaveBeenCalledWith('upload');
     });
 
     it('should call getAllTasks on mount', async () => {
