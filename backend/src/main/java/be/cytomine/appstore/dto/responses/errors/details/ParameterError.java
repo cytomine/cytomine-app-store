@@ -11,4 +11,6 @@ import lombok.EqualsAndHashCode;
 public class ParameterError extends BaseErrorDetails {
     @JsonProperty("param_name")
     private String parameterName;
+
+    private String description;
 }

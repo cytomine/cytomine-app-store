@@ -2,7 +2,6 @@ package be.cytomine.appstore.models.task;
 
 import java.util.UUID;
 
-import be.cytomine.appstore.models.BaseEntity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -15,6 +14,8 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import be.cytomine.appstore.models.BaseEntity;
 
 @Entity
 @Table(name = "parameter")

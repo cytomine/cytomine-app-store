@@ -24,6 +24,11 @@ public class StorageDataEntry {
         this.data = data;
     }
 
+    public StorageDataEntry(File data, String name) {
+        this.data = data;
+        this.name = name;
+    }
+
     public StorageDataEntry(File data, String name, StorageDataType storageDataType) {
         this.data = data;
         this.name = name;

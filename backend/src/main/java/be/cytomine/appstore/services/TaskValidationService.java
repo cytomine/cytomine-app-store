@@ -4,19 +4,12 @@ import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import be.cytomine.appstore.dto.inputs.task.UploadTaskArchive;
-import be.cytomine.appstore.dto.responses.errors.AppStoreError;
-import be.cytomine.appstore.dto.responses.errors.ErrorBuilder;
-import be.cytomine.appstore.dto.responses.errors.ErrorCode;
-import be.cytomine.appstore.dto.responses.errors.details.ParameterError;
-import be.cytomine.appstore.exceptions.ValidationException;
-import be.cytomine.appstore.models.task.Task;
-import be.cytomine.appstore.repositories.TaskRepository;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -29,14 +22,22 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
-import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
+
+import be.cytomine.appstore.dto.inputs.task.UploadTaskArchive;
+import be.cytomine.appstore.dto.responses.errors.AppStoreError;
+import be.cytomine.appstore.dto.responses.errors.ErrorBuilder;
+import be.cytomine.appstore.dto.responses.errors.ErrorCode;
+import be.cytomine.appstore.dto.responses.errors.details.ParameterError;
+import be.cytomine.appstore.exceptions.ValidationException;
+import be.cytomine.appstore.models.task.Task;
+import be.cytomine.appstore.repositories.TaskRepository;
 
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class TaskValidationService
-{
+public class TaskValidationService {
 
     private final TaskRepository repository;
 
@@ -104,22 +105,30 @@ public class TaskValidationService
             .getMessage()
             .substring(0, message.getMessage().indexOf(':'))
             .replace("$.", "");
-        ParameterError parameterError = new ParameterError(parameterPathInSchema);
+        ParameterError parameterError = new ParameterError(parameterPathInSchema, null);
         String formattedMessage = message
             .getMessage()
             .replace("$.", "")
             .replace(":", "")
             .replace(".", " ");
-        AppStoreError error = ErrorBuilder.buildWithMessage(
+        return ErrorBuilder.buildWithMessage(
             ErrorCode.INTERNAL_PARAMETER_SCHEMA_VALIDATION_ERROR,
             formattedMessage,
             parameterError
         );
-        return error;
     }
 
     private static JsonSchema getDescriptorJsonSchemaV7() throws ValidationException {
-        ClassPathResource resource = new ClassPathResource("/schemas/tasks/task.v0.json");
+        UrlResource resource = null;
+        try {
+            resource =
+                new UrlResource("https://raw.githubusercontent.com/cytomine/cytomine/main/app-engine/src/main/resources/schemas/tasks/task.v0.json\n");
+        } catch (MalformedURLException e) {
+            AppStoreError error = ErrorBuilder.build(
+                ErrorCode.INTERNAL_DESCRIPTOR_EXTRACTION_FAILED
+            );
+            throw new ValidationException(error, true);
+        }
 
         JsonNode schemaJson;
         try (InputStream inputStream = resource.getInputStream()) {

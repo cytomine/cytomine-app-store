@@ -21,6 +21,8 @@ FROM node:${NODE_VERSION}-bookworm-slim AS dev-server
 
 WORKDIR /app
 
+COPY package.json .
+
 RUN npm install
 
 CMD ["npm", "run", "dev"]
