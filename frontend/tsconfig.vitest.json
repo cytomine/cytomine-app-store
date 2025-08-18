@@ -2,7 +2,7 @@
   "extends": "./tsconfig.app.json",
   "include": [
     "env.d.ts",
-    "tests/unit/*",
+    "tests/**/*.test.ts",
   ],
   "exclude": [
     "tests/e2e/*"

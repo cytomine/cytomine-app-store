@@ -54,6 +54,12 @@ const handleFileChange = async () => {
     selectedFile.value = null;
   }
 };
+
+defineExpose({
+  handleFileChange,
+  selectedFile,
+  tasks,
+});
 </script>
 
 <style scoped>
