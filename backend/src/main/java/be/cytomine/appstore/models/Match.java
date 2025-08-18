@@ -2,7 +2,6 @@ package be.cytomine.appstore.models;
 
 import java.util.UUID;
 
-import be.cytomine.appstore.models.task.Parameter;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -16,6 +15,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import be.cytomine.appstore.models.task.Parameter;
 
 @Entity
 @Table(name = "match")

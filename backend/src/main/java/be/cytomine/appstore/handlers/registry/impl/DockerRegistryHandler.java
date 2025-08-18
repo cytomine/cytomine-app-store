@@ -7,11 +7,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import com.cytomine.registry.client.RegistryClient;
+import lombok.extern.slf4j.Slf4j;
+
 import be.cytomine.appstore.dto.handlers.registry.DockerImage;
 import be.cytomine.appstore.exceptions.RegistryException;
 import be.cytomine.appstore.handlers.RegistryHandler;
-import com.cytomine.registry.client.RegistryClient;
-import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class DockerRegistryHandler implements RegistryHandler {
@@ -61,16 +62,12 @@ public class DockerRegistryHandler implements RegistryHandler {
     }
 
     @Override
-    public void pullImage(String imageName, OutputStream outputStream) throws RegistryException
-    {
-        try
-        {
+    public void pullImage(String imageName, OutputStream outputStream) throws RegistryException {
+        try {
             RegistryClient.pull(imageName, outputStream);
-        } catch (IOException e)
-        {
+        } catch (IOException e) {
             log.error("Error pulling image from registry: {}", imageName, e);
             throw new RegistryException("Docker Registry Handler: failed to pull image from registry");
         }
-
     }
 }

@@ -1,8 +1,9 @@
 package be.cytomine.appstore.exceptions;
 
-import be.cytomine.appstore.dto.responses.errors.AppStoreError;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import be.cytomine.appstore.dto.responses.errors.AppStoreError;
 
 @Data
 @EqualsAndHashCode(callSuper = false)

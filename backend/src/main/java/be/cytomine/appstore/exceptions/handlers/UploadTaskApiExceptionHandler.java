@@ -1,11 +1,5 @@
 package be.cytomine.appstore.exceptions.handlers;
 
-import be.cytomine.appstore.dto.responses.errors.AppStoreError;
-import be.cytomine.appstore.dto.responses.errors.ErrorBuilder;
-import be.cytomine.appstore.dto.responses.errors.ErrorCode;
-import be.cytomine.appstore.exceptions.BundleArchiveException;
-import be.cytomine.appstore.exceptions.TaskServiceException;
-import be.cytomine.appstore.exceptions.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.annotation.Order;
@@ -15,6 +9,13 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
+
+import be.cytomine.appstore.dto.responses.errors.AppStoreError;
+import be.cytomine.appstore.dto.responses.errors.ErrorBuilder;
+import be.cytomine.appstore.dto.responses.errors.ErrorCode;
+import be.cytomine.appstore.exceptions.BundleArchiveException;
+import be.cytomine.appstore.exceptions.TaskServiceException;
+import be.cytomine.appstore.exceptions.ValidationException;
 
 @Slf4j
 @ControllerAdvice
