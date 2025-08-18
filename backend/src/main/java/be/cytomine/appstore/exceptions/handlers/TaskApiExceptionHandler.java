@@ -1,15 +1,15 @@
 package be.cytomine.appstore.exceptions.handlers;
 
-import be.cytomine.appstore.dto.responses.errors.AppStoreError;
-import be.cytomine.appstore.dto.responses.errors.ErrorBuilder;
-import be.cytomine.appstore.dto.responses.errors.ErrorCode;
-import be.cytomine.appstore.exceptions.TaskNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+
+import be.cytomine.appstore.dto.responses.errors.ErrorBuilder;
+import be.cytomine.appstore.dto.responses.errors.ErrorCode;
+import be.cytomine.appstore.exceptions.TaskNotFoundException;
 
 @Slf4j
 @ControllerAdvice

@@ -1,13 +1,14 @@
 package be.cytomine.appstore.config;
 
-import be.cytomine.appstore.handlers.RegistryHandler;
-import be.cytomine.appstore.handlers.StorageHandler;
-import be.cytomine.appstore.handlers.registry.impl.DockerRegistryHandler;
-import be.cytomine.appstore.handlers.storage.impl.FileSystemStorageHandler;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+
+import be.cytomine.appstore.handlers.RegistryHandler;
+import be.cytomine.appstore.handlers.StorageHandler;
+import be.cytomine.appstore.handlers.registry.impl.DockerRegistryHandler;
+import be.cytomine.appstore.handlers.storage.impl.FileSystemStorageHandler;
 
 @Configuration
 public class ImplementationConfig {

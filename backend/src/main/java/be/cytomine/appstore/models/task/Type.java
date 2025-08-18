@@ -1,13 +1,7 @@
 package be.cytomine.appstore.models.task;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
-
-import be.cytomine.appstore.models.BaseEntity;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -17,6 +11,8 @@ import jakarta.persistence.InheritanceType;
 import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import be.cytomine.appstore.models.BaseEntity;
 
 @Entity
 @Table(name = "type")
@@ -29,8 +25,7 @@ public class Type extends BaseEntity {
     @GeneratedValue(generator = "UUID")
     private UUID identifier;
 
-    private String id;  // as found in the descriptor
+    private String id; // as found in the descriptor
 
     private String charset;
-
 }

@@ -11,16 +11,17 @@ import java.nio.file.StandardCopyOption;
 import java.util.Comparator;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+
 import be.cytomine.appstore.dto.handlers.filestorage.Storage;
 import be.cytomine.appstore.exceptions.FileStorageException;
 import be.cytomine.appstore.handlers.StorageData;
 import be.cytomine.appstore.handlers.StorageDataEntry;
 import be.cytomine.appstore.handlers.StorageDataType;
 import be.cytomine.appstore.handlers.StorageHandler;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 
 @Data
 @AllArgsConstructor

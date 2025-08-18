@@ -4,15 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
 
-import be.cytomine.appstore.dto.inputs.task.TaskDescription;
-import be.cytomine.appstore.exceptions.BundleArchiveException;
-import be.cytomine.appstore.exceptions.FileStorageException;
-import be.cytomine.appstore.exceptions.RegistryException;
-import be.cytomine.appstore.exceptions.TaskNotFoundException;
-import be.cytomine.appstore.exceptions.TaskServiceException;
-import be.cytomine.appstore.exceptions.ValidationException;
-import be.cytomine.appstore.handlers.StorageData;
-import be.cytomine.appstore.services.TaskService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.FileSystemResource;
@@ -29,12 +20,21 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import be.cytomine.appstore.dto.inputs.task.TaskDescription;
+import be.cytomine.appstore.exceptions.BundleArchiveException;
+import be.cytomine.appstore.exceptions.FileStorageException;
+import be.cytomine.appstore.exceptions.RegistryException;
+import be.cytomine.appstore.exceptions.TaskNotFoundException;
+import be.cytomine.appstore.exceptions.TaskServiceException;
+import be.cytomine.appstore.exceptions.ValidationException;
+import be.cytomine.appstore.handlers.StorageData;
+import be.cytomine.appstore.services.TaskService;
+
 @Slf4j
 @RequiredArgsConstructor
 @RestController
 @RequestMapping(path = "${app-store.api_prefix}${app-store.api_version}/")
-public class TaskController
-{
+public class TaskController {
 
     private final TaskService taskService;
 
@@ -53,8 +53,7 @@ public class TaskController
     public ResponseEntity<?> getTaskBundle(
         @PathVariable("namespace") String namespace,
         @PathVariable("version") String version
-    ) throws IOException, FileStorageException, RegistryException, TaskNotFoundException
-    {
+    ) throws IOException, FileStorageException, RegistryException, TaskNotFoundException {
         log.info("tasks/{namespace}/{version}/bundle.zip GET");
         StorageData data = taskService.retrieveIOZipArchive(namespace, version);
         File file = data.peek().getData();

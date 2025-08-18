@@ -2,10 +2,11 @@ package be.cytomine.appstore.exceptions;
 
 import java.util.Set;
 
-import be.cytomine.appstore.dto.responses.errors.AppStoreError;
 import com.networknt.schema.ValidationMessage;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+
+import be.cytomine.appstore.dto.responses.errors.AppStoreError;
 
 @Getter
 @EqualsAndHashCode(callSuper = false)

@@ -10,8 +10,7 @@ import lombok.Getter;
 
 @SuppressWarnings("checkstyle:LineLength")
 @Getter
-public class Unit
-{
+public class Unit {
 
     public static final String REGEX_VALUE = "^(?:0|[1-9]\\d*)(?:\\.\\d+)?";
 
