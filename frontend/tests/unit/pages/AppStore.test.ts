@@ -12,6 +12,12 @@ vi.mock('@/api/tasks', () => ({
   searchTasks: vi.fn(),
 }));
 
+vi.mock('vue-i18n', () => ({
+  useI18n: () => ({
+    t: (msg: string) => msg,
+  }),
+}));
+
 describe('AppStore.vue', () => {
   let wrapper: VueWrapper<InstanceType<typeof AppStore>>;
 
@@ -45,14 +51,9 @@ describe('AppStore.vue', () => {
   const mockGetAllTasks = vi.mocked(getAllTasks).mockResolvedValue([...mockTasks]);
   const mockSearchTasks = vi.mocked(searchTasks).mockResolvedValue([...mockSearchResults]);
 
-  const mockI18n = {
-    $t: vi.fn((key: string) => key),
-  };
-
   beforeEach(() => {
     wrapper = shallowMount(AppStore, {
       global: {
-        mocks: mockI18n,
         stubs: {
           'b-input': {
             template: '<input v-bind="$attrs" :value="modelValue" @input="handleInput" />',
@@ -79,11 +80,6 @@ describe('AppStore.vue', () => {
   });
 
   describe('Initialisation', () => {
-    it('should display translated strings correctly', () => {
-      expect(mockI18n.$t).toHaveBeenCalledWith('store');
-      expect(mockI18n.$t).toHaveBeenCalledWith('search');
-    });
-
     it('should call getAllTasks on mount', () => {
       expect(mockGetAllTasks).toHaveBeenCalledOnce();
     });

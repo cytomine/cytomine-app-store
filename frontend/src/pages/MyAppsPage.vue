@@ -2,14 +2,14 @@
   <div class="content-wrapper">
     <div class="panel">
       <p class="panel-heading is-flex is-justify-content-space-between is-align-items-center">
-        <span>{{ $t('my-apps') }}</span>
+        <span>{{ t('my-apps') }}</span>
         <b-upload v-model="selectedFile" @update:modelValue="handleFileChange">
-          <a class="button is-primary">{{ $t('upload') }}</a>
+          <a class="button is-primary">{{ t('upload') }}</a>
         </b-upload>
       </p>
 
       <div class="panel-block">
-        <b-input class="search-input" v-model="searchString" icon="search" :placeholder="$t('search')" />
+        <b-input class="search-input" v-model="searchString" icon="search" :placeholder="t('search')" />
       </div>
 
       <div class="panel-block">
@@ -25,10 +25,13 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 import AppCard from '@/components/app/AppCard.vue';
 import { createTask, getAllTasks } from '@/api/tasks';
 import type { App } from '@/types/types.ts';
+
+const { t } = useI18n();
 
 const searchString = ref('');
 const tasks = ref<App[]>([]);
