@@ -1,6 +1,5 @@
 package be.cytomine.appstore.utils;
 
-import be.cytomine.appstore.utils.Unit;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
