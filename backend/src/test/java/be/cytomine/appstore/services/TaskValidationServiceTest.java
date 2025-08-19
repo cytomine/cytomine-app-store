@@ -2,19 +2,6 @@ package be.cytomine.appstore.services;
 
 import java.nio.file.Files;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import be.cytomine.appstore.dto.inputs.task.UploadTaskArchive;
-import be.cytomine.appstore.exceptions.ValidationException;
-import be.cytomine.appstore.models.task.Task;
-import be.cytomine.appstore.repositories.TaskRepository;
-import be.cytomine.appstore.services.TaskValidationService;
-import be.cytomine.appstore.utils.TaskUtils;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.junit.jupiter.api.BeforeAll;
@@ -24,6 +11,19 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import be.cytomine.appstore.dto.inputs.task.UploadTaskArchive;
+import be.cytomine.appstore.exceptions.ValidationException;
+import be.cytomine.appstore.models.task.Task;
+import be.cytomine.appstore.repositories.TaskRepository;
+import be.cytomine.appstore.utils.TaskUtils;
+
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class TaskValidationServiceTest {

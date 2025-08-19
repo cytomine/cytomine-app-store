@@ -16,6 +16,14 @@ import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
 import be.cytomine.appstore.dto.handlers.filestorage.Storage;
 import be.cytomine.appstore.dto.handlers.registry.DockerImage;
 import be.cytomine.appstore.dto.inputs.task.TaskAuthor;
@@ -47,15 +55,6 @@ import be.cytomine.appstore.models.task.TypeFactory;
 import be.cytomine.appstore.repositories.SearchRepository;
 import be.cytomine.appstore.repositories.TaskRepository;
 import be.cytomine.appstore.utils.ArchiveUtils;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.logging.log4j.util.Strings;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -542,8 +541,7 @@ public class TaskService {
         return new StorageData(tempFile.toFile());
     }
 
-    public List<Search> search (String queryText) throws TaskServiceException
-    {
+    public List<Search> search(String queryText) throws TaskServiceException {
         log.info("Search: searching for tasks...");
         if (queryText == null || queryText.isEmpty()) {
             log.error("Search: search text is empty or null");
