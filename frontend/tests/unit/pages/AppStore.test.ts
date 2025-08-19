@@ -47,8 +47,8 @@ describe('AppStore.vue', () => {
             props: ['modelValue', 'icon', 'placeholder'],
             emits: ['update:modelValue'],
             methods: {
-              handleInput(event) {
-                this.$emit('update:modelValue', event.target.value);
+              handleInput(event: Event) {
+                this.$emit('update:modelValue', (event.target as HTMLInputElement).value);
               }
             }
           },
