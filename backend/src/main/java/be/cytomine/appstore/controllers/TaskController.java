@@ -77,8 +77,7 @@ public class TaskController {
     @ResponseStatus(code = HttpStatus.OK)
     public ResponseEntity<?> searchTasks(
         @RequestParam("query") String query
-    ) throws TaskServiceException
-    {
+    ) throws TaskServiceException {
         log.info("tasks/search GET {}", query);
         List<Search> data = taskService.search(query);
 
