@@ -1,21 +1,16 @@
 import { createRouter, createWebHistory } from 'vue-router';
 
 import AppStore from '@/pages/AppStore.vue';
-import GlobalDashboard from '@/pages/GlobalDashboard.vue';
 import MyAppsPage from '@/pages/MyAppsPage.vue';
 
 const routes = [
   {
     path: '/',
-    component: GlobalDashboard,
+    component: AppStore,
   },
   {
     path: '/my-apps',
     component: MyAppsPage,
-  },
-  {
-    path: '/store',
-    component: AppStore,
   },
 ];
 

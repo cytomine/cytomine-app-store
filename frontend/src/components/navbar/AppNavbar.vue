@@ -7,7 +7,7 @@
     </template>
 
     <template #start>
-      <b-navbar-item tag="router-link" to="/store">
+      <b-navbar-item tag="router-link" to="/">
         <i class="fas fa-store"></i>
         <span class="has-text-weight-semibold">{{ $t('store') }}</span>
       </b-navbar-item>

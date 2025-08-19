@@ -1,9 +1,9 @@
 <template>
   <div class="content-wrapper">
     <div class="panel">
-      <p class="panel-heading is-flex is-justify-content-space-between is-align-items-center">
-        <span>{{ $t('store') }}</span>
-      </p>
+      <h1 class="panel-heading is-flex is-justify-content-space-between is-align-items-center">
+        {{ $t('store') }}
+      </h1>
 
       <div class="panel-block">
         <b-input class="search-input" v-model="searchString" icon="search" :placeholder="$t('search')" />
