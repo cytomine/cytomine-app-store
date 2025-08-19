@@ -7,6 +7,10 @@
     </template>
 
     <template #start>
+      <b-navbar-item tag="router-link" to="/store">
+        <i class="fas fa-store"></i>
+        <span class="has-text-weight-semibold">{{ $t('store') }}</span>
+      </b-navbar-item>
       <b-navbar-item tag="router-link" to="/my-apps">
         <i class="fas fa-code"></i>
         <span class="has-text-weight-semibold">{{ $t('my-apps') }}</span>
