@@ -4,10 +4,6 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 
-import be.cytomine.appstore.dto.inputs.task.TaskDescription;
-import be.cytomine.appstore.dto.inputs.task.TaskInput;
-import be.cytomine.appstore.dto.inputs.task.TaskOutput;
-import be.cytomine.appstore.models.task.Parameter;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -21,6 +17,11 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import be.cytomine.appstore.dto.inputs.task.TaskDescription;
+import be.cytomine.appstore.dto.inputs.task.TaskInput;
+import be.cytomine.appstore.dto.inputs.task.TaskOutput;
+import be.cytomine.appstore.models.task.Parameter;
 
 @Component
 public class ApiClient {
@@ -47,7 +48,11 @@ public class ApiClient {
         return restTemplate.getForEntity(url, responseType);
     }
 
-    public <T> ResponseEntity<Resource> getData(String url, HttpEntity<Object> entity, Map<String,String> params) {
+    public <T> ResponseEntity<T> get(String url, ParameterizedTypeReference<T> responseType) {
+        return restTemplate.exchange(url, HttpMethod.GET, null, responseType);
+    }
+
+    public <T> ResponseEntity<Resource> getData(String url, HttpEntity<Object> entity, Map<String, String> params) {
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
 
         for (Map.Entry<String, String> entry : params.entrySet()) {
@@ -62,10 +67,6 @@ public class ApiClient {
             Resource.class
         );
 
-    }
-
-    public <T> ResponseEntity<T> get(String url, ParameterizedTypeReference<T> responseType) {
-        return restTemplate.exchange(url, HttpMethod.GET, null, responseType);
     }
 
     public <T> ResponseEntity<T> post(String url, Object body, Class<T> responseType) {
@@ -92,7 +93,11 @@ public class ApiClient {
         return restTemplate.exchange(url, HttpMethod.PUT, entity, responseType);
     }
 
-    public <T> ResponseEntity<T> put(String url, HttpEntity<Object> entity, Class<T> responseType, Map<String, String> params) {
+    public <T> ResponseEntity<T> put(
+        String url,
+        HttpEntity<Object> entity,
+        Class<T> responseType,
+        Map<String, String> params) {
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
 
         for (Map.Entry<String, String> entry : params.entrySet()) {
@@ -103,7 +108,10 @@ public class ApiClient {
         return restTemplate.exchange(finalUrl, HttpMethod.PUT, entity, responseType);
     }
 
-    public <T> ResponseEntity<T> put(String url, HttpEntity<Object> entity, ParameterizedTypeReference<T> responseType) {
+    public <T> ResponseEntity<T> put(
+        String url,
+        HttpEntity<Object> entity,
+        ParameterizedTypeReference<T> responseType) {
         return restTemplate.exchange(url, HttpMethod.PUT, entity, responseType);
     }
 
