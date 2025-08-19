@@ -54,6 +54,8 @@ onMounted(async () => {
 });
 
 defineExpose({
+  result,
+  searchString,
   tasks,
 });
 </script>
