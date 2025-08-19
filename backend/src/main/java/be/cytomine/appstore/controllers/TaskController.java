@@ -22,6 +22,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import be.cytomine.appstore.dto.inputs.task.TaskDescription;
+import be.cytomine.appstore.dto.responses.errors.ErrorBuilder;
+import be.cytomine.appstore.dto.responses.errors.ErrorCode;
 import be.cytomine.appstore.exceptions.BundleArchiveException;
 import be.cytomine.appstore.exceptions.FileStorageException;
 import be.cytomine.appstore.exceptions.RegistryException;
@@ -92,4 +94,25 @@ public class TaskController {
         log.info("tasks/search GET Ended");
         return ResponseEntity.ok(data);
     }
+
+    @GetMapping(value = "tasks/{namespace}/{version}")
+    @ResponseStatus(code = HttpStatus.OK)
+    public ResponseEntity<?> findTaskByNamespaceAndVersion(
+        @PathVariable String namespace,
+        @PathVariable String version
+    ) {
+        log.info("tasks/{namespace}/{version} GET");
+        Optional<TaskDescription> taskDescription = taskService.retrieveTaskDescription(
+            namespace,
+            version
+        );
+        log.info("tasks/{namespace}/{version} GET Ended");
+        return taskDescription.<ResponseEntity<?>>map(ResponseEntity::ok)
+            .orElseGet(() -> new ResponseEntity<>(
+                ErrorBuilder.build(ErrorCode.INTERNAL_TASK_NOT_FOUND),
+                HttpStatus.NOT_FOUND
+            ));
+    }
+
+
 }
