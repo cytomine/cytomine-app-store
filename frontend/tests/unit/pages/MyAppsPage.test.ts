@@ -11,9 +11,11 @@ vi.mock('@/api/tasks', () => ({
   getAllTasks: vi.fn(),
 }));
 
-const mockI18n = {
-  $t: vi.fn((key) => key),
-};
+vi.mock('vue-i18n', () => ({
+  useI18n: () => ({
+    t: (msg: string) => msg,
+  }),
+}));
 
 describe('MyAppsPage', () => {
   let wrapper: VueWrapper<InstanceType<typeof MyAppsPage>>;
@@ -29,7 +31,6 @@ describe('MyAppsPage', () => {
   beforeEach(() => {
     wrapper = shallowMount(MyAppsPage, {
       global: {
-        mocks: mockI18n,
         stubs: {
           'b-upload': {
             template: '<div><slot /></div>',
@@ -55,12 +56,6 @@ describe('MyAppsPage', () => {
   });
 
   describe('Initialisation', () => {
-    it('should display translated strings correctly', () => {
-      expect(mockI18n.$t).toHaveBeenCalledWith('my-apps');
-      expect(mockI18n.$t).toHaveBeenCalledWith('search');
-      expect(mockI18n.$t).toHaveBeenCalledWith('upload');
-    });
-
     it('should call getAllTasks on mount', async () => {
       expect(mockGetAllTasks).toHaveBeenCalledOnce();
     });

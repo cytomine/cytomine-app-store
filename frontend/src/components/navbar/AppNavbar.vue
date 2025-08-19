@@ -9,15 +9,21 @@
     <template #start>
       <b-navbar-item tag="router-link" to="/">
         <i class="fas fa-store"></i>
-        <span class="has-text-weight-semibold">{{ $t('store') }}</span>
+        <span class="has-text-weight-semibold">{{ t('store') }}</span>
       </b-navbar-item>
       <b-navbar-item tag="router-link" to="/my-apps">
         <i class="fas fa-code"></i>
-        <span class="has-text-weight-semibold">{{ $t('my-apps') }}</span>
+        <span class="has-text-weight-semibold">{{ t('my-apps') }}</span>
       </b-navbar-item>
     </template>
   </b-navbar>
 </template>
+
+<script setup lang="ts">
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
+</script>
 
 <style scoped>
 #logo {

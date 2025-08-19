@@ -2,11 +2,11 @@
   <div class="content-wrapper">
     <div class="panel">
       <h1 class="panel-heading is-flex is-justify-content-space-between is-align-items-center">
-        {{ $t('store') }}
+        {{ t('store') }}
       </h1>
 
       <div class="panel-block">
-        <b-input class="search-input" v-model="searchString" icon="search" :placeholder="$t('search')" />
+        <b-input class="search-input" v-model="searchString" icon="search" :placeholder="t('search')" />
       </div>
 
       <div class="panel-block">
@@ -22,10 +22,13 @@
 
 <script setup lang="ts">
 import { onMounted, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 import AppCard from '@/components/app/AppCard.vue';
 import { getAllTasks, searchTasks } from '@/api/tasks';
 import type { App, Search } from '@/types/types.ts';
+
+const { t } = useI18n();
 
 const searchString = ref('');
 const result = ref<Search[]>([]);
