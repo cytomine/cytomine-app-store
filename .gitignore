@@ -46,3 +46,6 @@ jars/
 
 # Other
 _misc/
+
+# Env
+.env*

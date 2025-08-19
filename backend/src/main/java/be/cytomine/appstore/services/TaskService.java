@@ -468,6 +468,13 @@ public class TaskService {
         return file;
     }
 
+    public List<TaskDescription> getAllTaskDescriptions() {
+        return taskRepository.findAll()
+                .stream()
+                .map(this::makeTaskDescription)
+                .toList();
+    }
+
     public Optional<TaskDescription> retrieveTaskDescription(String id) {
         Optional<Task> task = findById(id);
         return task.map(this::makeTaskDescription);

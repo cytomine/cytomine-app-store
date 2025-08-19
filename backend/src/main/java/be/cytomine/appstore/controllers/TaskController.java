@@ -42,6 +42,14 @@ public class TaskController {
 
     private final TaskService taskService;
 
+    @GetMapping(path = "tasks")
+    public ResponseEntity<List<TaskDescription>> getAllTasks() {
+        log.info("GET tasks");
+        List<TaskDescription> tasks = taskService.getAllTaskDescriptions();
+        log.info("GET tasks Ended");
+        return ResponseEntity.ok(tasks);
+    }
+
     @PostMapping(path = "tasks")
     public ResponseEntity<?> upload(
         @RequestParam MultipartFile task
