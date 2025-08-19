@@ -2,6 +2,7 @@ package be.cytomine.appstore.controllers;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,7 @@ import be.cytomine.appstore.exceptions.TaskNotFoundException;
 import be.cytomine.appstore.exceptions.TaskServiceException;
 import be.cytomine.appstore.exceptions.ValidationException;
 import be.cytomine.appstore.handlers.StorageData;
+import be.cytomine.appstore.models.Search;
 import be.cytomine.appstore.services.TaskService;
 
 @Slf4j
@@ -69,6 +71,18 @@ public class TaskController {
         return ResponseEntity.ok()
             .headers(headers)
             .body(new FileSystemResource(file));
+    }
+
+    @GetMapping(value = "tasks/search")
+    @ResponseStatus(code = HttpStatus.OK)
+    public ResponseEntity<?> searchTasks(
+        @RequestParam("query") String query
+    ) throws TaskServiceException {
+        log.info("tasks/search GET {}", query);
+        List<Search> data = taskService.search(query);
+
+        log.info("tasks/search GET Ended");
+        return ResponseEntity.ok(data);
     }
 
 

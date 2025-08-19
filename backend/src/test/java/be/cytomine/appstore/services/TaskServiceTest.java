@@ -4,19 +4,15 @@ import java.io.OutputStream;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.mock.web.MockMultipartFile;
 
 import be.cytomine.appstore.dto.handlers.filestorage.Storage;
 import be.cytomine.appstore.dto.handlers.registry.DockerImage;
@@ -31,19 +27,26 @@ import be.cytomine.appstore.handlers.StorageData;
 import be.cytomine.appstore.handlers.StorageDataType;
 import be.cytomine.appstore.handlers.StorageHandler;
 import be.cytomine.appstore.models.task.Task;
+import be.cytomine.appstore.repositories.SearchRepository;
 import be.cytomine.appstore.repositories.TaskRepository;
 import be.cytomine.appstore.utils.ArchiveUtils;
 import be.cytomine.appstore.utils.TaskUtils;
 import be.cytomine.appstore.utils.TestTaskBuilder;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.mock.web.MockMultipartFile;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 
 @ExtendWith(MockitoExtension.class)
 public class TaskServiceTest {
@@ -56,6 +59,9 @@ public class TaskServiceTest {
 
     @Mock
     private StorageHandler storageHandler;
+
+    @Mock
+    private SearchRepository searchRepository;
 
     @Mock
     private TaskRepository taskRepository;
@@ -78,8 +84,7 @@ public class TaskServiceTest {
 
     @DisplayName("Successfully upload a task bundle")
     @Test
-    public void uploadTaskShouldUploadTaskBundle() throws Exception
-    {
+    public void uploadTaskShouldUploadTaskBundle() throws Exception {
         ClassPathResource resource = TestTaskBuilder.buildCustomImageLocationTask();
         MockMultipartFile testAppBundle =
             new MockMultipartFile("test_custom_image_location_task.zip", resource.getInputStream());
@@ -255,16 +260,15 @@ public class TaskServiceTest {
 
     @DisplayName("Successfully retrieve IO zip archive")
     @Test
-    void retrieveIOZipArchiveShouldReturnArchive() throws Exception
-    {
+    void retrieveIOZipArchiveShouldReturnArchive() throws Exception {
         String namespace = "namespace";
         String version = "version";
         Task task = TaskUtils.createTestTask(false);
         ClassPathResource resource = new ClassPathResource("artifacts/descriptor.yml");
         StorageData descriptor =
             new StorageData("descriptor.yml",
-                "task-" + task.getIdentifier() + "-def",
-                StorageDataType.FILE);
+            "task-" + task.getIdentifier() + "-def",
+            StorageDataType.FILE);
         descriptor.peek().setData(resource.getFile());
 
         when(taskRepository.findByNamespaceAndVersion(namespace, version)).thenReturn(task);
@@ -282,8 +286,7 @@ public class TaskServiceTest {
 
     @DisplayName("Fail to retrieve IO zip archive and throw TaskNotFoundException")
     @Test
-    void retrieveIOZipArchiveShouldThrowTaskNotFoundException() throws Exception
-    {
+    void retrieveIOZipArchiveShouldThrowTaskNotFoundException() throws Exception {
         String namespace = "namespace";
         String version = "version";
 
@@ -302,16 +305,15 @@ public class TaskServiceTest {
 
     @DisplayName("Fail to retrieve IO zip archive and throw RegistryException")
     @Test
-    void retrieveIOZipArchiveShouldThrowRegistryException() throws Exception
-    {
+    void retrieveIOZipArchiveShouldThrowRegistryException() throws Exception {
         String namespace = "namespace";
         String version = "version";
         Task task = TaskUtils.createTestTask(false);
         ClassPathResource resource = new ClassPathResource("artifacts/descriptor.yml");
         StorageData descriptor =
             new StorageData("descriptor.yml",
-                "task-" + task.getIdentifier() + "-def",
-                StorageDataType.FILE);
+            "task-" + task.getIdentifier() + "-def",
+            StorageDataType.FILE);
         descriptor.peek().setData(resource.getFile());
         when(taskRepository.findByNamespaceAndVersion(namespace, version)).thenReturn(task);
         when(storageHandler.readStorageData(any(StorageData.class))).thenReturn(descriptor);
@@ -332,8 +334,7 @@ public class TaskServiceTest {
 
     @DisplayName("Fail to retrieve IO zip archive and throw FileStorageException")
     @Test
-    void retrieveIOZipArchiveShouldThrowFileStorageException() throws Exception
-    {
+    void retrieveIOZipArchiveShouldThrowFileStorageException() throws Exception {
         String namespace = "namespace";
         String version = "version";
         Task task = TaskUtils.createTestTask(false);
