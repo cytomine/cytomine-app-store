@@ -46,11 +46,13 @@ import be.cytomine.appstore.handlers.StorageDataType;
 import be.cytomine.appstore.handlers.StorageHandler;
 import be.cytomine.appstore.models.CheckTime;
 import be.cytomine.appstore.models.Match;
+import be.cytomine.appstore.models.Search;
 import be.cytomine.appstore.models.task.Author;
 import be.cytomine.appstore.models.task.Parameter;
 import be.cytomine.appstore.models.task.ParameterType;
 import be.cytomine.appstore.models.task.Task;
 import be.cytomine.appstore.models.task.TypeFactory;
+import be.cytomine.appstore.repositories.SearchRepository;
 import be.cytomine.appstore.repositories.TaskRepository;
 import be.cytomine.appstore.utils.ArchiveUtils;
 
@@ -68,6 +70,8 @@ public class TaskService {
     private final TaskValidationService taskValidationService;
 
     private final ArchiveUtils archiveUtils;
+
+    private final SearchRepository searchRepository;
 
     @Value("${storage.input.charset}")
     private String charset;
@@ -184,6 +188,9 @@ public class TaskService {
         log.info("UploadTask: saving task...");
         taskRepository.save(task);
         log.info("UploadTask: task saved");
+        log.info("UploadTask: update search index");
+        searchRepository.refreshSearchViewConcurrently();
+        log.info("UploadTask: search index updated");
 
         return Optional.of(makeTaskDescription(task));
     }
@@ -539,5 +546,18 @@ public class TaskService {
         log.info("Retrieving IO Archive: zipped...");
 
         return new StorageData(tempFile.toFile());
+    }
+
+    public List<Search> search(String queryText) throws TaskServiceException {
+        log.info("Search: searching for tasks...");
+        if (queryText == null || queryText.isEmpty()) {
+            log.error("Search: search text is empty or null");
+            AppStoreError error = ErrorBuilder.build(ErrorCode.INTERNAL_EMPTY_SEARCH_QUERY);
+            throw new TaskServiceException(error);
+        }
+        List<Search> hits = searchRepository.findByAdvancedSearch(queryText.trim().replace(" ", "&"), queryText);
+        log.info("Search: search done");
+        return hits;
+
     }
 }

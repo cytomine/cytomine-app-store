@@ -1,2 +1,9 @@
 databaseChangeLog:
+  # liquibase --classpath="postgresql-42.7.7.jar" --changeLogFile="init.postgresql.sql" --url="jdbc:postgresql://localhost:5432/appstore" --username="appstore" --password="password" --logLevel="debug" generateChangeLog
+  - include:
+      file: migrations/init.postgresql.sql
+      relativeToChangelogFile: false
+  - include:
+      file: migrations/materialized_view.sql
+      relativeToChangelogFile: false
 

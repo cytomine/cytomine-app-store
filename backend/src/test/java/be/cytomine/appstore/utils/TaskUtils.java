@@ -11,6 +11,8 @@ import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import org.springframework.core.io.ClassPathResource;
+
 import be.cytomine.appstore.dto.inputs.task.UploadTaskArchive;
 import be.cytomine.appstore.handlers.StorageData;
 import be.cytomine.appstore.handlers.StorageDataEntry;
@@ -20,7 +22,6 @@ import be.cytomine.appstore.models.task.Parameter;
 import be.cytomine.appstore.models.task.ParameterType;
 import be.cytomine.appstore.models.task.Task;
 import be.cytomine.appstore.models.task.Type;
-import org.springframework.core.io.ClassPathResource;
 
 public class TaskUtils {
     public static UploadTaskArchive createTestUploadTaskArchive() throws IOException {
@@ -116,7 +117,7 @@ public class TaskUtils {
 
     public static byte[] createFakeOutputsZip(String... names) throws IOException {
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
-             ZipOutputStream zos = new ZipOutputStream(baos)) {
+            ZipOutputStream zos = new ZipOutputStream(baos)) {
 
             for (String name : names) {
                 zos.putNextEntry(new ZipEntry(name));
@@ -127,5 +128,41 @@ public class TaskUtils {
             zos.finish();
             return baos.toByteArray();
         }
+    }
+
+    public static Task createTask(
+        UUID uuid,
+        String iamgeNameSpace,
+        String name,
+        String shortName,
+        String version,
+        String storagereference,
+        String desc,
+        String authorFirstName,
+        String authorLastName,
+        String org,
+        String mail) {
+
+        Task task = new Task();
+        task.setIdentifier(uuid);
+        task.setNamespace(iamgeNameSpace);
+        task.setName(name);
+        task.setNameShort(shortName);
+        task.setVersion(version);
+        task.setStorageReference(storagereference);
+        task.setDescription(desc);
+
+        Author author = new Author();
+        author.setFirstName(authorFirstName);
+        author.setLastName(authorLastName);
+        author.setOrganization(org);
+        author.setEmail(mail);
+        author.setContact(true);
+
+        task.setAuthors(Set.of(author));
+        task.setParameters(
+            Set.of(createTestInput("input", false), createTestOutput("output", false)));
+
+        return task;
     }
 }

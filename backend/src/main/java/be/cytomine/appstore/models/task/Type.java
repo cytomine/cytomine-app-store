@@ -28,4 +28,5 @@ public class Type extends BaseEntity {
     private String id; // as found in the descriptor
 
     private String charset;
+
 }

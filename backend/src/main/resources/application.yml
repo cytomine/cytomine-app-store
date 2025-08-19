@@ -15,7 +15,6 @@ spring:
     url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:appstore}
     username: ${DB_USERNAME:appstore}
   hibernate:
-    ddl-auto: drop-create
     show-sql: true
   jpa:
     properties:
