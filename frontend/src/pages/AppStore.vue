@@ -9,8 +9,6 @@
         <b-input class="search-input" v-model="searchString" icon="search" :placeholder="$t('search')" />
       </div>
 
-      <p>{{ result }}</p>
-
       <div class="panel-block">
         <div class="columns is-multiline">
           <div class="column" v-for="task in tasks" :key="task.id">
@@ -27,18 +25,28 @@ import { onMounted, ref, watch } from 'vue';
 
 import AppCard from '@/components/app/AppCard.vue';
 import { getAllTasks, searchTask } from '@/api/tasks';
-import type { App } from '@/types/types.ts';
+import type { App, Search } from '@/types/types.ts';
 
 const searchString = ref('');
-const result = ref('');
+const result = ref<Search[]>([]);
 const tasks = ref<App[]>([]);
 
 watch(searchString, async (query) => {
   if (!query || query.trim() === '') {
+    tasks.value = await getAllTasks();
+    result.value = [];
     return;
   }
 
   result.value = await searchTask(query);
+
+  tasks.value = tasks.value.filter(task =>
+    result.value.some(item =>
+      item.name === task.name &&
+      item.namespace === task.namespace &&
+      item.version === task.version
+    )
+  );
 });
 
 onMounted(async () => {
