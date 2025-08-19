@@ -24,7 +24,7 @@
 import { onMounted, ref, watch } from 'vue';
 
 import AppCard from '@/components/app/AppCard.vue';
-import { getAllTasks, searchTask } from '@/api/tasks';
+import { getAllTasks, searchTasks } from '@/api/tasks';
 import type { App, Search } from '@/types/types.ts';
 
 const searchString = ref('');
@@ -38,7 +38,7 @@ watch(searchString, async (query) => {
     return;
   }
 
-  result.value = await searchTask(query);
+  result.value = await searchTasks(query);
 
   tasks.value = tasks.value.filter(task =>
     result.value.some(item =>

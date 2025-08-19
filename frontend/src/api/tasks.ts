@@ -10,7 +10,7 @@ export const createTask = async (data: FormData) => {
   return response.data;
 };
 
-export const searchTask = async (query: string) => {
+export const searchTasks = async (query: string) => {
   const response = await client.get('/tasks/search', { params: { query } });
   return response.data;
 };
