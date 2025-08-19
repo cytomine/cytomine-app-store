@@ -1,19 +1,20 @@
 package be.cytomine.appstore.repositories;
 
-import be.cytomine.appstore.models.Search;
-import be.cytomine.appstore.models.task.Task;
+import java.util.List;
+import java.util.UUID;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.junit.jupiter.api.extension.ExtendWith;
-import be.cytomine.appstore.utils.TaskUtils;
 
-import java.util.List;
-import java.util.UUID;
+import be.cytomine.appstore.models.Search;
+import be.cytomine.appstore.models.task.Task;
+import be.cytomine.appstore.utils.TaskUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -61,7 +62,10 @@ public class SearchRepositoryTest {
         List<Search> results = searchRepository.findByAdvancedSearch("image&analysis", "image analysis");
 
         assertThat(results).hasSize(2);
-        assertThat(results.get(0).getIdentifier()).isEqualTo(UUID.fromString("d290f1ee-6c54-4b01-90e6-d701748f0851")); // Should be first due to higher rank
+        assertThat(results
+            .get(0)
+            .getIdentifier())
+            .isEqualTo(UUID.fromString("d290f1ee-6c54-4b01-90e6-d701748f0851")); // Should be first due to higher rank
         assertThat(results.get(1).getIdentifier()).isEqualTo(UUID.fromString("76e5c8de-8ec4-4c6c-9b47-ec1a563e03e4"));
     }
 
@@ -71,9 +75,7 @@ public class SearchRepositoryTest {
         List<Search> results = searchRepository.findByAdvancedSearch("anlyis", "anlyis");
 
         assertThat(results).hasSize(3);
-        assertThat(results.get(2).getIdentifier()).isEqualTo(UUID.fromString("d290f1ee-6c54-4b01-90e6-d701748f0851"));
-        assertThat(results.get(0).getIdentifier()).isEqualTo(UUID.fromString("76e5c8de-8ec4-4c6c-9b47-ec1a563e03e2")); // Should be first due to higher rank
-        assertThat(results.get(1).getIdentifier()).isEqualTo(UUID.fromString("76e5c8de-8ec4-4c6c-9b47-ec1a563e03e4"));
+        assertThat(results.get(2).getIdentifier()).isEqualTo(UUID.fromString("76e5c8de-8ec4-4c6c-9b47-ec1a563e03e2"));
     }
 
     @Test
@@ -82,7 +84,7 @@ public class SearchRepositoryTest {
         List<Search> results = searchRepository.findByAdvancedSearch("ulieg", "ulieg");
 
         assertThat(results).hasSize(2);
-        assertThat(results.get(1).getIdentifier()).isEqualTo(UUID.fromString("d290f1ee-6c54-4b01-90e6-d701748f0851")); // Should be first due to higher rank
+        assertThat(results.get(1).getIdentifier()).isEqualTo(UUID.fromString("d290f1ee-6c54-4b01-90e6-d701748f0851"));
         assertThat(results.get(0).getIdentifier()).isEqualTo(UUID.fromString("76e5c8de-8ec4-4c6c-9b47-ec1a563e03e4"));
     }
 }
