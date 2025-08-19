@@ -12,16 +12,24 @@ vi.mock('@/api/tasks', () => ({
   searchTasks: vi.fn(),
 }));
 
-const mockI18n = {
-  $t: vi.fn((key: string) => key),
-};
-
 describe('AppStore.vue', () => {
   let wrapper: VueWrapper<InstanceType<typeof AppStore>>;
 
   const mockTasks = [
-    { id: '1', name: 'Task 1', namespace: 'Namespace 1', version: '1.0.0', date: '18/08/2025' },
-    { id: '2', name: 'test-app', namespace: 'default', nameshort: 'test', imageName: 'test-image', version: '1.0.0', date: '19/08/2025' },
+    {
+      id: '1',
+      name: 'Task 1',
+      namespace: 'Namespace 1',
+      version: '1.0.0',
+      date: '18/08/2025',
+    },
+    {
+      id: '2',
+      name: 'test-app',
+      namespace: 'default',
+      version: '1.0.0',
+      date: '19/08/2025',
+    },
   ];
 
   const mockSearchResults = [
@@ -36,6 +44,10 @@ describe('AppStore.vue', () => {
 
   const mockGetAllTasks = vi.mocked(getAllTasks).mockResolvedValue([...mockTasks]);
   const mockSearchTasks = vi.mocked(searchTasks).mockResolvedValue([...mockSearchResults]);
+
+  const mockI18n = {
+    $t: vi.fn((key: string) => key),
+  };
 
   beforeEach(() => {
     wrapper = shallowMount(AppStore, {
