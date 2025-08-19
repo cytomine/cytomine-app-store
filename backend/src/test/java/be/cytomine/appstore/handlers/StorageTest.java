@@ -9,10 +9,6 @@ import java.nio.file.Paths;
 import java.util.Comparator;
 import java.util.Properties;
 
-import be.cytomine.appstore.dto.handlers.filestorage.Storage;
-import be.cytomine.appstore.exceptions.FileStorageException;
-import be.cytomine.appstore.handlers.storage.impl.FileSystemStorageHandler;
-import be.cytomine.appstore.utils.FileHelper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
@@ -22,8 +18,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
 import org.springframework.core.io.ClassPathResource;
 
-public class StorageTest
-{
+import be.cytomine.appstore.dto.handlers.filestorage.Storage;
+import be.cytomine.appstore.exceptions.FileStorageException;
+import be.cytomine.appstore.handlers.storage.impl.FileSystemStorageHandler;
+import be.cytomine.appstore.utils.FileHelper;
+
+public class StorageTest {
 
     private static StorageHandler storageHandler;
 

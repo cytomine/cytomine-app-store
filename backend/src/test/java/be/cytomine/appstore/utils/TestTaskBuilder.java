@@ -7,6 +7,10 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.mock.web.MockMultipartFile;
+
 import be.cytomine.appstore.dto.inputs.task.UploadTaskArchive;
 import be.cytomine.appstore.dto.misc.TaskIdentifiers;
 import be.cytomine.appstore.models.task.Author;
@@ -15,12 +19,12 @@ import be.cytomine.appstore.models.task.ParameterType;
 import be.cytomine.appstore.models.task.Task;
 import be.cytomine.appstore.models.task.Type;
 import be.cytomine.appstore.models.task.TypeFactory;
-import com.fasterxml.jackson.databind.JsonNode;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.mock.web.MockMultipartFile;
+
+
 
 public class TestTaskBuilder {
 
+    @SuppressWarnings("checkstyle:LocalVariableName")
     public static Task buildHardcodedAddInteger(UUID taskUUID) {
         String storageIdentifier = "task-" + taskUUID + "-def";
         String imageRegistryCompliantName = "com/cytomine/dummy/arithmetic/integer/addition:1.0.0";
@@ -68,6 +72,8 @@ public class TestTaskBuilder {
         inputa.setDefaultValue("0");
         inputa.setParameterType(ParameterType.INPUT);
 
+        inputs.add(inputa);
+
         Parameter inputb = new Parameter();
         inputb.setName("b");
         inputb.setDisplayName("Operand B");
@@ -79,7 +85,6 @@ public class TestTaskBuilder {
         inputb.setDefaultValue("0");
         inputb.setParameterType(ParameterType.INPUT);
 
-        inputs.add(inputa);
         inputs.add(inputb);
         task.setParameters(inputs);
         // add outputs for task one
@@ -103,6 +108,7 @@ public class TestTaskBuilder {
         return buildHardcodedAddInteger(UUID.randomUUID());
     }
 
+    @SuppressWarnings("checkstyle:LocalVariableName")
     public static Task buildHardcodedSubtractInteger(UUID taskUUID) {
         String storageIdentifierForTaskOne = "task-" + taskUUID + "-def";
         String imageRegistryCompliantNameForTaskOne = "com/cytomine/dummy/arithmetic/integer/subtraction:1.0.0";
@@ -147,6 +153,8 @@ public class TestTaskBuilder {
         inputa.setDefaultValue("0");
         inputa.setParameterType(ParameterType.INPUT);
 
+        inputs.add(inputa);
+
         Parameter inputb = new Parameter();
         inputb.setName("b");
         inputb.setDisplayName("Operand B");
@@ -157,7 +165,6 @@ public class TestTaskBuilder {
         inputb.setDefaultValue("0");
         inputb.setParameterType(ParameterType.INPUT);
 
-        inputs.add(inputa);
         inputs.add(inputb);
         task.setParameters(inputs);
         // add outputs for task one
