@@ -34,7 +34,7 @@ jobs:
       - name: Check lint
         run: npm run lint
 
-  type-check:
+  type-check-frontend:
     runs-on: self-hosted
     defaults:
       run:
