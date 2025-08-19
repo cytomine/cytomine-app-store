@@ -7,3 +7,12 @@ export interface App {
   description?: string;
   imageUrl?: string;
 };
+
+export interface Search {
+  name: string;
+  namespace: string;
+  nameshort: string;
+  imageName: string;
+  version: string;
+  description?: string;
+};
