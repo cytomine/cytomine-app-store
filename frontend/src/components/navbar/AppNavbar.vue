@@ -1,9 +1,8 @@
 <template>
   <b-navbar class="is-light">
     <template #brand>
-      <b-navbar-item tag="router-link" :to="{ path: '/' }">
-        <img src="https://raw.githubusercontent.com/buefy/buefy/dev/packages/docs/public/static/img/buefy-logo.png"
-          alt="Lightweight UI components for Vue.js based on Bulma" />
+      <b-navbar-item tag="router-link" to="/">
+        <img src="@/assets/logo.svg" id="logo" alt="Cytomine App Store" />
       </b-navbar-item>
     </template>
     <template #start>
@@ -27,3 +26,9 @@
     </template>
   </b-navbar>
 </template>
+
+<style scoped>
+#logo {
+  height: 2rem;
+}
+</style>
