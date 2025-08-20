@@ -105,9 +105,15 @@ public class TaskService {
                 new StorageData(uploadTaskArchive.getDescriptorFile(), "descriptor.yml")
             );
             log.info("UploadTask: descriptor.yml is stored in object storage");
+
+            fileStorageHandler.saveStorageData(
+                storage,
+                new StorageData(uploadTaskArchive.getLogo(), "logo.png")
+            );
+            log.info("UploadTask: logo.png is stored in object storage");
         } catch (FileStorageException e) {
             try {
-                log.info("UploadTask: failed to store descriptor.yml");
+                log.info("UploadTask: failed to store descriptor.yml or logo.png in object storage");
                 log.info("UploadTask: attempting deleting storage...");
                 fileStorageHandler.deleteStorage(storage);
                 log.info("UploadTask: storage deleted");
@@ -453,7 +459,7 @@ public class TaskService {
 
     public StorageData retrieveYmlDescriptor(String id)
         throws TaskServiceException, TaskNotFoundException {
-        log.info("Storage : retrieving descriptor.yml...");
+        log.info("Storage : retrieving descriptor.yml using ID...");
         Optional<Task> task = taskRepository.findById(UUID.fromString(id));
         if (task.isEmpty()) {
             throw new TaskNotFoundException("task not found");
@@ -462,11 +468,14 @@ public class TaskService {
         try {
             file = fileStorageHandler.readStorageData(file);
         } catch (FileStorageException ex) {
-            log.debug("Storage: failed to get file from storage [{}]", ex.getMessage());
+            log.debug("Storage: failed to get descriptor file from storage [{}]", ex.getMessage());
             throw new TaskServiceException(ex);
         }
         return file;
     }
+
+
+
 
     public List<TaskDescription> getAllTaskDescriptions() {
         return taskRepository.findAll()
