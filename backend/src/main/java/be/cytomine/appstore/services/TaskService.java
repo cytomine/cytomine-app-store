@@ -115,7 +115,7 @@ public class TaskService {
             }
         } catch (FileStorageException e) {
             try {
-                log.info("UploadTask: failed to store descriptor.yml or logo.png in object storage");
+                log.info("UploadTask: failed to store file {}", e.getMessage());
                 log.info("UploadTask: attempting deleting storage...");
                 fileStorageHandler.deleteStorage(storage);
                 log.info("UploadTask: storage deleted");
