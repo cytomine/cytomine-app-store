@@ -106,11 +106,13 @@ public class TaskService {
             );
             log.info("UploadTask: descriptor.yml is stored in object storage");
 
-            fileStorageHandler.saveStorageData(
-                storage,
-                new StorageData(uploadTaskArchive.getLogo(), "logo.png")
-            );
-            log.info("UploadTask: logo.png is stored in object storage");
+            if (Objects.nonNull(uploadTaskArchive.getLogo())) {
+                fileStorageHandler.saveStorageData(
+                    storage,
+                    new StorageData(uploadTaskArchive.getLogo(), "logo.png")
+                );
+                log.info("UploadTask: logo.png is stored in object storage");
+            }
         } catch (FileStorageException e) {
             try {
                 log.info("UploadTask: failed to store descriptor.yml or logo.png in object storage");
