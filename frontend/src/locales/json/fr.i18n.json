@@ -1,6 +1,8 @@
 {
+  "description": "Description",
   "go-back": "Retourner en arrière",
   "my-apps": "Mes Apps",
+  "no-description": "Pas de description",
   "search": "Chercher",
   "show-more": "Monter plus",
   "store": "Magasin",

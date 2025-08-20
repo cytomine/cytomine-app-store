@@ -1,10 +1,11 @@
-import client from './client';
+import camelcaseKeys from 'camelcase-keys';
 
+import client from './client';
 import type { App } from '@/types/types';
 
 export const getAllTasks = async () => {
   const response = await client.get('/tasks');
-  return response.data;
+  return camelcaseKeys(response.data, { deep: true });
 };
 
 export const getTask = async (namespace: string, version: string): Promise<App> => {
@@ -14,7 +15,7 @@ export const getTask = async (namespace: string, version: string): Promise<App> 
 
   try {
     const response = await client.get<App>(`/tasks/${namespace}/${version}`);
-    return response.data;
+    return camelcaseKeys(response.data, { deep: true });
   } catch (error) {
     console.error(`Failed to fetch task ${namespace}/${version}:`, error);
     throw error;

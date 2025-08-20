@@ -1,6 +1,8 @@
 {
+  "description": "Description",
   "go-back": "Go back",
   "my-apps": "My Apps",
+  "no-description": "No description",
   "search": "Search",
   "show-more": "Show more",
   "store": "Store",

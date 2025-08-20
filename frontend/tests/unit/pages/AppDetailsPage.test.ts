@@ -27,6 +27,15 @@ describe('AppDetailsPage.vue', () => {
     namespace: 'test-namespace',
     version: '1.0.0',
     date: '20/08/2025',
+    authors: [
+      {
+        firstName: 'John',
+        lastName: 'Doe',
+        organization: 'Cytomine',
+        email: 'test@cytomine.org',
+        isContact: true,
+      },
+    ],
   };
 
   vi.mocked(useRoute).mockReturnValue({
@@ -60,6 +69,8 @@ describe('AppDetailsPage.vue', () => {
         ],
         stubs: {
           'b-button': true,
+          'b-collapse': true,
+          'b-icon': true,
           'b-loading': true,
         },
       },
@@ -68,5 +79,16 @@ describe('AppDetailsPage.vue', () => {
 
   it('should fetch the task from the task store', async () => {
     expect(taskStore.fetchTask).toHaveBeenCalledWith(mockTask.namespace, mockTask.version);
+  });
+
+  it('should render task details', async () => {
+    expect(wrapper.text()).toContain(mockTask.name);
+    expect(wrapper.text()).toContain(mockTask.version);
+    expect(wrapper.text()).toContain(mockTask.date);
+
+    mockTask.authors.map(author => {
+      expect(wrapper.text()).toContain(author.firstName);
+      expect(wrapper.text()).toContain(author.lastName);
+    });
   });
 });
