@@ -11,7 +11,10 @@ export const getTaskBundle = async (namespace: string, version: string) => {
   }
 
   try {
-    const response = await client.get(`/tasks/${namespace}/${version}/bundle.zip`);
+    const response = await client.get(
+      `/tasks/${namespace}/${version}/bundle.zip`,
+      { responseType: 'arraybuffer' },
+    );
     return response.data;
   } catch (error) {
     console.error(`Failed to download task ${namespace}/${version}:`, error);
