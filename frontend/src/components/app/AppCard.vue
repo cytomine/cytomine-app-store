@@ -4,7 +4,7 @@
       <figure class="image is-animated is-5by3">
         <img
             :src="'http://localhost:8081/api/v1/tasks/' + app.namespace + '/' + app.version + '/logo.png'"
-            @error="$event.target.src='https://bulma.io/assets/images/placeholders/1280x960.png'"
+            @error="($event.target as HTMLImageElement).src='https://bulma.io/assets/images/placeholders/1280x960.png'"
             alt="Placeholder image">
       </figure>
     </div>
