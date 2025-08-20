@@ -13,9 +13,10 @@ vi.mock('vue-i18n', () => ({
   }),
 }));
 
+const mockRouter = { back: vi.fn() };
 vi.mock('vue-router', () => ({
   useRoute: vi.fn(),
-  useRouter: vi.fn(),
+  useRouter: () => mockRouter,
 }));
 
 describe('AppDetailsPage.vue', () => {
@@ -77,11 +78,11 @@ describe('AppDetailsPage.vue', () => {
     });
   });
 
-  it('should fetch the task from the task store', async () => {
+  it('should fetch the task from the task store', () => {
     expect(taskStore.fetchTask).toHaveBeenCalledWith(mockTask.namespace, mockTask.version);
   });
 
-  it('should render task details', async () => {
+  it('should render task details', () => {
     expect(wrapper.text()).toContain(mockTask.name);
     expect(wrapper.text()).toContain(mockTask.version);
     expect(wrapper.text()).toContain(mockTask.date);
@@ -90,5 +91,11 @@ describe('AppDetailsPage.vue', () => {
       expect(wrapper.text()).toContain(author.firstName);
       expect(wrapper.text()).toContain(author.lastName);
     });
+  });
+
+  it('should call router.back() when back button clicked', async () => {
+    await wrapper.find('b-button-stub').trigger('click');
+
+    expect(mockRouter.back).toHaveBeenCalledOnce();
   });
 });

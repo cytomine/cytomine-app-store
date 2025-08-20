@@ -21,9 +21,9 @@
               <p>
                 <strong class="app-title">{{ task.name }}</strong>
                 <br>
-                <span v-if="task.authors && task.authors.length > 0">
+                <span>
                   <small v-for="(author, index) in task.authors" :key="index">
-                    {{ `- ${author.firstName} ${author.lastName}` || t('app-engine.no-authors') }}
+                    {{ `- ${author.firstName} ${author.lastName}` }}
                   </small>
                 </span>
               </p>
@@ -35,7 +35,7 @@
           <div class="level-item has-text-centered">
             <div>
               <p class="heading">Date</p>
-              <p class="title">{{ task.date || $t('unknown') }}</p>
+              <p class="title">{{ task.date || t('unknown') }}</p>
             </div>
           </div>
 
