@@ -164,6 +164,7 @@ public class TaskService {
             .textValue());
         task.setDescriptorFile(
             uploadTaskArchive.getDescriptorFileAsJson().get("namespace").textValue());
+        task.setDescription(uploadTaskArchive.getDescriptorFileAsJson().path("description").asText());
         task.setNamespace(uploadTaskArchive.getDescriptorFileAsJson().get("namespace").textValue());
         task.setVersion(uploadTaskArchive.getDescriptorFileAsJson().get("version").textValue());
         task.setInputFolder(
