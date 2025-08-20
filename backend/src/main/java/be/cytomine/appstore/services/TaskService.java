@@ -474,6 +474,24 @@ public class TaskService {
         return file;
     }
 
+    public StorageData retrieveLogo(String namespace, String version)
+        throws TaskServiceException, TaskNotFoundException {
+        log.info("Storage : retrieving logo...");
+        Task task = taskRepository.findByNamespaceAndVersion(namespace, version);
+        if (task == null) {
+            throw new TaskNotFoundException("task not found");
+        }
+
+        StorageData file = new StorageData("logo.png", task.getStorageReference());
+        try {
+            file = fileStorageHandler.readStorageData(file);
+        } catch (FileStorageException ex) {
+            log.debug("Storage: failed to get logo from storage [{}]", ex.getMessage());
+            throw new TaskServiceException(ex);
+        }
+        return file;
+    }
+
 
 
 
