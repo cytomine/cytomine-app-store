@@ -114,7 +114,7 @@ public class TaskController {
             ));
     }
 
-    @GetMapping(value = "tasks/{namespace}/{version}/logo.png")
+    @GetMapping(value = "tasks/{namespace}/{version}/logo")
     @ResponseStatus(code = HttpStatus.OK)
     public ResponseEntity<?> findLogoOfTaskByNamespaceAndVersion(
         @PathVariable String namespace,
