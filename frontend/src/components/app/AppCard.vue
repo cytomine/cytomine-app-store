@@ -22,7 +22,9 @@
       </div>
 
       <footer class="card-footer">
-        <a href="#" class="card-footer-item" @click.prevent="handleDownload">{{ t('download') }}</a>
+        <b-button class="card-footer-item" type="is-ghost" @click.prevent="handleDownload">
+          {{ t('download') }}
+        </b-button>
         <a href="#" class="card-footer-item">More</a>
       </footer>
     </div>

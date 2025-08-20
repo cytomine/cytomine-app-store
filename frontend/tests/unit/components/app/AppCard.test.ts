@@ -34,6 +34,11 @@ describe('AppCard.vue', () => {
       props: {
         app: mockTask,
       },
+      global: {
+        stubs: {
+          'b-button': true,
+        },
+      },
     });
   });
 
