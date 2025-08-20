@@ -8,7 +8,7 @@ import '@fortawesome/fontawesome-free/css/all.css';
 
 import App from './App.vue';
 import i18n from './i18n';
-import router from './router';
+import router from './routes';
 
 const app = createApp(App);
 
