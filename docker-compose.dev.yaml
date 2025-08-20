@@ -24,10 +24,13 @@ services:
   backend:
     build:
       context: backend
+    volumes:
+      - backend_data:/data
     ports:
       - "8081:8081"
     environment:
       DB_HOST: postgres
+      REGISTRY_HOST: registry
     depends_on:
       - postgres
       - registry
@@ -49,5 +52,6 @@ services:
     restart: unless-stopped
 
 volumes:
+  backend_data:
   postgres_data:
   registry_data:

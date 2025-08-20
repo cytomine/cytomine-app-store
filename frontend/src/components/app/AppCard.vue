@@ -22,6 +22,7 @@
       </div>
 
       <footer class="card-footer">
+        <a href="#" class="card-footer-item" @click.prevent="handleDownload">{{ t('download') }}</a>
         <a href="#" class="card-footer-item">More</a>
       </footer>
     </div>
@@ -29,11 +30,21 @@
 </template>
 
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n';
+
+import { useTask } from '@/composables/useTask';
 import type { App } from '@/types/types.ts';
 
-defineProps<{
+const { app } = defineProps<{
   app: App,
 }>();
+
+const { t } = useI18n();
+const { downloadTask } = useTask();
+
+const handleDownload = async () => {
+  await downloadTask(app.namespace, app.version);
+};
 </script>
 
 <style scoped>
