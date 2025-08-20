@@ -121,7 +121,7 @@ public class TaskController {
         @PathVariable String version
     ) throws TaskServiceException, TaskNotFoundException {
         log.info("tasks/{namespace}/{version}/logo.png GET");
-        StorageData data = taskService.retrieveYmlDescriptor(namespace, version);
+        StorageData data = taskService.retrieveLogo(namespace, version);
         File file = data.peek().getData();
 
         HttpHeaders headers = new HttpHeaders();
