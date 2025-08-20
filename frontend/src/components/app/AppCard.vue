@@ -2,7 +2,10 @@
   <div class="card">
     <div class="card-image">
       <figure class="image is-animated is-5by3">
-        <img :src="app.imageUrl || 'https://bulma.io/assets/images/placeholders/1280x960.png'" alt="Placeholder image">
+        <img
+            :src="'http://localhost:8081/api/v1/tasks/' + app.namespace + '/' + app.version + '/logo.png'"
+            @error="$event.target.src='https://bulma.io/assets/images/placeholders/1280x960.png'"
+            alt="Placeholder image">
       </figure>
     </div>
 
