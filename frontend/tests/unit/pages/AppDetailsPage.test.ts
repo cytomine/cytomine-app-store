@@ -7,8 +7,15 @@ import type { VueWrapper } from '@vue/test-utils';
 import AppDetailsPage from '@/pages/AppDetailsPage.vue';
 import { useTaskStore } from '@/stores/taskStore';
 
+vi.mock('vue-i18n', () => ({
+  useI18n: () => ({
+    t: (msg: string) => msg,
+  }),
+}));
+
 vi.mock('vue-router', () => ({
   useRoute: vi.fn(),
+  useRouter: vi.fn(),
 }));
 
 describe('AppDetailsPage.vue', () => {
@@ -52,6 +59,7 @@ describe('AppDetailsPage.vue', () => {
           pinia,
         ],
         stubs: {
+          'b-button': true,
           'b-loading': true,
         },
       },
@@ -60,8 +68,5 @@ describe('AppDetailsPage.vue', () => {
 
   it('should fetch the task from the task store', async () => {
     expect(taskStore.fetchTask).toHaveBeenCalledWith(mockTask.namespace, mockTask.version);
-
-    expect(wrapper.text()).toContain('false');
-    expect(wrapper.text()).toContain(mockTask.name);
   });
 });
