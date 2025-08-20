@@ -2,30 +2,30 @@
   <b-loading v-if="isLoading" :is-full-page="false" :active="isLoading" />
   <div>
     {{ isLoading }}
+    {{ task }}
     App Details Page
   </div>
 </template>
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
+import { useRoute } from 'vue-router';
 
-import { getTask } from '@/api/tasks';
+import { useTaskStore } from '@/stores/taskStore';
 import type { App } from '@/types/types';
 
-const { app } = defineProps<{
-  app: App;
-}>();
+const route = useRoute();
+const taskStore = useTaskStore();
 
 const task = ref<App | null>(null);
 const isLoading = ref(true);
-const error = ref<string | null>(null);
 
 onMounted(async () => {
   try {
-    task.value = await getTask(app.namespace, app.version);
-  } catch (err) {
-    error.value = 'Failed to load task';
-    console.error(err);
+    task.value = await taskStore.fetchTask(
+      route.params.namespace.toString(),
+      route.params.version.toString(),
+    );
   } finally {
     isLoading.value = false;
   }
