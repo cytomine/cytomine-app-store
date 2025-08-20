@@ -78,7 +78,7 @@ describe('AppDetailsPage.vue', () => {
     });
   });
 
-  it('should fetch the task from the task store', () => {
+  it('should fetch the task from the task store on mount', () => {
     expect(taskStore.fetchTask).toHaveBeenCalledWith(mockTask.namespace, mockTask.version);
   });
 
