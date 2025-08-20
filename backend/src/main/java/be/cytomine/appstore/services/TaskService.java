@@ -489,7 +489,8 @@ public class TaskService {
             file = fileStorageHandler.readStorageData(file);
         } catch (FileStorageException ex) {
             log.debug("Storage: failed to get logo from storage [{}]", ex.getMessage());
-            throw new TaskServiceException(ex);
+            AppStoreError error = ErrorBuilder.build(ErrorCode.INTERNAL_LOGO_EXTRACTION_FAILED);
+            throw new TaskServiceException(error);
         }
         return file;
     }
