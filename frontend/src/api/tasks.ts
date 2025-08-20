@@ -14,7 +14,7 @@ export const getTask = async (namespace: string, version: string): Promise<App> 
   }
 
   try {
-    const response = await client.get<App>(`/tasks/${namespace}/${version}`);
+    const response = await client.get(`/tasks/${namespace}/${version}`);
     return camelcaseKeys(response.data, { deep: true });
   } catch (error) {
     console.error(`Failed to fetch task ${namespace}/${version}:`, error);
