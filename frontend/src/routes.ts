@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 
+import AppDetailsPage from '@/pages/AppDetailsPage.vue';
 import AppStore from '@/pages/AppStore.vue';
-import AppPage from '@/pages/AppPage.vue';
 import MyAppsPage from '@/pages/MyAppsPage.vue';
 
 const routes = [
@@ -14,9 +14,9 @@ const routes = [
     component: MyAppsPage,
   },
   {
-    name: 'AppPage',
+    name: 'AppDetails',
     path: '/app/:namespace/:version',
-    component: AppPage,
+    component: AppDetailsPage,
   },
 ];
 

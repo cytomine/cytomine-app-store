@@ -24,7 +24,7 @@
       <footer class="card-footer">
         <RouterLink
           class="card-footer-item"
-          :to="{ name: 'AppPage', params: { namespace: app.namespace, version: app.version } }"
+          :to="{ name: 'AppDetails', params: { namespace: app.namespace, version: app.version } }"
         >
           {{ t('show-more') }}
         </RouterLink>

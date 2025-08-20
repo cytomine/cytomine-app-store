@@ -1,5 +1,5 @@
 <template>
   <div>
-    App Page
+    App Details Page
   </div>
 </template>
