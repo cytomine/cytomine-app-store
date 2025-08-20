@@ -482,7 +482,7 @@ public class TaskService {
         log.info("Storage : retrieving logo...");
         Task task = taskRepository.findByNamespaceAndVersion(namespace, version);
         if (task == null) {
-            throw new TaskNotFoundException("task not found");
+            throw new TaskNotFoundException("task " + namespace + ":" + version + " not found");
         }
 
         StorageData file = new StorageData("logo.png", task.getStorageReference());
