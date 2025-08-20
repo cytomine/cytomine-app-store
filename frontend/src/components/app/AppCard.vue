@@ -22,23 +22,32 @@
       </div>
 
       <footer class="card-footer">
-        <a href="#" class="card-footer-item">More</a>
+        <RouterLink
+          class="card-footer-item"
+          :to="{ name: 'AppPage', params: { namespace: app.namespace, version: app.version } }"
+        >
+          {{ t('show-more') }}
+        </RouterLink>
       </footer>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n';
+
 import type { App } from '@/types/types.ts';
 
 defineProps<{
   app: App,
 }>();
+
+const { t } = useI18n();
 </script>
 
 <style scoped>
-.less-bottom {
-  margin-bottom: 0.9rem !important;
+:not(a) {
+  color: black;
 }
 
 .card {
@@ -47,18 +56,16 @@ defineProps<{
   transition: .2s ease-out;
 }
 
-.rounded {
-  border-radius: 10px;
-}
-
-/* On mouse-over, add a deeper shadow + Bounce */
 .card:hover {
   box-shadow: 0 1px 100px 0 rgba(38, 63, 206, 0.3);
   transform: translate3d(0, -2px, 0);
 }
 
-/* Router-Link makes entire text blue so let's select everything except the links & make them black */
-:not(a) {
-  color: black;
+.less-bottom {
+  margin-bottom: 0.9rem !important;
+}
+
+.rounded {
+  border-radius: 10px;
 }
 </style>
