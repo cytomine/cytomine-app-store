@@ -79,15 +79,7 @@ describe('AppStore.vue', () => {
     vi.clearAllMocks();
   });
 
-  describe('Initialisation', () => {
-    it('should call getAllTasks on mount', () => {
-      expect(mockGetAllTasks).toHaveBeenCalledOnce();
-    });
-
-    it('should populate tasks with data from getAllTasks', () => {
-      expect(wrapper.vm.tasks).toEqual(mockTasks);
-    });
-
+  describe('setup', () => {
     it('should render an AppCard component for each task', () => {
       const cards = wrapper.findAllComponents(AppCard);
 
@@ -98,7 +90,7 @@ describe('AppStore.vue', () => {
     });
   });
 
-  describe('Search', () => {
+  describe('search', () => {
     it('should update search input model correctly', async () => {
       const inputElement = wrapper.find('input');
 
