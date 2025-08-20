@@ -1,5 +1,5 @@
 import { createTestingPinia } from '@pinia/testing';
-import { shallowMount } from '@vue/test-utils';
+import { flushPromises, shallowMount } from '@vue/test-utils';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { useRoute } from 'vue-router';
 import type { VueWrapper } from '@vue/test-utils';
@@ -78,6 +78,29 @@ describe('AppDetailsPage.vue', () => {
     });
   });
 
+  it('should show loader until fetch is completed', async () => {
+    const wrapperLoader = shallowMount(AppDetailsPage, {
+      global: {
+        plugins: [
+          pinia,
+        ],
+        stubs: {
+          'b-button': true,
+          'b-collapse': true,
+          'b-icon': true,
+          'b-loading': true,
+        },
+      },
+    });
+
+    expect(wrapperLoader.find('b-loading-stub').exists()).toBe(true);
+    expect(taskStore.fetchTask).toHaveBeenCalledWith(mockTask.namespace, mockTask.version);
+
+    await flushPromises();
+
+    expect(wrapperLoader.find('b-loading-stub').exists()).toBe(false);
+  });
+
   it('should fetch the task from the task store on mount', () => {
     expect(taskStore.fetchTask).toHaveBeenCalledWith(mockTask.namespace, mockTask.version);
   });
@@ -93,7 +116,7 @@ describe('AppDetailsPage.vue', () => {
     });
   });
 
-  it('should call router.back() when back button clicked', async () => {
+  it('should call router.back() when back button is clicked', async () => {
     await wrapper.find('b-button-stub').trigger('click');
 
     expect(mockRouter.back).toHaveBeenCalledOnce();
