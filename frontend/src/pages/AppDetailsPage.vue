@@ -2,7 +2,7 @@
   <div class="content-wrapper">
     <b-loading v-if="isLoading" :is-full-page="false" :active="isLoading" />
 
-    <div v-if="task" class="panel">
+    <div v-if="task" class="panel pb-5">
       <p class="panel-heading">
         <b-button class="is-link" icon-pack="fa" icon-left="angle-left" @click="router.back()">
           {{ t('go-back') }}
@@ -12,62 +12,56 @@
       <div class="panel-block">
         <section class="media">
           <figure class="media-left">
-            <p class="image logo">
-              <img :src="task.imageUrl || 'https://bulma.io/assets/images/placeholders/1280x960.png'">
-            </p>
+            <b-image class="logo" :alt="task.name"
+              :src="task.imageUrl || 'https://bulma.io/assets/images/placeholders/1280x960.png'" ratio="2by1" />
           </figure>
-          <div class="media-content app-content">
+          <div class="media-content m-1 pt-2">
             <div class="content">
               <p>
-                <strong class="app-title">{{ task.name }}</strong>
+                <strong class="is-size-2">{{ task.name }}</strong>
                 <br>
                 <span>
                   <small v-for="(author, index) in task.authors" :key="index">
-                    {{ `- ${author.firstName} ${author.lastName}` }}
+                    - {{ author.firstName }} {{ author.lastName }}
                   </small>
                 </span>
               </p>
             </div>
-          </div>
-        </section>
 
-        <section class="metadata level">
-          <div class="level-item has-text-centered">
-            <div>
-              <p class="heading">Date</p>
-              <p class="title">{{ task.date || t('unknown') }}</p>
-            </div>
-          </div>
+            <div class="media-content">
+              <div class="card">
+                <div class="card-header">
+                  <p class="card-header-title">
+                    {{ t("description") }}
+                  </p>
+                </div>
 
-          <div class="level-item has-text-centered">
-            <div>
-              <p class="heading">Version</p>
-              <p class="title">{{ task.version }}</p>
-            </div>
-          </div>
-        </section>
-
-        <section>
-          <b-collapse class="card" animation="slide">
-            <template #trigger="props">
-              <div class="card-header" role="button">
-                <p class="card-header-title">
-                  {{ t("description") }}
-                </p>
-                <a class="card-header-icon">
-                  <b-icon :icon="props.open ? 'menu-down' : 'menu-up'"></b-icon>
-                </a>
-              </div>
-            </template>
-
-            <div class="card-content">
-              <div class="content">
-                {{ task.description || t('no-description') }}
+                <div class="card-content">
+                  <div class="content">
+                    {{ task.description || t('no-description') }}
+                  </div>
+                </div>
               </div>
             </div>
-          </b-collapse>
+          </div>
         </section>
       </div>
+
+      <section class="level mt-5">
+        <div class="level-item has-text-centered">
+          <div>
+            <p class="heading">Date</p>
+            <p class="title">{{ task.date || t('unknown') }}</p>
+          </div>
+        </div>
+
+        <div class="level-item has-text-centered">
+          <div>
+            <p class="heading">Version</p>
+            <p class="title">{{ task.version }}</p>
+          </div>
+        </div>
+      </section>
     </div>
   </div>
 </template>
@@ -101,43 +95,11 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-/* ----- Upper Section (Logo + Update) ----- */
 .logo {
   width: 17rem;
   height: 13rem;
   position: relative;
   overflow: hidden;
-  /* images that overflow (ex. portrait) will need this one */
   border-radius: 15%;
-}
-
-img {
-  position: absolute;
-  width: 100%;
-  top: 50%;
-  -ms-transform: translateY(-50%);
-  -webkit-transform: translateY(-50%);
-  transform: translateY(-50%);
-  /* for none overflowing imgs */
-  border-radius: 15%;
-}
-
-.app-content {
-  margin: 1%;
-  padding-top: 2%;
-}
-
-.app-title {
-  font-size: 1.9rem;
-}
-
-.update-btn {
-  margin: 3%;
-  size: 2rem;
-}
-
-/*  ----- Metadata Section (Date + Ver...) ----- */
-.metadata {
-  margin-top: 5%;
 }
 </style>
