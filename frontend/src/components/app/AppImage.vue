@@ -3,7 +3,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 
 const { namespace, version } = defineProps<{
   namespace?: string,
@@ -27,6 +27,13 @@ const imageUrl = computed(() => {
 
   return `${baseUrl}/api/v1/tasks/${namespace}/${version}/logo`;
 });
+
+watch(
+  () => [namespace, version],
+  () => {
+    hasImageError.value = false;
+  },
+);
 
 const handleImageError = (event: Event) => {
   const target = event.target as HTMLImageElement;
