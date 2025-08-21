@@ -38,6 +38,7 @@ describe('AppCard.vue', () => {
       global: {
         stubs: {
           'b-button': true,
+          'router-link': true,
         },
       },
     });
