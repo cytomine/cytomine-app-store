@@ -39,8 +39,8 @@ export function useTask() {
         result.value.some(item =>
           item.name === task.name &&
           item.namespace === task.namespace &&
-          item.version === task.version
-        )
+          item.version === task.version,
+        ),
       );
     } finally {
       isLoading.value = false;

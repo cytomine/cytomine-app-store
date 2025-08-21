@@ -15,9 +15,9 @@ const mockGetAllTasks = vi.mocked(getAllTasks);
 const mockSearchTasks = vi.mocked(searchTasks);
 
 const mockTasks: App[] = [
-  { id: '1', name: 'task1', namespace: 'ns1', version: '1.0', date: '20/08/2025' },
-  { id: '2', name: 'task2', namespace: 'ns2', version: '2.0', date: '20/08/2025' },
-  { id: '3', name: 'task3', namespace: 'ns1', version: '1.5', date: '20/08/2025' },
+  { id: '1', name: 'task1', namespace: 'ns1', version: '1.0', date: '20/08/2025', authors: [] },
+  { id: '2', name: 'task2', namespace: 'ns2', version: '2.0', date: '20/08/2025', authors: [] },
+  { id: '3', name: 'task3', namespace: 'ns1', version: '1.5', date: '20/08/2025', authors: [] },
 ];
 
 const mockSearchResults: Search[] = [
@@ -92,8 +92,8 @@ describe('useTask', () => {
         mockSearchResults.some(result =>
           result.name === task.name &&
           result.namespace === task.namespace &&
-          result.version === task.version
-        )
+          result.version === task.version,
+        ),
       );
 
       expect(wrapper.vm.tasks).toEqual(expectedFilteredTasks);
