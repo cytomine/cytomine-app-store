@@ -2,10 +2,7 @@
   <div class="card">
     <div class="card-image">
       <figure class="image is-animated is-5by3">
-        <img
-            :src="taskLogoUrl"
-            @error="($event.target as HTMLImageElement).src='https://bulma.io/assets/images/placeholders/1280x960.png'"
-            alt="Placeholder image">
+        <app-image :namespace="app.namespace" :version="app.version" />
       </figure>
     </div>
 
@@ -25,12 +22,10 @@
       </div>
 
       <footer class="card-footer">
-        <RouterLink
-          class="card-footer-item"
-          :to="{ name: 'AppDetails', params: { namespace: app.namespace, version: app.version } }"
-        >
+        <router-link class="card-footer-item"
+          :to="{ name: 'AppDetails', params: { namespace: app.namespace, version: app.version } }">
           {{ t('show-more') }}
-        </RouterLink>
+        </router-link>
       </footer>
     </div>
   </div>
@@ -39,21 +34,10 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
 
+import AppImage from '@/components/app/AppImage.vue';
 import type { App } from '@/types/types.ts';
-import { computed } from 'vue';
 
-const taskLogoUrl = computed(() => {
-  const baseUrl = import.meta.env.VITE_API_BASE_URL;
-  const { namespace, version } = props.app;
-
-  if (!baseUrl || !namespace || !version) {
-    return '';
-  }
-
-  return `${baseUrl}/api/v1/tasks/${namespace}/${version}/logo`;
-});
-
-const props = defineProps<{
+defineProps<{
   app: App,
 }>();
 

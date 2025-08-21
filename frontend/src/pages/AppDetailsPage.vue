@@ -11,9 +11,8 @@
 
       <div class="panel-block">
         <section class="media">
-          <figure class="media-left">
-            <b-image class="logo" :alt="task.name"
-              :src="task.imageUrl || 'https://bulma.io/assets/images/placeholders/1280x960.png'" ratio="2by1" />
+          <figure class="media-left fixed-image">
+            <app-image :namespace="task.namespace" :version="task.version" />
           </figure>
           <div class="media-content m-1 pt-2">
             <div class="content">
@@ -71,6 +70,7 @@ import { onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
 
+import AppImage from '@/components/app/AppImage.vue';
 import { useTaskStore } from '@/stores/taskStore';
 import type { App } from '@/types/types';
 
@@ -101,5 +101,17 @@ onMounted(async () => {
   position: relative;
   overflow: hidden;
   border-radius: 15%;
+}
+
+.fixed-image {
+  width: 25rem;
+  height: auto;
+}
+
+.fixed-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 10px;
 }
 </style>

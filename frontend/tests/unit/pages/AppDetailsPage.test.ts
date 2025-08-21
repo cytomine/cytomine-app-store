@@ -70,9 +70,6 @@ describe('AppDetailsPage.vue', () => {
         ],
         stubs: {
           'b-button': true,
-          'b-collapse': true,
-          'b-icon': true,
-          'b-image': true,
           'b-loading': true,
         },
       },
@@ -87,9 +84,6 @@ describe('AppDetailsPage.vue', () => {
         ],
         stubs: {
           'b-button': true,
-          'b-collapse': true,
-          'b-icon': true,
-          'b-image': true,
           'b-loading': true,
         },
       },
