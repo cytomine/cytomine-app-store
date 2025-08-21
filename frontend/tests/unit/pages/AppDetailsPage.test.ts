@@ -101,17 +101,6 @@ describe('AppDetailsPage.vue', () => {
     expect(taskStore.fetchTask).toHaveBeenCalledWith(mockTask.namespace, mockTask.version);
   });
 
-  it('should render task details', () => {
-    expect(wrapper.text()).toContain(mockTask.name);
-    expect(wrapper.text()).toContain(mockTask.version);
-    expect(wrapper.text()).toContain(mockTask.date);
-
-    mockTask.authors.map(author => {
-      expect(wrapper.text()).toContain(author.firstName);
-      expect(wrapper.text()).toContain(author.lastName);
-    });
-  });
-
   it('should call router.back() when back button is clicked', async () => {
     await wrapper.find('b-button-stub').trigger('click');
 

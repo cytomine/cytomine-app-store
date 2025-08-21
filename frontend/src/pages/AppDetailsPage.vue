@@ -20,9 +20,12 @@
                 <strong class="is-size-2">{{ task.name }}</strong>
                 <br>
                 <span>
-                  <small v-for="(author, index) in task.authors" :key="index">
-                    - {{ author.firstName }} {{ author.lastName }}
-                  </small>
+                  <app-author
+                    v-for="(author, index) in task.authors"
+                    :key="index"
+                    :author="author"
+                    class="mb-2 block"
+                  />
                 </span>
               </p>
             </div>
@@ -70,6 +73,7 @@ import { onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
 
+import AppAuthor from '@/components/app/AppAuthor.vue';
 import AppImage from '@/components/app/AppImage.vue';
 import { useTaskStore } from '@/stores/taskStore';
 import type { App } from '@/types/types';
