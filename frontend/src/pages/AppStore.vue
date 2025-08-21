@@ -21,40 +21,13 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import AppCard from '@/components/app/AppCard.vue';
-import { getAllTasks, searchTasks } from '@/api/tasks';
-import type { App, Search } from '@/types/types.ts';
+import { useTask } from '@/composables/useTask';
 
 const { t } = useI18n();
-
-const searchString = ref('');
-const result = ref<Search[]>([]);
-const tasks = ref<App[]>([]);
-
-watch(searchString, async (query) => {
-  if (!query || query.trim() === '') {
-    tasks.value = await getAllTasks();
-    result.value = [];
-    return;
-  }
-
-  result.value = await searchTasks(query);
-
-  tasks.value = tasks.value.filter(task =>
-    result.value.some(item =>
-      item.name === task.name &&
-      item.namespace === task.namespace &&
-      item.version === task.version,
-    ),
-  );
-});
-
-onMounted(async () => {
-  tasks.value = await getAllTasks();
-});
+const { searchString, result, tasks } = useTask();
 
 defineExpose({
   result,

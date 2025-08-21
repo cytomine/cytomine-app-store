@@ -24,21 +24,15 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import AppCard from '@/components/app/AppCard.vue';
-import { createTask, getAllTasks } from '@/api/tasks';
-import type { App } from '@/types/types.ts';
+import { createTask } from '@/api/tasks';
+import { useTask } from '@/composables/useTask';
 
 const { t } = useI18n();
-
-const searchString = ref('');
-const tasks = ref<App[]>([]);
-
-onMounted(async () => {
-  tasks.value = await getAllTasks();
-});
+const { searchString, tasks } = useTask();
 
 const selectedFile = ref<File | null>(null);
 const handleFileChange = async () => {
