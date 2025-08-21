@@ -1,8 +1,25 @@
+import camelcaseKeys from 'camelcase-keys';
+
 import client from './client';
+import type { App } from '@/types/types';
 
 export const getAllTasks = async () => {
   const response = await client.get('/tasks');
-  return response.data;
+  return camelcaseKeys(response.data, { deep: true });
+};
+
+export const getTask = async (namespace: string, version: string): Promise<App> => {
+  if (!namespace || !version) {
+    throw new Error('Namespace and version are required');
+  }
+
+  try {
+    const response = await client.get(`/tasks/${namespace}/${version}`);
+    return camelcaseKeys(response.data, { deep: true });
+  } catch (error) {
+    console.error(`Failed to fetch task ${namespace}/${version}:`, error);
+    throw error;
+  }
 };
 
 export const getTaskBundle = async (namespace: string, version: string) => {

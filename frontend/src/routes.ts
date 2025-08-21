@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 
+import AppDetailsPage from '@/pages/AppDetailsPage.vue';
 import AppStore from '@/pages/AppStore.vue';
 import MyAppsPage from '@/pages/MyAppsPage.vue';
 
@@ -11,6 +12,11 @@ const routes = [
   {
     path: '/my-apps',
     component: MyAppsPage,
+  },
+  {
+    name: 'AppDetails',
+    path: '/app/:namespace/:version',
+    component: AppDetailsPage,
   },
 ];
 

@@ -17,6 +17,7 @@ export default defineConfigWithVueTs(
       'array-bracket-spacing': ['error', 'never'],
       'brace-style': ['error', '1tbs'],
       'camelcase': ['error', { allow: ['$_veeValidate'] }],
+      'comma-dangle': ['error', 'always-multiline'],
       'curly': ['error', 'all'],
       'eqeqeq': ['error', 'smart'],
       'indent': ['error', 2, { 'SwitchCase': 1, 'ignoredNodes': ['TemplateLiteral'] }],

@@ -1,7 +1,12 @@
 {
+  "description": "Description",
   "download": "Download",
+  "go-back": "Go back",
   "my-apps": "My Apps",
+  "no-description": "No description",
   "search": "Search",
+  "show-more": "Show more",
   "store": "Store",
+  "unknown": "Unknown",
   "upload": "Upload"
 }

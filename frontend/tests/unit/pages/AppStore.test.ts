@@ -45,7 +45,7 @@ describe('AppStore.vue', () => {
       nameshort: 'test',
       imageName: 'test-image',
       version: '1.0.0',
-    }
+    },
   ];
 
   const mockGetAllTasks = vi.mocked(getAllTasks).mockResolvedValue([...mockTasks]);
@@ -62,8 +62,8 @@ describe('AppStore.vue', () => {
             methods: {
               handleInput(event: Event) {
                 this.$emit('update:modelValue', (event.target as HTMLInputElement).value);
-              }
-            }
+              },
+            },
           },
           'AppCard': {
             template: '<div class="app-card"></div>',

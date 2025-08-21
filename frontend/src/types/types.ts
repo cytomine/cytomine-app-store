@@ -6,6 +6,15 @@ export interface App {
   date: string;
   description?: string;
   imageUrl?: string;
+  authors: Author[];
+};
+
+export interface Author {
+  firstName: string;
+  lastName: string;
+  organization: string;
+  email: string;
+  isContact: boolean;
 };
 
 export interface Search {
