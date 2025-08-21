@@ -10,20 +10,6 @@ import AppNavbar from '@/components/navbar/AppNavbar.vue';
 </script>
 
 <style>
-html,
-body {
-  height: 100vh;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-}
-
-body {
-  font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif, sans-serif;
-  color: #333;
-  background: #d4d4d4;
-}
-
 .content-wrapper {
   padding: 1.5% 2.5%;
   position: relative;
