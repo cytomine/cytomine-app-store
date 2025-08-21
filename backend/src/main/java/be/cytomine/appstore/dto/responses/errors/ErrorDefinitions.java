@@ -37,7 +37,8 @@ public class ErrorDefinitions {
         codes.put(ErrorCode.INTERNAL_UNKNOWN_IMAGE_ARCHIVE_FORMAT, new MessageCode("APPSTR-internal-image-validation-error", "unknown image archive format"));
         codes.put(ErrorCode.INTERNAL_MAX_UPLOAD_SIZE_EXCEEDED, new MessageCode("APPSTR-internal-bundle-validation-error", "maximum upload size for bundle exceeded"));
         codes.put(ErrorCode.INTERNAL_INVALID_BUNDLE_FORMAT, new MessageCode("APPSTR-internal-bundle-validation-error", "invalid bundle format"));
-
+        codes.put(ErrorCode.INTERNAL_LOGO_EXTRACTION_FAILED, new MessageCode("APPSTR-internal-logo-error", "failed to extract logo from bundle"));
+        codes.put(ErrorCode.INTERNAL_LOGO_NOT_FOUND, new MessageCode("APPSTR-internal-logo-not-found", "no logo found in storage"));
     }
 
     public static MessageCode fromCode(ErrorCode code) {

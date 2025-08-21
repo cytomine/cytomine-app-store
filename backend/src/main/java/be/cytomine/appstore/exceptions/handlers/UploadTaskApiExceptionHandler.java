@@ -30,7 +30,9 @@ public class UploadTaskApiExceptionHandler {
         TaskServiceException e
     ) {
         log.info("Internal server error [" + e.getMessage() + "]");
-        e.printStackTrace();
+        if (e.getError().getErrorCode().equalsIgnoreCase("APPSTR-internal-logo-not-found")) {
+            return new ResponseEntity<AppStoreError>(e.getError(), HttpStatus.NO_CONTENT);
+        }
         return new ResponseEntity<AppStoreError>(e.getError(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 

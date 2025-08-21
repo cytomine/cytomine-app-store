@@ -52,8 +52,9 @@ public class ArchiveUtils {
     public UploadTaskArchive readZipArchive(MultipartFile archive) throws BundleArchiveException {
         File descriptorData = getDescriptorFileFromZip(archive);
         File imageData = getDockerImageFromZip(archive, getCustomImageName(descriptorData));
+        File logoData = getLogoFileFromZip(archive);
 
-        return new UploadTaskArchive(descriptorData, imageData);
+        return new UploadTaskArchive(descriptorData, imageData, logoData);
     }
 
     private String getCustomImageName(File descriptorData) {
@@ -109,6 +110,37 @@ public class ArchiveUtils {
             ErrorCode.INTERNAL_DESCRIPTOR_NOT_IN_DEFAULT_LOCATION
         );
         throw new BundleArchiveException(error);
+    }
+
+    private File getLogoFileFromZip(MultipartFile archive) throws BundleArchiveException {
+        log.info("ArchiveUtils: parse logo file...");
+        File tempFile = null;
+        ZipEntry entry;
+        try (ZipArchiveInputStream zais = new ZipArchiveInputStream(archive.getInputStream())) {
+            while ((entry = zais.getNextZipEntry()) != null) {
+                if (entry.getName().toLowerCase().matches("logo\\.(png)")) {
+                    tempFile = Files.createTempFile("logo-", ".png").toFile();
+                    tempFile.deleteOnExit();
+
+                    try (FileOutputStream fos = new FileOutputStream(tempFile)) {
+                        zais.transferTo(fos);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            log.error(
+                "Failed to extract logo file from archive: {}",
+                archive.getOriginalFilename(),
+                e
+            );
+            AppStoreError error = ErrorBuilder.build(
+                ErrorCode.INTERNAL_LOGO_EXTRACTION_FAILED
+            );
+            throw new BundleArchiveException(error);
+        }
+
+        log.info("ArchiveUtils: logo file successfully extracted");
+        return tempFile;
     }
 
     private File getDockerImageFromZip(
