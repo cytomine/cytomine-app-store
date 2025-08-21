@@ -20,9 +20,33 @@ vi.mock('vue-i18n', () => ({
 describe('MyAppsPage', () => {
   let wrapper: VueWrapper<InstanceType<typeof MyAppsPage>>;
 
+  const authors = [
+    {
+      firstName: 'John',
+      lastName: 'Doe',
+      organization: 'Cytomine',
+      email: 'test@cytomine.org',
+      isContact: true,
+    },
+  ];
+
   const mockTasks = [
-    { id: '1', name: 'Task 1', namespace: 'Namespace 1', version: '1.0.0', date: '18/08/2025' },
-    { id: '2', name: 'Task 2', namespace: 'Namespace 2', version: '1.0.0', date: '18/08/2025' },
+    {
+      id: '1',
+      name: 'Task 1',
+      namespace: 'Namespace 1',
+      version: '1.0.0',
+      date: '18/08/2025',
+      authors: authors,
+    },
+    {
+      id: '2',
+      name: 'Task 2',
+      namespace: 'Namespace 2',
+      version: '1.0.0',
+      date: '18/08/2025',
+      authors: authors,
+    },
   ];
 
   const mockCreateTask = vi.mocked(createTask);

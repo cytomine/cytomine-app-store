@@ -2,10 +2,7 @@
   <div class="card">
     <div class="card-image">
       <figure class="image is-animated is-5by3">
-        <img
-            :src="taskLogoUrl"
-            @error="($event.target as HTMLImageElement).src='https://bulma.io/assets/images/placeholders/1280x960.png'"
-            alt="Placeholder image">
+        <app-image :namespace="app.namespace" :version="app.version" />
       </figure>
     </div>
 
@@ -28,15 +25,19 @@
         <b-button class="card-footer-item" type="is-ghost" @click.prevent="handleDownload">
           {{ t('download') }}
         </b-button>
-        <a href="#" class="card-footer-item">More</a>
+        <router-link class="card-footer-item"
+          :to="{ name: 'AppDetails', params: { namespace: app.namespace, version: app.version } }">
+          {{ t('show-more') }}
+        </router-link>
       </footer>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+
+import AppImage from '@/components/app/AppImage.vue';
 
 import { useTask } from '@/composables/useTask';
 import type { App } from '@/types/types.ts';
@@ -48,25 +49,14 @@ const { app } = defineProps<{
 const { t } = useI18n();
 const { downloadTask } = useTask();
 
-const taskLogoUrl = computed(() => {
-  const baseUrl = import.meta.env.VITE_API_BASE_URL;
-  const { namespace, version } = app;
-
-  if (!baseUrl || !namespace || !version) {
-    return '';
-  }
-
-  return `${baseUrl}/api/v1/tasks/${namespace}/${version}/logo`;
-});
-
 const handleDownload = async () => {
   await downloadTask(app.namespace, app.version);
 };
 </script>
 
 <style scoped>
-.less-bottom {
-  margin-bottom: 0.9rem !important;
+:not(a) {
+  color: black;
 }
 
 .card {
@@ -75,18 +65,12 @@ const handleDownload = async () => {
   transition: .2s ease-out;
 }
 
-.rounded {
-  border-radius: 10px;
-}
-
-/* On mouse-over, add a deeper shadow + Bounce */
 .card:hover {
   box-shadow: 0 1px 100px 0 rgba(38, 63, 206, 0.3);
   transform: translate3d(0, -2px, 0);
 }
 
-/* Router-Link makes entire text blue so let's select everything except the links & make them black */
-:not(a) {
-  color: black;
+.less-bottom {
+  margin-bottom: 0.9rem !important;
 }
 </style>

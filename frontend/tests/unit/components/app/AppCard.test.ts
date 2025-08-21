@@ -27,6 +27,7 @@ describe('AppCard.vue', () => {
     version: '1.2.3',
     description: 'This is a test app',
     namespace: 'com.test.app',
+    authors: [],
   };
 
   beforeEach(() => {
@@ -37,6 +38,7 @@ describe('AppCard.vue', () => {
       global: {
         stubs: {
           'b-button': true,
+          'router-link': true,
         },
       },
     });
