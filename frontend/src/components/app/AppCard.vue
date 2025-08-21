@@ -25,6 +25,9 @@
       </div>
 
       <footer class="card-footer">
+        <b-button class="card-footer-item" type="is-ghost" @click.prevent="handleDownload">
+          {{ t('download') }}
+        </b-button>
         <a href="#" class="card-footer-item">More</a>
       </footer>
     </div>
@@ -32,12 +35,22 @@
 </template>
 
 <script setup lang="ts">
-import type { App } from '@/types/types.ts';
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+import { useTask } from '@/composables/useTask';
+import type { App } from '@/types/types.ts';
+
+const { app } = defineProps<{
+  app: App,
+}>();
+
+const { t } = useI18n();
+const { downloadTask } = useTask();
 
 const taskLogoUrl = computed(() => {
   const baseUrl = import.meta.env.VITE_API_BASE_URL;
-  const { namespace, version } = props.app;
+  const { namespace, version } = app;
 
   if (!baseUrl || !namespace || !version) {
     return '';
@@ -46,9 +59,9 @@ const taskLogoUrl = computed(() => {
   return `${baseUrl}/api/v1/tasks/${namespace}/${version}/logo`;
 });
 
-const props = defineProps<{
-  app: App,
-}>();
+const handleDownload = async () => {
+  await downloadTask(app.namespace, app.version);
+};
 </script>
 
 <style scoped>
