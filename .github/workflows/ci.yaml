@@ -76,6 +76,37 @@ jobs:
       - name: Run tests
         run: npm run test:unit
 
+  e2e-tests-frontend:
+    runs-on: self-hosted
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      - name: Set up the repository
+        uses: actions/checkout@v4
+
+      - name: Set up NodeJS
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ vars.NODE_VERSION }}
+
+      - name: Install dependencies and build
+        run: npm ci && npm run build
+
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+
+      - name: Run e2e tests
+        run: npm run test:e2e
+
+      - name: Upload test reports
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-artifacts
+          path: frontend/playwright-report
+
   lint-backend:
     runs-on: self-hosted
     defaults:
