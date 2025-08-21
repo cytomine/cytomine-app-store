@@ -1,5 +1,6 @@
 {
   "description": "Description",
+  "download": "Télécharger",
   "go-back": "Retourner en arrière",
   "my-apps": "Mes Apps",
   "no-description": "Pas de description",
@@ -7,5 +8,5 @@
   "show-more": "Monter plus",
   "store": "Magasin",
   "unknown": "Inconnu",
-  "upload": "Télécharger"
+  "upload": "Téléverser"
 }

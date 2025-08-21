@@ -22,6 +22,9 @@
       </div>
 
       <footer class="card-footer">
+        <b-button class="card-footer-item" type="is-ghost" @click.prevent="handleDownload">
+          {{ t('download') }}
+        </b-button>
         <router-link class="card-footer-item"
           :to="{ name: 'AppDetails', params: { namespace: app.namespace, version: app.version } }">
           {{ t('show-more') }}
@@ -35,13 +38,20 @@
 import { useI18n } from 'vue-i18n';
 
 import AppImage from '@/components/app/AppImage.vue';
+
+import { useTask } from '@/composables/useTask';
 import type { App } from '@/types/types.ts';
 
-defineProps<{
+const { app } = defineProps<{
   app: App,
 }>();
 
 const { t } = useI18n();
+const { downloadTask } = useTask();
+
+const handleDownload = async () => {
+  await downloadTask(app.namespace, app.version);
+};
 </script>
 
 <style scoped>
@@ -62,9 +72,5 @@ const { t } = useI18n();
 
 .less-bottom {
   margin-bottom: 0.9rem !important;
-}
-
-.rounded {
-  border-radius: 10px;
 }
 </style>

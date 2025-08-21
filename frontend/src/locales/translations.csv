@@ -1,5 +1,6 @@
 key,en,fr
 description,Description,Description
+download,Download,Télécharger
 go-back,Go back,Retourner en arrière
 my-apps,My Apps,Mes Apps
 no-description,No description,Pas de description
@@ -7,4 +8,4 @@ search,Search,Chercher
 show-more,Show more,Monter plus
 store,Store,Magasin
 unknown,Unknown,Inconnu
-upload,Upload,Télécharger
+upload,Upload,Téléverser
