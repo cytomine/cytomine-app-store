@@ -2,9 +2,7 @@ import { createApp } from 'vue';
 import { createPinia } from 'pinia';
 
 import Buefy from 'buefy';
-import 'buefy/dist/buefy.css';
-import 'bulma/css/bulma.css';
-import '@fortawesome/fontawesome-free/css/all.css';
+import './assets/styles/main.css';
 
 import App from './App.vue';
 import i18n from './i18n';
