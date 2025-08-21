@@ -2,7 +2,10 @@
   <div class="card">
     <div class="card-image">
       <figure class="image is-animated is-5by3">
-        <img :src="app.imageUrl || 'https://bulma.io/assets/images/placeholders/1280x960.png'" alt="Placeholder image">
+        <img
+            :src="taskLogoUrl"
+            @error="($event.target as HTMLImageElement).src='https://bulma.io/assets/images/placeholders/1280x960.png'"
+            alt="Placeholder image">
       </figure>
     </div>
 
@@ -32,6 +35,7 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { useTask } from '@/composables/useTask';
@@ -43,6 +47,17 @@ const { app } = defineProps<{
 
 const { t } = useI18n();
 const { downloadTask } = useTask();
+
+const taskLogoUrl = computed(() => {
+  const baseUrl = import.meta.env.VITE_API_BASE_URL;
+  const { namespace, version } = app;
+
+  if (!baseUrl || !namespace || !version) {
+    return '';
+  }
+
+  return `${baseUrl}/api/v1/tasks/${namespace}/${version}/logo`;
+});
 
 const handleDownload = async () => {
   await downloadTask(app.namespace, app.version);
