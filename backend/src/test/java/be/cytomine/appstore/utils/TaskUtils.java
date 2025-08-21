@@ -34,7 +34,7 @@ public class TaskUtils {
         File dockerImage = copy.toFile();
         dockerImage.deleteOnExit();
 
-        return new UploadTaskArchive(descriptorFile, dockerImage);
+        return new UploadTaskArchive(descriptorFile, dockerImage, null);
     }
 
     public static Author createTestAuthor() {

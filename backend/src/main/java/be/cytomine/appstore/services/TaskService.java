@@ -105,9 +105,17 @@ public class TaskService {
                 new StorageData(uploadTaskArchive.getDescriptorFile(), "descriptor.yml")
             );
             log.info("UploadTask: descriptor.yml is stored in object storage");
+
+            if (Objects.nonNull(uploadTaskArchive.getLogo())) {
+                fileStorageHandler.saveStorageData(
+                    storage,
+                    new StorageData(uploadTaskArchive.getLogo(), "logo.png")
+                );
+                log.info("UploadTask: logo.png is stored in object storage");
+            }
         } catch (FileStorageException e) {
             try {
-                log.info("UploadTask: failed to store descriptor.yml");
+                log.info("UploadTask: failed to store file {}", e.getMessage());
                 log.info("UploadTask: attempting deleting storage...");
                 fileStorageHandler.deleteStorage(storage);
                 log.info("UploadTask: storage deleted");
@@ -156,6 +164,7 @@ public class TaskService {
             .textValue());
         task.setDescriptorFile(
             uploadTaskArchive.getDescriptorFileAsJson().get("namespace").textValue());
+        task.setDescription(uploadTaskArchive.getDescriptorFileAsJson().path("description").asText());
         task.setNamespace(uploadTaskArchive.getDescriptorFileAsJson().get("namespace").textValue());
         task.setVersion(uploadTaskArchive.getDescriptorFileAsJson().get("version").textValue());
         task.setInputFolder(
@@ -453,7 +462,7 @@ public class TaskService {
 
     public StorageData retrieveYmlDescriptor(String id)
         throws TaskServiceException, TaskNotFoundException {
-        log.info("Storage : retrieving descriptor.yml...");
+        log.info("Storage : retrieving descriptor.yml using ID...");
         Optional<Task> task = taskRepository.findById(UUID.fromString(id));
         if (task.isEmpty()) {
             throw new TaskNotFoundException("task not found");
@@ -462,11 +471,33 @@ public class TaskService {
         try {
             file = fileStorageHandler.readStorageData(file);
         } catch (FileStorageException ex) {
-            log.debug("Storage: failed to get file from storage [{}]", ex.getMessage());
+            log.debug("Storage: failed to get descriptor file from storage [{}]", ex.getMessage());
             throw new TaskServiceException(ex);
         }
         return file;
     }
+
+    public StorageData retrieveLogo(String namespace, String version)
+        throws TaskServiceException, TaskNotFoundException {
+        log.info("Storage : retrieving logo...");
+        Task task = taskRepository.findByNamespaceAndVersion(namespace, version);
+        if (task == null) {
+            throw new TaskNotFoundException("task " + namespace + ":" + version + " not found");
+        }
+
+        StorageData file = new StorageData("logo.png", task.getStorageReference());
+        try {
+            file = fileStorageHandler.readStorageData(file);
+        } catch (FileStorageException ex) {
+            log.debug("Storage: failed to get logo from storage [{}]", ex.getMessage());
+            AppStoreError error = ErrorBuilder.build(ErrorCode.INTERNAL_LOGO_NOT_FOUND);
+            throw new TaskServiceException(error);
+        }
+        return file;
+    }
+
+
+
 
     public List<TaskDescription> getAllTaskDescriptions() {
         return taskRepository.findAll()

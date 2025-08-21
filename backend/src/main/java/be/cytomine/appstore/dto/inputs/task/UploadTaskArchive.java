@@ -20,11 +20,14 @@ public class UploadTaskArchive {
 
     private File dockerImage;
 
+    private File logo;
+
     private JsonNode descriptorFileAsJson;
 
-    public UploadTaskArchive(File descriptorFile, File dockerImage) {
+    public UploadTaskArchive(File descriptorFile, File dockerImage, File logoData) {
         this.descriptorFile = descriptorFile;
         this.dockerImage = dockerImage;
         this.descriptorFileAsJson = DescriptorHelper.parseDescriptor(descriptorFile);
+        this.logo = logoData;
     }
 }

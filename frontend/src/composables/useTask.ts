@@ -1,6 +1,6 @@
 import { onMounted, ref, watch } from 'vue';
 
-import { getAllTasks, searchTasks } from '@/api/tasks';
+import { getAllTasks, getTaskBundle, searchTasks } from '@/api/tasks';
 import type { App, Search } from '@/types/types';
 
 export function useTask() {
@@ -8,6 +8,21 @@ export function useTask() {
   const result = ref<Search[]>([]);
   const tasks = ref<App[]>([]);
   const isLoading = ref(false);
+
+  const downloadTask = async (namespace: string, version: string) => {
+    try {
+      const blobData = await getTaskBundle(namespace, version);
+      const blob = new Blob([blobData], { type: 'application/zip' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = `${namespace}-${version}.zip`;
+      link.click();
+      URL.revokeObjectURL(link.href);
+    } catch (error) {
+      console.error('Download failed:', error);
+      alert('Failed to download file.');
+    }
+  };
 
   const search = async (query: string) => {
     if (!query || query.trim() === '') {
@@ -46,6 +61,7 @@ export function useTask() {
   onMounted(setupTasks);
 
   return {
+    downloadTask,
     searchString,
     result,
     tasks,

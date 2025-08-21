@@ -114,5 +114,28 @@ public class TaskController {
             ));
     }
 
+    @GetMapping(value = "tasks/{namespace}/{version}/logo")
+    @ResponseStatus(code = HttpStatus.OK)
+    public ResponseEntity<?> findLogoOfTaskByNamespaceAndVersion(
+        @PathVariable String namespace,
+        @PathVariable String version
+    ) throws TaskServiceException, TaskNotFoundException {
+        log.info("tasks/{namespace}/{version}/logo.png GET");
+        StorageData data = taskService.retrieveLogo(namespace, version);
+        File file = data.peek().getData();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(
+            HttpHeaders.CONTENT_DISPOSITION,
+            "attachment; filename=\"" + file.getName() + "\""
+        );
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+
+        log.info("tasks/{namespace}/{version}/logo.png GET Ended");
+        return ResponseEntity.ok()
+            .headers(headers)
+            .body(new FileSystemResource(file));
+    }
+
 
 }
