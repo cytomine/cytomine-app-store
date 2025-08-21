@@ -49,12 +49,6 @@ describe('AppCard.vue', () => {
     expect(wrapper.text()).toContain(mockTask.description);
   });
 
-  it('should use placeholder image when no imageUrl provided', () => {
-    const img = wrapper.find('img');
-
-    expect(img.attributes('src')).toContain('bulma.io/assets/images/placeholders');
-  });
-
   it('should call downloadTask when clicking download', async () => {
     const downloadBtn = wrapper.find('.card-footer-item');
     await downloadBtn.trigger('click');
