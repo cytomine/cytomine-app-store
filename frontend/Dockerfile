@@ -2,9 +2,10 @@ ARG APP_STORE_VERSION
 ARG APP_STORE_REVISION
 ARG NGINX_VERSION=1.22.1
 ARG NODE_VERSION=20.19.4
+ARG PROXY_CACHE=registry.cytomine.org/docker
 
 # Build stage
-FROM node:${NODE_VERSION}-alpine AS build-stage
+FROM ${PROXY_CACHE}/node:${NODE_VERSION}-alpine AS build-stage
 
 WORKDIR /app
 
@@ -17,7 +18,7 @@ COPY . .
 RUN npm run build
 
 # Development stage
-FROM node:${NODE_VERSION}-bookworm-slim AS dev-server
+FROM ${PROXY_CACHE}/node:${NODE_VERSION}-bookworm-slim AS dev-server
 
 WORKDIR /app
 
@@ -28,7 +29,11 @@ RUN npm install
 CMD ["npm", "run", "dev"]
 
 # Production stage
-FROM nginx:${NGINX_VERSION}-alpine AS prod-server
+FROM ${PROXY_CACHE}/nginx:${NGINX_VERSION}-alpine AS prod-server
+
+ARG APP_STORE_REVISION
+ARG APP_STORE_VERSION
+ARG NODE_VERSION
 
 LABEL org.opencontainers.image.authors="uliege@cytomine.org" \
       org.opencontainers.image.url="https://uliege.cytomine.org/" \
