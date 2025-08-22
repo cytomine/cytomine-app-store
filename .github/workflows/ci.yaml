@@ -77,7 +77,13 @@ jobs:
         run: npm run test:unit
 
   e2e-tests-frontend:
-    runs-on: self-hosted
+    needs:
+      - test-backend
+      - test-frontend
+
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.55.0-noble
     defaults:
       run:
         working-directory: frontend
@@ -86,18 +92,12 @@ jobs:
       - name: Set up the repository
         uses: actions/checkout@v4
 
-      - name: Set up NodeJS
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ vars.NODE_VERSION }}
-
       - name: Install dependencies and build
         run: npm ci && npm run build
 
-      - name: Install Playwright Browsers
-        run: npx playwright install --with-deps
-
       - name: Run e2e tests
+        env:
+          HOME: /root
         run: npm run test:e2e
 
       - name: Upload test reports
