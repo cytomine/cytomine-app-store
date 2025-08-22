@@ -6,11 +6,12 @@ on:
       - "CI"
     types:
       - completed
+    branches:
+      - main
 
 jobs:
-  docker-build:
-    runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'pull_request' }}
+  build-push-docker:
+    runs-on: self-hosted
 
     strategy:
       fail-fast: true
