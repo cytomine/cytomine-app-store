@@ -2,68 +2,54 @@
   <div class="content-wrapper">
     <b-loading v-if="isLoading" :is-full-page="false" :active="isLoading" />
 
-    <div v-if="task" class="panel pb-5">
+    <div v-if="task" class="panel">
       <p class="panel-heading">
         <b-button class="is-link" icon-pack="fa" icon-left="angle-left" @click="router.back()">
           {{ t('go-back') }}
         </b-button>
       </p>
 
-      <div class="panel-block">
-        <section class="media">
-          <figure class="media-left fixed-image">
-            <app-image :namespace="task.namespace" :version="task.version" />
-          </figure>
-          <div class="media-content m-1 pt-2">
-            <div class="content">
-              <p>
-                <strong class="is-size-2">{{ task.name }}</strong>
-                <br>
-                <span>
-                  <app-author
-                    v-for="(author, index) in task.authors"
-                    :key="index"
-                    :author="author"
-                    class="mb-2 block"
-                  />
-                </span>
-              </p>
+      <div class="card p-4">
+        <section class="columns">
+          <div class="column is-one-quarter">
+            <figure class="image fixed-image">
+              <app-image :namespace="task.namespace" :version="task.version" />
+            </figure>
+          </div>
+
+          <div class="column">
+            <div class="p-2">
+              <h2 class="title is-4">{{ task.name }}</h2>
             </div>
-
-            <div class="media-content">
-              <div class="card">
-                <div class="card-header">
-                  <p class="card-header-title">
-                    {{ t("description") }}
-                  </p>
-                </div>
-
-                <div class="card-content">
-                  <div class="content">
-                    {{ task.description || t('no-description') }}
-                  </div>
-                </div>
-              </div>
+            <div class="px-2 is-flex is-flex-wrap-wrap">
+              <app-author v-for="(author, index) in task.authors" :key="index" :author="author" />
             </div>
           </div>
         </section>
+
+        <section class="columns has-text-centered">
+          <div class="column is-half">
+            <div>
+              <p class="heading">Date</p>
+              <p class="title">{{ task.date || t('unknown') }}</p>
+            </div>
+          </div>
+
+          <div class="column is-half">
+            <div>
+              <p class="heading">Version</p>
+              <p class="title">{{ task.version }}</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="card p-4">
+          <h3 class="title is-5">{{ t("description") }}</h3>
+          <p>
+            {{ task.description || t('no-description') }}
+          </p>
+        </section>
       </div>
-
-      <section class="level mt-5">
-        <div class="level-item has-text-centered">
-          <div>
-            <p class="heading">Date</p>
-            <p class="title">{{ task.date || t('unknown') }}</p>
-          </div>
-        </div>
-
-        <div class="level-item has-text-centered">
-          <div>
-            <p class="heading">Version</p>
-            <p class="title">{{ task.version }}</p>
-          </div>
-        </div>
-      </section>
     </div>
   </div>
 </template>

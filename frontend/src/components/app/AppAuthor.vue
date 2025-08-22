@@ -1,5 +1,5 @@
 <template>
-  <article class="media box">
+  <article class="media box author-box">
     <div class="media-content">
       <div class="content">
         <p><strong>{{ fullName }}</strong></p>
@@ -28,3 +28,15 @@ const fullName = computed(() => {
   return [author.firstName, author.lastName].join(' ');
 });
 </script>
+
+<style scoped>
+.author-box {
+  height: 7.5rem;
+  width: 20rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin: 0.5rem;
+}
+</style>
