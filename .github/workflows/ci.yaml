@@ -78,6 +78,7 @@ jobs:
 
   e2e-tests-frontend:
     needs:
+      - test-backend
       - test-frontend
 
     runs-on: self-hosted
