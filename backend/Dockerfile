@@ -4,10 +4,11 @@ ARG APP_STORE_REVISION
 ARG ENTRYPOINT_SCRIPTS_VERSION=1.4.0
 ARG GRADLE_VERSION=7.6.4-jdk17
 ARG OPENJDK_VERSION=17-slim-bullseye
+ARG PROXY_CACHE=registry.cytomine.org/docker
 
 #######################################################################################
 # Stage: dependencies download via gradle
-FROM gradle:${GRADLE_VERSION}-alpine AS deps-downloader
+FROM ${PROXY_CACHE}/gradle:${GRADLE_VERSION}-alpine AS deps-downloader
 
 # We first copy the build.gradle file and the binaries stored in the source repository.
 # This way, we retrieve all gradle dependencies at the beginning. All these steps will be
@@ -24,7 +25,7 @@ RUN gradle clean compileJava --no-daemon --console=verbose
 
 #######################################################################################
 ## Stage: building the jar file
-FROM gradle:${GRADLE_VERSION}-alpine AS jar-builder
+FROM ${PROXY_CACHE}/gradle:${GRADLE_VERSION}-alpine AS jar-builder
 
 ENV GRADLE_USER_HOME=/opt/gradle/.gradle
 COPY --from=deps-downloader /opt/gradle/.gradle /opt/gradle/.gradle
@@ -42,11 +43,11 @@ RUN sed -i -- "s/version: ce-0.0.0/version: ${APP_STORE_VERSION}/g" /app/src/mai
 
 #######################################################################################
 ## Stage: entrypoint script. Use a multi-stage because COPY --from cannot interpolate variables
-FROM cytomine/entrypoint-scripts:${ENTRYPOINT_SCRIPTS_VERSION} AS entrypoint-scripts
+FROM ${PROXY_CACHE}/cytomine/entrypoint-scripts:${ENTRYPOINT_SCRIPTS_VERSION} AS entrypoint-scripts
 
 #######################################################################################
 ## Stage: App-Engine development image
-FROM gradle:${GRADLE_VERSION}-jammy AS dev-server
+FROM ${PROXY_CACHE}/gradle:${GRADLE_VERSION}-jammy AS dev-server
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
@@ -67,7 +68,7 @@ ENTRYPOINT ["cytomine-entrypoint.sh"]
 
 #######################################################################################
 ## Stage: Cytomine core image
-FROM openjdk:${OPENJDK_VERSION} AS production
+FROM ${PROXY_CACHE}/openjdk:${OPENJDK_VERSION} AS production
 
 ARG APP_STORE_VERSION
 ARG APP_STORE_REVISION
