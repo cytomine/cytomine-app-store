@@ -41,4 +41,4 @@ jobs:
           context: ./${{ matrix.image }}
           file: ././${{ matrix.image }}/Dockerfile
           push: true
-          tags: registry.cytomine.org/cytomine/${{ matrix.image }}
+          tags: registry.cytomine.org/cytomine/app-store-${{ matrix.image }}
