@@ -48,7 +48,6 @@ describe('AppCard.vue', () => {
     expect(wrapper.text()).toContain(mockTask.name);
     expect(wrapper.text()).toContain(mockTask.date);
     expect(wrapper.text()).toContain(mockTask.version);
-    expect(wrapper.text()).toContain(mockTask.description);
   });
 
   it('should call downloadTask when clicking download', async () => {

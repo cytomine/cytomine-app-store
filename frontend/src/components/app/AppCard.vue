@@ -17,10 +17,6 @@
         </div>
       </div>
 
-      <div class="content">
-        {{ app.description }}
-      </div>
-
       <footer class="card-footer">
         <b-button class="card-footer-item" type="is-ghost" @click.prevent="handleDownload">
           {{ t('download') }}
