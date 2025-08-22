@@ -37,6 +37,6 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: ./${{ matrix.image }}
-          file: ././${{ matrix.image }}/Dockerfile
+          file: ./${{ matrix.image }}/Dockerfile
           push: true
           tags: registry.cytomine.org/cytomine/app-store-${{ matrix.image }}
