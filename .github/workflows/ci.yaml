@@ -81,7 +81,7 @@ jobs:
       - test-backend
       - test-frontend
 
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     container:
       image: mcr.microsoft.com/playwright:v1.55.0-noble
     defaults:
