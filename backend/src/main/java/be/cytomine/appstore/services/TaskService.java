@@ -558,7 +558,7 @@ public class TaskService {
         }
         // get the registry
         log.info("Retrieving IO Archive: pulling image from registry...");
-        ZipEntry zipEntry = new ZipEntry("image.tar");
+        ZipEntry zipEntry = new ZipEntry(task.getNamespace() + "-" + task.getVersion() + ".tar");
         zipOut.putNextEntry(zipEntry);
 
         // Wrap zipOut so that close() only flushes rather than closing the underlying stream.
