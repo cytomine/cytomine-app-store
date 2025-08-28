@@ -541,27 +541,14 @@ public class TaskService {
             throw new TaskNotFoundException("task not found");
         }
         log.info("Retrieving IO Archive: fetching descriptor.yml from storage...");
-
+        StorageData descriptor = new StorageData("descriptor.yml", "task-" + task.getIdentifier() + "-def");
         StorageData logo = new StorageData("logo.png", "task-" + task.getIdentifier() + "-def");
         log.info("Retrieving IO Archive: zipping...");
         Path tempFile = Files.createTempFile("bundle-", task.getIdentifier() + ".zip");
         ZipOutputStream zipOut = new ZipOutputStream(Files.newOutputStream(tempFile));
-
-        StorageData descriptor = new StorageData("descriptor.yml", "task-" + task.getIdentifier() + "-def");
         StorageData destinationStorageData = fileStorageHandler.readStorageData(descriptor);
-        for (StorageDataEntry current : destinationStorageData.getEntryList()) {
-            ZipEntry zipEntry = new ZipEntry(current.getName());
-            log.info("Retrieving IO Archive: zipping {}", current.getName());
-            zipOut.putNextEntry(zipEntry);
-
-            if (current.getStorageDataType().equals(StorageDataType.FILE)) {
-                Files.copy(current.getData().toPath(), zipOut);
-            }
-
-            zipOut.closeEntry();
-        }
-
         StorageData logoStorageData = fileStorageHandler.readStorageData(logo);
+        logoStorageData.merge(destinationStorageData);
         for (StorageDataEntry current : logoStorageData.getEntryList()) {
             ZipEntry zipEntry = new ZipEntry(current.getName());
             log.info("Retrieving IO Archive: zipping {}", current.getName());
