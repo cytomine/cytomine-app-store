@@ -298,6 +298,36 @@ public class TaskServiceTest {
             any(OutputStream.class));
     }
 
+    @DisplayName("Successfully retrieve IO zip archive if no logo")
+    @Test
+    void retrieveIOZipArchiveShouldReturnArchiveIfNoLogo() throws Exception {
+        String namespace = "namespace";
+        String version = "version";
+        Task task = TaskUtils.createTestTask(false);
+        ClassPathResource resource = new ClassPathResource("artifacts/descriptor.yml");
+        StorageData descriptor =
+            new StorageData("descriptor.yml",
+            "task-" + task.getIdentifier() + "-def",
+            StorageDataType.FILE);
+        descriptor.peek().setData(resource.getFile());
+
+        when(taskRepository.findByNamespaceAndVersion(namespace, version)).thenReturn(task);
+        when(storageHandler.readStorageData(
+            argThat(data -> data != null
+                && data.peek() != null && "descriptor.yml".equalsIgnoreCase(data.peek().getName()))))
+            .thenReturn(descriptor);
+
+
+        StorageData result = taskService.retrieveIOZipArchive(namespace, version);
+
+        assertNotNull(result);
+        assertNotNull(result.peek());
+        verify(taskRepository, times(1)).findByNamespaceAndVersion(namespace, version);
+        verify(storageHandler, times(2)).readStorageData(any(StorageData.class));
+        verify(registryHandler, times(1)).pullImage(eq(task.getImageName()),
+            any(OutputStream.class));
+    }
+
     @DisplayName("Fail to retrieve IO zip archive and throw TaskNotFoundException")
     @Test
     void retrieveIOZipArchiveShouldThrowTaskNotFoundException() throws Exception {
