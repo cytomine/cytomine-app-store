@@ -548,8 +548,11 @@ public class TaskService {
         ZipOutputStream zipOut = new ZipOutputStream(Files.newOutputStream(tempFile));
         StorageData destinationStorageData = fileStorageHandler.readStorageData(descriptor);
         StorageData logoStorageData = fileStorageHandler.readStorageData(logo);
-        logoStorageData.merge(destinationStorageData);
-        for (StorageDataEntry current : logoStorageData.getEntryList()) {
+        if (Objects.nonNull(logoStorageData)) {
+            destinationStorageData.merge(logoStorageData);
+        }
+
+        for (StorageDataEntry current : destinationStorageData.getEntryList()) {
             ZipEntry zipEntry = new ZipEntry(current.getName());
             log.info("Retrieving IO Archive: zipping {}", current.getName());
             zipOut.putNextEntry(zipEntry);
