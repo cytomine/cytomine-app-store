@@ -547,9 +547,13 @@ public class TaskService {
         Path tempFile = Files.createTempFile("bundle-", task.getIdentifier() + ".zip");
         ZipOutputStream zipOut = new ZipOutputStream(Files.newOutputStream(tempFile));
         StorageData destinationStorageData = fileStorageHandler.readStorageData(descriptor);
-        StorageData logoStorageData = fileStorageHandler.readStorageData(logo);
-        if (Objects.nonNull(logoStorageData)) {
-            destinationStorageData.merge(logoStorageData);
+        try {
+            StorageData logoStorageData = fileStorageHandler.readStorageData(logo);
+            if (Objects.nonNull(logoStorageData)) {
+                destinationStorageData.merge(logoStorageData);
+            }
+        } catch (FileStorageException ex) {
+            log.info("Retrieving IO Archive: no logo");
         }
 
         for (StorageDataEntry current : destinationStorageData.getEntryList()) {
