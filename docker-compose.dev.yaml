@@ -5,7 +5,10 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
-      - 5432:5432
+      - 5433:5432
+    networks:
+      appstore-network:
+        ipv4_address: 172.19.0.2
     environment:
       POSTGRES_PASSWORD: password
       POSTGRES_USER: appstore
@@ -17,6 +20,9 @@ services:
       - registry_data:/data
     ports:
       - 5000:5000
+    networks:
+      appstore-network:
+        ipv4_address: 172.19.0.3
     environment:
       REGISTRY_STORAGE_DELETE_ENABLED: true
       REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY: /data
@@ -27,7 +33,10 @@ services:
     volumes:
       - backend_data:/data
     ports:
-      - "8081:8081"
+      - "8082:8082"
+    networks:
+      appstore-network:
+        ipv4_address: 172.19.0.4
     environment:
       DB_HOST: postgres
       REGISTRY_HOST: registry
@@ -45,6 +54,9 @@ services:
       - /app/node_modules
     ports:
       - "5173:5173"
+    networks:
+      appstore-network:
+        ipv4_address: 172.19.0.5
     env_file:
       - .env.frontend
     depends_on:
@@ -55,3 +67,11 @@ volumes:
   backend_data:
   postgres_data:
   registry_data:
+
+networks:
+  appstore-network:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.19.0.0/16
