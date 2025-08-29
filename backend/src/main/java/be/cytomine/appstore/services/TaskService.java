@@ -542,12 +542,23 @@ public class TaskService {
         }
         log.info("Retrieving IO Archive: fetching descriptor.yml from storage...");
         StorageData descriptor = new StorageData("descriptor.yml", "task-" + task.getIdentifier() + "-def");
+        StorageData logo = new StorageData("logo.png", "task-" + task.getIdentifier() + "-def");
         log.info("Retrieving IO Archive: zipping...");
         Path tempFile = Files.createTempFile("bundle-", task.getIdentifier() + ".zip");
         ZipOutputStream zipOut = new ZipOutputStream(Files.newOutputStream(tempFile));
         StorageData destinationStorageData = fileStorageHandler.readStorageData(descriptor);
+        try {
+            StorageData logoStorageData = fileStorageHandler.readStorageData(logo);
+            if (Objects.nonNull(logoStorageData)) {
+                destinationStorageData.merge(logoStorageData);
+            }
+        } catch (FileStorageException ex) {
+            log.info("Retrieving IO Archive: no logo");
+        }
+
         for (StorageDataEntry current : destinationStorageData.getEntryList()) {
             ZipEntry zipEntry = new ZipEntry(current.getName());
+            log.info("Retrieving IO Archive: zipping {}", current.getName());
             zipOut.putNextEntry(zipEntry);
 
             if (current.getStorageDataType().equals(StorageDataType.FILE)) {
@@ -558,7 +569,7 @@ public class TaskService {
         }
         // get the registry
         log.info("Retrieving IO Archive: pulling image from registry...");
-        ZipEntry zipEntry = new ZipEntry("image.tar");
+        ZipEntry zipEntry = new ZipEntry(task.getNamespace() + "-" + task.getVersion() + ".tar");
         zipOut.putNextEntry(zipEntry);
 
         // Wrap zipOut so that close() only flushes rather than closing the underlying stream.

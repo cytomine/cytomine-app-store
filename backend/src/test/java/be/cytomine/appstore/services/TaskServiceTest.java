@@ -41,6 +41,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
@@ -265,6 +266,45 @@ public class TaskServiceTest {
         String version = "version";
         Task task = TaskUtils.createTestTask(false);
         ClassPathResource resource = new ClassPathResource("artifacts/descriptor.yml");
+        ClassPathResource logoResource = new ClassPathResource("artifacts/logo.png");
+        StorageData descriptor =
+            new StorageData("descriptor.yml",
+            "task-" + task.getIdentifier() + "-def",
+            StorageDataType.FILE);
+        descriptor.peek().setData(resource.getFile());
+
+        StorageData logo =
+            new StorageData("logo.png",
+            "task-" + task.getIdentifier() + "-def",
+            StorageDataType.FILE);
+        logo.peek().setData(logoResource.getFile());
+
+        when(taskRepository.findByNamespaceAndVersion(namespace, version)).thenReturn(task);
+        when(storageHandler.readStorageData(
+            argThat(data -> data != null
+                && data.peek() != null && "descriptor.yml".equalsIgnoreCase(data.peek().getName()))))
+            .thenReturn(descriptor);
+        when(storageHandler.readStorageData(
+            argThat(data -> data != null && data.peek() != null && "logo.png".equalsIgnoreCase(data.peek().getName()))))
+            .thenReturn(logo);
+
+        StorageData result = taskService.retrieveIOZipArchive(namespace, version);
+
+        assertNotNull(result);
+        assertNotNull(result.peek());
+        verify(taskRepository, times(1)).findByNamespaceAndVersion(namespace, version);
+        verify(storageHandler, times(2)).readStorageData(any(StorageData.class));
+        verify(registryHandler, times(1)).pullImage(eq(task.getImageName()),
+            any(OutputStream.class));
+    }
+
+    @DisplayName("Successfully retrieve IO zip archive if no logo")
+    @Test
+    void retrieveIOZipArchiveShouldReturnArchiveIfNoLogo() throws Exception {
+        String namespace = "namespace";
+        String version = "version";
+        Task task = TaskUtils.createTestTask(false);
+        ClassPathResource resource = new ClassPathResource("artifacts/descriptor.yml");
         StorageData descriptor =
             new StorageData("descriptor.yml",
             "task-" + task.getIdentifier() + "-def",
@@ -272,14 +312,18 @@ public class TaskServiceTest {
         descriptor.peek().setData(resource.getFile());
 
         when(taskRepository.findByNamespaceAndVersion(namespace, version)).thenReturn(task);
-        when(storageHandler.readStorageData(any(StorageData.class))).thenReturn(descriptor);
+        when(storageHandler.readStorageData(
+            argThat(data -> data != null
+                && data.peek() != null && "descriptor.yml".equalsIgnoreCase(data.peek().getName()))))
+            .thenReturn(descriptor);
+
 
         StorageData result = taskService.retrieveIOZipArchive(namespace, version);
 
         assertNotNull(result);
         assertNotNull(result.peek());
         verify(taskRepository, times(1)).findByNamespaceAndVersion(namespace, version);
-        verify(storageHandler, times(1)).readStorageData(any(StorageData.class));
+        verify(storageHandler, times(2)).readStorageData(any(StorageData.class));
         verify(registryHandler, times(1)).pullImage(eq(task.getImageName()),
             any(OutputStream.class));
     }
@@ -310,13 +354,26 @@ public class TaskServiceTest {
         String version = "version";
         Task task = TaskUtils.createTestTask(false);
         ClassPathResource resource = new ClassPathResource("artifacts/descriptor.yml");
+        ClassPathResource logoResource = new ClassPathResource("artifacts/logo.png");
         StorageData descriptor =
             new StorageData("descriptor.yml",
             "task-" + task.getIdentifier() + "-def",
             StorageDataType.FILE);
         descriptor.peek().setData(resource.getFile());
+        StorageData logo =
+            new StorageData("logo.png",
+            "task-" + task.getIdentifier() + "-def",
+            StorageDataType.FILE);
+        logo.peek().setData(logoResource.getFile());
+
         when(taskRepository.findByNamespaceAndVersion(namespace, version)).thenReturn(task);
-        when(storageHandler.readStorageData(any(StorageData.class))).thenReturn(descriptor);
+        when(storageHandler.readStorageData(
+            argThat(data -> data != null
+                && data.peek() != null && "descriptor.yml".equalsIgnoreCase(data.peek().getName()))))
+            .thenReturn(descriptor);
+        when(storageHandler.readStorageData(
+            argThat(data -> data != null && data.peek() != null && "logo.png".equalsIgnoreCase(data.peek().getName()))))
+            .thenReturn(logo);
         doThrow(new RegistryException("Docker Registry Handler: failed to pull image from registry"))
             .when(registryHandler).pullImage(eq(task.getImageName()), any(OutputStream.class));
 
@@ -327,7 +384,7 @@ public class TaskServiceTest {
 
         assertEquals("Docker Registry Handler: failed to pull image from registry", exception.getMessage());
         verify(taskRepository, times(1)).findByNamespaceAndVersion(namespace, version);
-        verify(storageHandler, times(1)).readStorageData(any(StorageData.class));
+        verify(storageHandler, times(2)).readStorageData(any(StorageData.class));
         verify(registryHandler, times(1)).pullImage(eq(task.getImageName()),
             any(OutputStream.class));
     }
