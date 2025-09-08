@@ -57,8 +57,8 @@ services:
     networks:
       appstore-network:
         ipv4_address: 172.19.0.5
-    env_file:
-      - .env.frontend
+    environment:
+      VITE_API_BASE_URL: http://backend:8082
     depends_on:
       - backend
     restart: unless-stopped
