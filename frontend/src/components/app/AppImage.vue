@@ -19,13 +19,11 @@ const imageUrl = computed(() => {
     return fallbackUrl;
   }
 
-  const baseUrl = import.meta.env.VITE_API_BASE_URL;
-
-  if (!baseUrl || !namespace || !version) {
+  if (!namespace || !version) {
     return fallbackUrl;
   }
 
-  return `${baseUrl}/api/v1/tasks/${namespace}/${version}/logo`;
+  return `/api/v1/tasks/${namespace}/${version}/logo`;
 });
 
 watch(
