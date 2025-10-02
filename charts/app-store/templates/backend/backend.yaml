@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: appstore-backend
-        image: "{{ .Values.appstore-backend.image }}"
+        image: "{{ .Values.appstore_backend.image }}"
         ports:
         - containerPort: {{ .Values.appstore_backend.port }}
         envFrom:
