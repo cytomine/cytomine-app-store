@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  labels:
+    app: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+      annotations:
+        checksum/config: "{{ include (print $.Template.BasePath "/backend/backend-config.yaml") . | sha256sum }}"
+    spec:
+      containers:
+      - name: backend
+        image: "{{ .Values.images.app_engine }}"
+        ports:
+        - containerPort: {{ .Values.app_engine.port }}
+        envFrom:
+        - configMapRef:
+            name: backend
+        env:
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgres-backend-secret
+              key: password
+        - name: SCHEDULER_MASTER_URL
+          value: "https://kubernetes.default.svc"
+        - name: SCHEDULER_OAUTH_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: backend
+              key: token
+      serviceAccountName: backend
+      automountServiceAccountToken: true
