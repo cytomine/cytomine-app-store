@@ -1,0 +1,66 @@
+{{- $storageClassName := .Values.postgres.storageClassName | required ".Values.postgres.storageClassName is required." -}}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres-appstore-backend
+  annotations:
+    kube-score/ignore: pod-probes,container-security-context-user-group-id
+  labels:
+    role: postgres
+    app: postgres-appstore-backend
+    component: postgres
+    release: {{ .Release.Name }}
+spec:
+  replicas: 1
+  serviceName: postgres-appstore-backend
+  selector:
+    matchLabels:
+      app: postgres-appstore-backend
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        role: postgres
+        app: appstore-backend-postgres
+        release: {{ .Release.Name }}
+    spec:
+      volumes:
+        - name: temp
+          emptyDir: {}
+      containers:
+        - name: postgres
+          image: "{{ .Values.postgres.images }}"
+          volumeMounts:
+            - name: postgres-storage
+              mountPath: "/var/lib/postgresql/data"
+              subPath: data
+            - name: postgres-storage
+              mountPath: "/var/lib/postgresql"
+            - name: temp
+              mountPath: /var/run
+            - name: temp
+              mountPath: /tmp
+          env:
+          - name: POSTGRES_USER
+            value: {{ .Values.postgres.user }}
+          - name: POSTGRES_DB
+            value: {{ .Values.postgres.database }}
+          - name: POSTGRES_PASSWORD
+            valueFrom:fg
+              secretKeyRef:
+                name: postgres-appstore-backend-secret
+                key: password
+          ports:
+            - name: postgres
+              containerPort: {{ .Values.postgres.port }}
+              protocol: TCP
+  volumeClaimTemplates:
+    - metadata:
+        name: postgres-storage
+      spec:
+        storageClassName: {{ $storageClassName }}
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: {{ .Values.postgres.storage }}

@@ -1,0 +1,14 @@
+appstore_backend:
+  port: 8080
+  image: cytomine/app-store-backend:latest
+
+frontend:
+  image:
+
+postgres:
+  storageClassName:
+  image: postgres:17
+  user: app-store
+  database: app-store
+  port: 5432
+  storage: 10Gb
