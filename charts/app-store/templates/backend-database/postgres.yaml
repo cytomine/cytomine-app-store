@@ -2,26 +2,26 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: postgres
+  name: postgres-appstore-backend
   annotations:
     kube-score/ignore: pod-probes,container-security-context-user-group-id
   labels:
     role: postgres
-    app: postgres-backend
+    app: postgres-appstore-backend
     component: postgres
     release: {{ .Release.Name }}
 spec:
   replicas: 1
-  serviceName: postgres
+  serviceName: postgres-appstore-backend
   selector:
     matchLabels:
-      app: postgres
+      app: postgres-appstore-backend
       release: {{ .Release.Name }}
   template:
     metadata:
       labels:
         role: postgres
-        app: postgres
+        app: appstore-backend-postgres
         release: {{ .Release.Name }}
     spec:
       volumes:
@@ -48,7 +48,7 @@ spec:
           - name: POSTGRES_PASSWORD
             valueFrom:fg
               secretKeyRef:
-                name: postgres-backend-secret
+                name: postgres-appstore-backend-secret
                 key: password
           ports:
             - name: postgres
