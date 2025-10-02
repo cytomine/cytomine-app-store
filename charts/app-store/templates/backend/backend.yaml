@@ -18,9 +18,9 @@ spec:
     spec:
       containers:
       - name: backend
-        image: "{{ .Values.images.app_engine }}"
+        image: "{{ .Values.backend.image }}"
         ports:
-        - containerPort: {{ .Values.app_engine.port }}
+        - containerPort: {{ .Values.backend.port }}
         envFrom:
         - configMapRef:
             name: backend
