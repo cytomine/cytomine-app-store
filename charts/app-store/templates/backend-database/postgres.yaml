@@ -29,7 +29,7 @@ spec:
           emptyDir: {}
       containers:
         - name: postgres
-          image: "{{ .Values.images.postgres }}"
+          image: "{{ .Values.postgres.images }}"
           volumeMounts:
             - name: postgres-storage
               mountPath: "/var/lib/postgresql/data"
