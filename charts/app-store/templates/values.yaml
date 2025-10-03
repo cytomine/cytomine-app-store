@@ -1,6 +1,6 @@
 appstore_backend:
   port: 8080
-  image: cytomine/app-store-backend:latest
+  image: registry.cytomine.org/cytomine/app-store-backend:latest
 
 frontend:
   image:
