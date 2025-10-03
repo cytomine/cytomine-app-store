@@ -5,10 +5,10 @@ appstore_backend:
 frontend:
   image:
 
-postgres:
-  storageClassName:
+postgresql:
+  storageClassName: null
   image: postgres:17
   user: app-store
   database: app-store
   port: 5432
-  storage: 10Gb
+  storage: 10G
