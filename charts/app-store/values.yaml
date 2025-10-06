@@ -1,9 +1,10 @@
 appstore_backend:
   port: 8080
-  image: registry.cytomine.org/cytomine/app-store-backend:latest
+  image: cytomine/app-store-backend:latest
 
 frontend:
-  image:
+  port: 80
+  image: cytomine/app-store-frontend:latest
 
 postgresql:
   storageClassName: null
@@ -12,3 +13,6 @@ postgresql:
   database: app-store
   port: 5432
   storage: 10G
+
+global:
+  domainName:

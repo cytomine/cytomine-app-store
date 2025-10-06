@@ -4,8 +4,6 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: postgres-appstore-backend
-  annotations:
-    kube-score/ignore: pod-probes,container-security-context-user-group-id
   labels:
     role: postgres
     app: postgres-appstore-backend
@@ -30,12 +28,12 @@ spec:
           emptyDir: {}
       containers:
         - name: postgres
-          image: "{{ .Values.postgresql.images }}"
+          image: "{{ .Values.postgresql.image }}"
           volumeMounts:
-            - name: postgres-storage
+            - name: app-store-postgres-storage
               mountPath: "/var/lib/postgresql/data"
               subPath: data
-            - name: postgres-storage
+            - name: app-store-postgres-storage
               mountPath: "/var/lib/postgresql"
             - name: temp
               mountPath: /var/run
@@ -57,7 +55,7 @@ spec:
               protocol: TCP
   volumeClaimTemplates:
     - metadata:
-        name: postgres-storage
+        name: app-store-postgres-storage
       spec:
         storageClassName: {{ $storageClassName }}
         accessModes:
