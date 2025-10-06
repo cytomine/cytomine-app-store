@@ -13,10 +13,14 @@ spec:
     metadata:
       labels:
         app: appstore-frontend
+      annotations:
+        checksum/config: "{{ include (print $.Template.BasePath "/frontend/frontend-config.yaml") . | sha256sum }}"
     spec:
       containers:
       - name: app-store-frontend
         image: "{{ .Values.appstore_frontend.image }}"
         ports:
         - containerPort: {{ .Values.appstore_frontend.port }}
-
+        envFrom:
+        - configMapRef:
+            name: appstore-frontend
