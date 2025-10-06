@@ -2,11 +2,6 @@ name: Docker
 
 on:
   pull_request:
-    branches:
-      - main
-  push:
-    branches:
-      - main
 
 jobs:
   build-push-docker:
@@ -40,3 +35,4 @@ jobs:
           file: ./${{ matrix.image }}/Dockerfile
           push: true
           tags: registry.cytomine.org/cytomine/app-store-${{ matrix.image }}
+          labels: latest
