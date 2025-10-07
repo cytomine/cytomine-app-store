@@ -55,7 +55,7 @@ spec:
               protocol: TCP
   volumeClaimTemplates:
     - metadata:
-        name: app-store-postgres-storage
+        name: appstore-postgres-storage
       spec:
         storageClassName: {{ $storageClassName }}
         accessModes:

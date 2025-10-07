@@ -9,8 +9,8 @@ appstore_frontend:
 postgresql:
   storageClassName: null
   image: postgres:17
-  user: app-store
-  database: app-store
+  user: appstore
+  database: appstore
   port: 5432
   storage: 10G
 
