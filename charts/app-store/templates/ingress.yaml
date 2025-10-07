@@ -33,14 +33,14 @@ spec:
     - host: {{ .Values.global.domainName }}
       http:
         paths:
-          - path: /app-store(\/.*)
+          - path: /app-store(.*)
             pathType: Prefix
             backend:
               service:
                 name: appstore-frontend
                 port:
                   number: {{ .Values.appstore_frontend.port }}
-          - path: /app-store-api/(.*)
+          - path: /app-store-api(.*)
             pathType: Prefix
             backend:
               service:
