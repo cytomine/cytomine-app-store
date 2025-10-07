@@ -2,8 +2,8 @@ appstore_backend:
   port: 8080
   image: cytomine/app-store-backend:latest
 
-frontend:
-  port: 80
+appstore_frontend:
+  port: 80 # not configurable for now
   image: cytomine/app-store-frontend:latest
 
 postgresql:

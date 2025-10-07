@@ -30,10 +30,10 @@ spec:
         - name: postgres
           image: "{{ .Values.postgresql.image }}"
           volumeMounts:
-            - name: app-store-postgres-storage
+            - name: appstore-postgres-storage
               mountPath: "/var/lib/postgresql/data"
               subPath: data
-            - name: app-store-postgres-storage
+            - name: appstore-postgres-storage
               mountPath: "/var/lib/postgresql"
             - name: temp
               mountPath: /var/run

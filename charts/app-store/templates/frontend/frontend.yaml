@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: app-store-frontend
+  name: appstore-frontend
   labels:
     app: appstore-frontend
 spec:
@@ -17,7 +17,7 @@ spec:
         checksum/config: "{{ include (print $.Template.BasePath "/frontend/frontend-config.yaml") . | sha256sum }}"
     spec:
       containers:
-      - name: app-store-frontend
+      - name: appstore-frontend
         image: "{{ .Values.appstore_frontend.image }}"
         ports:
         - containerPort: {{ .Values.appstore_frontend.port }}
