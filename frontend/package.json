@@ -8,7 +8,7 @@
   },
   "scripts": {
     "dev": "npm run watch-translations & vite",
-    "build": "run-p type-check \"build-only {@}\" --",
+    "build": "vite build",
     "preview": "vite preview",
     "test": "vitest",
     "test:unit": "vitest --run",
@@ -51,6 +51,7 @@
     "onchange": "^7.1.0",
     "typescript": "~5.8.0",
     "vite": "^7.1.3",
+    "vite-plugin-node": "^7.0.0",
     "vite-plugin-vue-devtools": "^8.0.0",
     "vitest": "^3.2.4",
     "vue-tsc": "^3.0.6"

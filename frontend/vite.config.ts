@@ -3,16 +3,16 @@ import { fileURLToPath, URL } from 'node:url';
 import { ConfigEnv, defineConfig, loadEnv } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import vueDevTools from 'vite-plugin-vue-devtools';
-
+import { VitePluginNode } from 'vite-plugin-node';
 // https://vite.dev/config/
 export default defineConfig(({ mode }: ConfigEnv) => {
   // https://vite.dev/config/#using-environment-variables-in-config
   const env = loadEnv(mode, process.cwd(), '');
   return {
-    base: '',
     plugins: [
       vue(),
       vueDevTools(),
+      // VitePluginNode({ adapter: 'express', appPath: './App.vue', })
     ],
     resolve: {
       alias: {
@@ -32,10 +32,7 @@ export default defineConfig(({ mode }: ConfigEnv) => {
         usePolling: true,
       },
     },
-    // experimental: {
-    //   renderBuiltUrl(filename, { hostId, hostType, type }) {
-    //     return filename
-    //   },
-    // },
   };
 });
+
+
