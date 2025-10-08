@@ -2,7 +2,9 @@
   <article class="media box author-box">
     <div class="media-content">
       <div class="content">
-        <p><strong>{{ fullName }}</strong></p>
+        <p>
+          <strong>{{ fullName }}</strong>
+        </p>
         <p class="has-text-grey mb-1">
           <i class="fas fa-envelope"></i>
           {{ author.email }}
@@ -17,15 +19,15 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
-import type { Author } from '@/types/types';
+import { computed } from "vue";
+import type { Author } from "@/types/types";
 
 const { author } = defineProps<{
-  author: Author,
+  author: Author;
 }>();
 
 const fullName = computed(() => {
-  return [author.firstName, author.lastName].join(' ');
+  return [author.firstName, author.lastName].join(" ");
 });
 </script>
 
