@@ -9,7 +9,7 @@ export default defineConfig(({ mode }: ConfigEnv) => {
   // https://vite.dev/config/#using-environment-variables-in-config
   const env = loadEnv(mode, process.cwd(), '');
   return {
-    base: env.APP_BASE_URL || '/',
+    base: env.APP_BASE_URL || './',
     plugins: [
       vue(),
       vueDevTools(),

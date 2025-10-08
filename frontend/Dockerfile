@@ -47,6 +47,8 @@ LABEL org.opencontainers.image.authors="uliege@cytomine.org" \
 
 COPY --from=build-stage /app/dist /usr/share/nginx/html
 
+COPY nginx.conf  /etc/nginx
+
 EXPOSE 80
 
 CMD ["nginx", "-g", "daemon off;"]
