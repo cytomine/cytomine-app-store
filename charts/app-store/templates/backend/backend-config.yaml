@@ -8,3 +8,5 @@ data:
   DB_NAME: {{ .Values.postgresql.database }}
   DB_USERNAME: {{ .Values.postgresql.user }}
   PORT: "{{ .Values.appstore_backend.port }}"
+  REGISTRY_URL: {{ .Values.appstore_backend.registry_url }}
+  REGISTRY_PORT: "5000"

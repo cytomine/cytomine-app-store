@@ -16,7 +16,7 @@ metadata:
     nginx.ingress.kubernetes.io/enable-error-log: "true"
     nginx.ingress.kubernetes.io/proxy-body-size: "0"
     nginx.ingress.kubernetes.io/use-regex: "true"
-    nginx.ingress.kubernetes.io/rewrite-target: /$1
+    # nginx.ingress.kubernetes.io/rewrite-target: /$1
     # https://stackoverflow.com/a/73548785
     # It seems that we are using k8s official nginx image.
     # not sure, though
@@ -33,20 +33,21 @@ spec:
     - host: {{ .Values.global.domainName }}
       http:
         paths:
-          - path: /app-store(.*)
-            pathType: Prefix
-            backend:
-              service:
-                name: appstore-frontend
-                port:
-                  number: {{ .Values.appstore_frontend.port }}
-          - path: /app-store-api(.*)
+          - path: /api
             pathType: Prefix
             backend:
               service:
                 name: appstore-backend
                 port:
                   number: {{ .Values.appstore_backend.port }}
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: appstore-frontend
+                port:
+                  number: {{ .Values.appstore_frontend.port }}
+
   tls:
   - hosts:
     - {{ .Values.global.domainName }}
