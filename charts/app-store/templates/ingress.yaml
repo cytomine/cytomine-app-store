@@ -16,10 +16,6 @@ metadata:
     nginx.ingress.kubernetes.io/enable-error-log: "true"
     nginx.ingress.kubernetes.io/proxy-body-size: "0"
     nginx.ingress.kubernetes.io/use-regex: "true"
-    # nginx.ingress.kubernetes.io/rewrite-target: /$1
-    # https://stackoverflow.com/a/73548785
-    # It seems that we are using k8s official nginx image.
-    # not sure, though
     nginx.org/client-max-body-size: "0"
 
     nginx.org/proxy-connect-timeout: 3600s
