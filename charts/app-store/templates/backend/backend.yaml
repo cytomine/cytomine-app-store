@@ -14,7 +14,7 @@ spec:
       labels:
         app: appstore-backend
       annotations:
-        checksum/config: "{{ include (print $.Template.BasePath "/backend/appstore-backend-config.yaml") . | sha256sum }}"
+        checksum/config: "{{ include (print $.Template.BasePath "/backend/backend-config.yaml") . | sha256sum }}"
     spec:
       containers:
       - name: appstore-backend

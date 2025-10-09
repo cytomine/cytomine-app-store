@@ -1,0 +1,19 @@
+appstore_backend:
+  port: 8080
+  image: cytomine/app-store-backend:latest
+  registry_url: http://registry.container-registry.svc.cluster.local
+
+appstore_frontend:
+  port: 80 # not configurable for now
+  image: cytomine/app-store-frontend:latest
+
+postgresql:
+  storageClassName: null
+  image: postgres:17
+  user: appstore
+  database: appstore
+  port: 5432
+  storage: 10G
+
+global:
+  domainName:

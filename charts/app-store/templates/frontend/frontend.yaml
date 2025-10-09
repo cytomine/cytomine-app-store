@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: appstore-frontend
+  labels:
+    app: appstore-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: appstore-frontend
+  template:
+    metadata:
+      labels:
+        app: appstore-frontend
+      annotations:
+        checksum/config: "{{ include (print $.Template.BasePath "/frontend/frontend-config.yaml") . | sha256sum }}"
+    spec:
+      containers:
+      - name: appstore-frontend
+        image: "{{ .Values.appstore_frontend.image }}"
+        ports:
+        - containerPort: {{ .Values.appstore_frontend.port }}
+        envFrom:
+        - configMapRef:
+            name: appstore-frontend

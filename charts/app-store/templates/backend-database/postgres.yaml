@@ -1,10 +1,9 @@
-{{- $storageClassName := .Values.postgres.storageClassName | required ".Values.postgres.storageClassName is required." -}}
+{{- $storageClassName := .Values.postgresql.storageClassName | required ".Values.postgres.storageClassName is required." -}}
+
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: postgres-appstore-backend
-  annotations:
-    kube-score/ignore: pod-probes,container-security-context-user-group-id
   labels:
     role: postgres
     app: postgres-appstore-backend
@@ -21,7 +20,7 @@ spec:
     metadata:
       labels:
         role: postgres
-        app: appstore-backend-postgres
+        app: postgres-appstore-backend
         release: {{ .Release.Name }}
     spec:
       volumes:
@@ -29,12 +28,12 @@ spec:
           emptyDir: {}
       containers:
         - name: postgres
-          image: "{{ .Values.postgres.images }}"
+          image: "{{ .Values.postgresql.image }}"
           volumeMounts:
-            - name: postgres-storage
+            - name: appstore-postgres-storage
               mountPath: "/var/lib/postgresql/data"
               subPath: data
-            - name: postgres-storage
+            - name: appstore-postgres-storage
               mountPath: "/var/lib/postgresql"
             - name: temp
               mountPath: /var/run
@@ -42,25 +41,25 @@ spec:
               mountPath: /tmp
           env:
           - name: POSTGRES_USER
-            value: {{ .Values.postgres.user }}
+            value: {{ .Values.postgresql.user }}
           - name: POSTGRES_DB
-            value: {{ .Values.postgres.database }}
+            value: {{ .Values.postgresql.database }}
           - name: POSTGRES_PASSWORD
-            valueFrom:fg
+            valueFrom:
               secretKeyRef:
                 name: postgres-appstore-backend-secret
                 key: password
           ports:
             - name: postgres
-              containerPort: {{ .Values.postgres.port }}
+              containerPort: {{ .Values.postgresql.port }}
               protocol: TCP
   volumeClaimTemplates:
     - metadata:
-        name: postgres-storage
+        name: appstore-postgres-storage
       spec:
         storageClassName: {{ $storageClassName }}
         accessModes:
           - ReadWriteOnce
         resources:
           requests:
-            storage: {{ .Values.postgres.storage }}
+            storage: {{ .Values.postgresql.storage }}
