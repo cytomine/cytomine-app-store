@@ -47,7 +47,6 @@ spec:
                 name: appstore-frontend
                 port:
                   number: {{ .Values.appstore_frontend.port }}
-
   tls:
   - hosts:
     - {{ .Values.global.domainName }}
