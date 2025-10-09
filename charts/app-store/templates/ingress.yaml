@@ -46,4 +46,4 @@ spec:
   tls:
   - hosts:
     - {{ .Values.global.domainName }}
-    secretName: ingress-tls
+    secretName: ingress-tls-appstore
