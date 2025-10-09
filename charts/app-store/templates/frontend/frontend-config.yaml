@@ -4,5 +4,4 @@ metadata:
   name: appstore-frontend
 data:
   APP_BASE_URL: /app-store
-#  APP_PORT: " .Values.app_frontend.port "
   VITE_API_BASE_URL: "appstore-backend.{{ .Release.Namespace }}.svc.cluster.local"
