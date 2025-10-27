@@ -21,7 +21,7 @@ jobs:
 
     steps:
       - name: Set up the repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up NodeJS
         uses: actions/setup-node@v4
@@ -42,7 +42,7 @@ jobs:
 
     steps:
       - name: Set up the repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up NodeJS
         uses: actions/setup-node@v4
@@ -63,7 +63,7 @@ jobs:
 
     steps:
       - name: Set up the repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up NodeJS
         uses: actions/setup-node@v4
@@ -90,7 +90,7 @@ jobs:
 
     steps:
       - name: Set up the repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Install dependencies and build
         run: npm ci && npm run build
@@ -115,7 +115,7 @@ jobs:
 
     steps:
       - name: Set up the repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up JDK ${{ vars.JAVA_VERSION }}
         uses: actions/setup-java@v4
@@ -162,7 +162,7 @@ jobs:
 
     steps:
       - name: Set up the repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up JDK ${{ vars.JAVA_VERSION }}
         uses: actions/setup-java@v4
