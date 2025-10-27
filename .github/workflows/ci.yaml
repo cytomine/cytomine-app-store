@@ -124,7 +124,7 @@ jobs:
           java-version: ${{ vars.JAVA_VERSION }}
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v3
+        uses: gradle/actions/setup-gradle@v5
         with:
           gradle-version: ${{ vars.GRADLE_VERSION }}
 
@@ -171,7 +171,7 @@ jobs:
           java-version: ${{ vars.JAVA_VERSION }}
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v3
+        uses: gradle/actions/setup-gradle@v5
         with:
           gradle-version: ${{ vars.GRADLE_VERSION }}
 
