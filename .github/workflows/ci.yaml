@@ -102,7 +102,7 @@ jobs:
 
       - name: Upload test reports
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: playwright-artifacts
           path: frontend/playwright-report
@@ -133,7 +133,7 @@ jobs:
 
       - name: Upload lint reports
         if: ${{ always() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: lint-report
           path: backend/build/reports/checkstyle
@@ -184,7 +184,7 @@ jobs:
 
       - name: Upload test reports
         if: ${{ always() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: reports
           path: backend/build/reports/
@@ -192,7 +192,7 @@ jobs:
 
       - name: Upload test results
         if: ${{ always() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: test-results
           path: backend/build/test-results/
@@ -200,7 +200,7 @@ jobs:
 
       - name: Upload Java Code Coverage (JaCoCo)
         if: ${{ always() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: jacoco
           path: backend/build/jacoco/
