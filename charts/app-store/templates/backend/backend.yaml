@@ -5,6 +5,7 @@ metadata:
   labels:
     app: appstore-backend
 spec:
+
   replicas: 1
   selector:
     matchLabels:
@@ -16,9 +17,13 @@ spec:
       annotations:
         checksum/config: "{{ include (print $.Template.BasePath "/backend/backend-config.yaml") . | sha256sum }}"
     spec:
+      securityContext:
+      {{- include "cytomine.podSecurityContext" . | nindent 8 }}
       containers:
       - name: appstore-backend
-        image: "{{ .Values.appstore_backend.image }}"
+        image: {{ .Values.appstore_backend.image }}
+        securityContext:
+        {{- include "cytomine.containerSecurityContext" . | nindent 10 }}
         ports:
         - containerPort: {{ .Values.appstore_backend.port }}
         envFrom:

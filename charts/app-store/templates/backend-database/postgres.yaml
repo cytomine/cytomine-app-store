@@ -23,12 +23,16 @@ spec:
         app: postgres-appstore-backend
         release: {{ .Release.Name }}
     spec:
+      securityContext:
+      {{- include "cytomine.podSecurityContext" . | nindent 8 }}
       volumes:
         - name: temp
           emptyDir: {}
       containers:
         - name: postgres
-          image: "{{ .Values.postgresql.image }}"
+          image: {{ .Values.postgresql.image }}
+          securityContext:
+          {{- include "cytomine.containerSecurityContext" . | nindent 12 }}
           volumeMounts:
             - name: appstore-postgres-storage
               mountPath: "/var/lib/postgresql/data"
