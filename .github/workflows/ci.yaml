@@ -205,3 +205,13 @@ jobs:
           name: jacoco
           path: backend/build/jacoco/
           retention-days: 7
+
+  docker-images:
+    needs: [e2e-tests-frontend]
+    uses: ./.github/workflows/docker.yaml
+    secrets: inherit
+
+  helm-tests:
+    needs: [docker-images]
+    uses: ./.github/workflows/helm-test.yaml
+    secrets: inherit
