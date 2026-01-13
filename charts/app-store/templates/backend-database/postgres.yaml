@@ -1,5 +1,3 @@
-{{- $storageClassName := .Values.postgresql.storageClassName | required ".Values.postgres.storageClassName is required." -}}
-
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -28,21 +26,25 @@ spec:
       volumes:
         - name: temp
           emptyDir: {}
+        {{ if not .Values.postgresql.storageClassName -}}
+        - emptyDir: {}
+          name: appstore-postgres-storage
+        {{ end }}
       containers:
         - name: postgres
           image: {{ .Values.postgresql.image }}
           securityContext:
           {{- include "cytomine.containerSecurityContext" . | nindent 12 }}
           volumeMounts:
-            - name: appstore-postgres-storage
-              mountPath: "/var/lib/postgresql/data"
-              subPath: data
-            - name: appstore-postgres-storage
-              mountPath: "/var/lib/postgresql"
-            - name: temp
-              mountPath: /var/run
-            - name: temp
-              mountPath: /tmp
+          - name: appstore-postgres-storage
+            mountPath: "/var/lib/postgresql/data"
+            subPath: data
+          - name: appstore-postgres-storage
+            mountPath: "/var/lib/postgresql"
+          - name: temp
+            mountPath: /var/run
+          - name: temp
+            mountPath: /tmp
           env:
           - name: POSTGRES_USER
             value: {{ .Values.postgresql.user }}
@@ -57,13 +59,15 @@ spec:
             - name: postgres
               containerPort: {{ .Values.postgresql.port }}
               protocol: TCP
+  {{ if .Values.postgresql.storageClassName -}}
   volumeClaimTemplates:
     - metadata:
         name: appstore-postgres-storage
       spec:
-        storageClassName: {{ $storageClassName }}
+        storageClassName: {{ .Values.postgresql.storageClassName }}
         accessModes:
-          - ReadWriteOnce
+        - ReadWriteOnce
         resources:
           requests:
             storage: {{ .Values.postgresql.storage }}
+  {{ end }}
