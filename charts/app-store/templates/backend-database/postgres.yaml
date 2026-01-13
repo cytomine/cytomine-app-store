@@ -32,15 +32,15 @@ spec:
         - name: postgres
           image: "{{ .Values.postgresql.image }}"
           volumeMounts:
-            - name: appstore-postgres-storage
-              mountPath: "/var/lib/postgresql/data"
-              subPath: data
-            - name: appstore-postgres-storage
-              mountPath: "/var/lib/postgresql"
-            - name: temp
-              mountPath: /var/run
-            - name: temp
-              mountPath: /tmp
+          - name: appstore-postgres-storage
+            mountPath: "/var/lib/postgresql/data"
+            subPath: data
+          - name: appstore-postgres-storage
+            mountPath: "/var/lib/postgresql"
+          - name: temp
+            mountPath: /var/run
+          - name: temp
+            mountPath: /tmp
           env:
           - name: POSTGRES_USER
             value: {{ .Values.postgresql.user }}
@@ -62,7 +62,7 @@ spec:
       spec:
         storageClassName: {{ .Values.postgresql.storageClassName }}
         accessModes:
-          - ReadWriteOnce
+        - ReadWriteOnce
         resources:
           requests:
             storage: {{ .Values.postgresql.storage }}
