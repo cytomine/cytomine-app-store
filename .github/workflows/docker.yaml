@@ -49,7 +49,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: ${{ matrix.image.name }}
-          file: ./${{ matrix.image.dockerfile_location || matrix.image.context || matrix.image.name }}/Dockerfile
+          file: ./${{ matrix.image.name }}/Dockerfile
           push: true
           tags: ${{ (github.ref_name != 'main' && 'registry.cytomine.org/') || '' }}cytomine/app-store-${{ matrix.image.name }}:${{ github.ref_name == 'main' && 'latest' || github.sha }}
           allow: network.host
