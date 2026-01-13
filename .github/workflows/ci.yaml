@@ -57,6 +57,9 @@ jobs:
 
   test-frontend:
     runs-on: self-hosted
+    needs:
+    - lint-frontend
+    - type-check-frontend
     defaults:
       run:
         working-directory: frontend
@@ -141,6 +144,8 @@ jobs:
 
   test-backend:
     runs-on: self-hosted
+    needs:
+    - lint-backend
     defaults:
       run:
         working-directory: backend
@@ -205,3 +210,13 @@ jobs:
           name: jacoco
           path: backend/build/jacoco/
           retention-days: 7
+
+  docker-images:
+    needs: [e2e-tests-frontend]
+    uses: ./.github/workflows/docker.yaml
+    secrets: inherit
+
+  helm-tests:
+    needs: [docker-images]
+    uses: ./.github/workflows/helm-test.yaml
+    secrets: inherit
