@@ -29,7 +29,7 @@ RUN npm install
 CMD ["npm", "run", "dev"]
 
 # Production stage
-FROM ${PROXY_CACHE}/nginx:${NGINX_VERSION}-alpine AS prod-server
+FROM ${PROXY_CACHE}/nginx:${NGINX_VERSION}-alpine AS production
 
 ARG APP_STORE_REVISION
 ARG APP_STORE_VERSION

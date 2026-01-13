@@ -1,8 +1,23 @@
 apiVersion: v2
-name: cytomine-app-store
+name: cytomine-app-store-helm
 description: A Helm chart for installing the Cytomine App Store
 
 type: application
 
 version: 1.0.0
 appVersion: "v1"
+
+keywords:
+  - bioimage-analysis
+  - collaborative-analysis
+  - cytomine
+  - digital-pathology
+  - image-annotation
+  - whole-slide-imaging
+home: https://uliege.cytomine.org/
+sources:
+  - https://github.com/cytomine/cytomine
+maintainers:
+  - name: cytomine
+    email: uliege@cytomine.org
+icon: https://raw.githubusercontent.com/cytomine/cytomine/main/docs/src/.vuepress/public/images/cytomine-org-icon.svg

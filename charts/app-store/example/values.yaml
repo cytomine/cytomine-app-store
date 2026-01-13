@@ -1,0 +1,5 @@
+postgresql:
+  deploy: true
+
+global:
+  domainName: appstore.local
