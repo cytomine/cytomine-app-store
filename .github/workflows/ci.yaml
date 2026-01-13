@@ -57,6 +57,9 @@ jobs:
 
   test-frontend:
     runs-on: self-hosted
+    needs:
+    - lint-frontend
+    - type-check-frontend
     defaults:
       run:
         working-directory: frontend
@@ -141,6 +144,8 @@ jobs:
 
   test-backend:
     runs-on: self-hosted
+    needs:
+    - lint-backend
     defaults:
       run:
         working-directory: backend
