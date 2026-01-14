@@ -21,7 +21,7 @@ spec:
       volumes:
       - name: frontend-config
         configMap:
-          name: frontend-config
+          name: appstore-frontend
       - name: nginx
         emptyDir: {}
       - name: nginx-pid

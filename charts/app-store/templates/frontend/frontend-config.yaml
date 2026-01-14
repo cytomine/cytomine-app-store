@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: appstore-frontend
+  name: frontend-config
 data:
   APP_BASE_URL: /app-store
   VITE_API_BASE_URL: "appstore-backend.{{ .Release.Namespace }}.svc.cluster.local"
