@@ -5,3 +5,5 @@ metadata:
 data:
   APP_BASE_URL: /app-store
   VITE_API_BASE_URL: "appstore-backend.{{ .Release.Namespace }}.svc.cluster.local"
+  nginx.conf: |-
+    {{ (tpl (.Files.Get "configs/frontend/nginx.conf") . ) | nindent 4 }}
