@@ -4,7 +4,7 @@ appstore_backend:
   registry_url: http://registry.container-registry.svc.cluster.local
 
 appstore_frontend:
-  port: 80  # not configurable for now
+  port: 9090
   image: cytomine/app-store-frontend:latest
 
 postgresql:
