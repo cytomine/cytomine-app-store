@@ -16,11 +16,25 @@ spec:
       annotations:
         checksum/config: "{{ include (print $.Template.BasePath "/frontend/frontend-config.yaml") . | sha256sum }}"
     spec:
+      securityContext:
+      {{- include "cytomine.podSecurityContext" . | nindent 8 }}
+      volumes:
+      - name: nginx
+        emptyDir: {}
+      - name: nginx-pid
+        emptyDir: {}
       containers:
       - name: appstore-frontend
-        image: "{{ .Values.appstore_frontend.image }}"
+        image: {{ .Values.appstore_frontend.image }}
+        securityContext:
+        {{- include "cytomine.containerSecurityContext" . | nindent 10 }}
         ports:
         - containerPort: {{ .Values.appstore_frontend.port }}
         envFrom:
         - configMapRef:
             name: appstore-frontend
+        volumeMounts:
+          - name: nginx
+            mountPath: /var/cache/nginx
+          - name: nginx-pid
+            mountPath: /var/run
