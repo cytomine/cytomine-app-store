@@ -86,7 +86,7 @@ jobs:
 
     runs-on: ubuntu-latest
     container:
-      image: mcr.microsoft.com/playwright:v1.55.0-noble
+      image: mcr.microsoft.com/playwright:v1.56.1-noble
     defaults:
       run:
         working-directory: frontend
