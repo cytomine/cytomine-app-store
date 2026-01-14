@@ -18,6 +18,11 @@ spec:
     spec:
       securityContext:
       {{- include "cytomine.podSecurityContext" . | nindent 8 }}
+      volumes:
+      - name: nginx
+        emptyDir: {}
+      - name: nginx-pid
+        emptyDir: {}
       containers:
       - name: appstore-frontend
         image: {{ .Values.appstore_frontend.image }}
@@ -28,3 +33,8 @@ spec:
         envFrom:
         - configMapRef:
             name: appstore-frontend
+        volumeMounts:
+          - name: nginx
+            mountPath: /var/cache/nginx
+          - name: nginx-pid
+            mountPath: /var/run
