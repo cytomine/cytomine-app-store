@@ -3,12 +3,11 @@ kind: Ingress
 metadata:
   namespace: {{ .Release.Namespace }}
   name: appstore
-  {{ if .Values.ingress.annotations }}
   annotations:
+    nginx.ingress.kubernetes.io/cors-allow-origin: {{ .Values.global.domainName }}
     {{- with .Values.ingress.annotations }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
-  {{- end }}
 spec:
   ingressClassName: public
   rules:
