@@ -3,6 +3,7 @@ kind: ConfigMap
 metadata:
   name: appstore-frontend
 data:
+  PORT: "{{ .Values.appstore_frontend.port }}"
   APP_BASE_URL: /app-store
   VITE_API_BASE_URL: "appstore-backend.{{ .Release.Namespace }}.svc.cluster.local"
   nginx.conf: |-

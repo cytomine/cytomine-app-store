@@ -3,6 +3,7 @@ ARG APP_STORE_REVISION
 ARG NGINX_VERSION=1.22.1
 ARG NODE_VERSION=20.19.4
 ARG PROXY_CACHE=registry.cytomine.org/docker
+ARG PORT=80
 
 # Build stage
 FROM ${PROXY_CACHE}/node:${NODE_VERSION}-alpine AS build-stage
@@ -47,6 +48,6 @@ LABEL org.opencontainers.image.authors="uliege@cytomine.org" \
 
 COPY --from=build-stage /app/dist /usr/share/nginx/html
 
-EXPOSE 80
+EXPOSE ${PORT}
 
 CMD ["nginx", "-g", "daemon off;"]
