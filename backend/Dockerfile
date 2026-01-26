@@ -2,8 +2,8 @@
 ARG APP_STORE_VERSION
 ARG APP_STORE_REVISION
 ARG ENTRYPOINT_SCRIPTS_VERSION=1.4.0
-ARG JAVA_VERSION=17-jre
-ARG GRADLE_VERSION=7.6.4-jdk17
+ARG JAVA_VERSION=21-jre
+ARG GRADLE_VERSION=8.14-jdk21
 ARG PROXY_CACHE=registry.cytomine.org/docker
 
 #######################################################################################
